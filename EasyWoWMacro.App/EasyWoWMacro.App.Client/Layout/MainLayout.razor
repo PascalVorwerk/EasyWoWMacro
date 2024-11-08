@@ -1,0 +1,15 @@
+﻿@inherits LayoutComponentBase
+@inject NavigationManager NavigationManager
+
+<FluentLayout Style="height: 100vh">
+    <EasyWoWHeader/>
+    <FluentBodyContent>
+        @Body
+    </FluentBodyContent>
+</FluentLayout>
+
+<FluentToastProvider />
+<FluentDialogProvider />
+<FluentTooltipProvider />
+<FluentMessageBarProvider />
+<FluentMenuProvider />

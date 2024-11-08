@@ -1,0 +1,77 @@
+﻿@page "/"
+
+<FluentGrid Style="padding: 1rem;">
+    <FluentGridItem xs="2">
+        <FluentSearch Placeholder="Search commands..."@bind-Value="searchQuery" @oninput="OnSearchInput"/>
+        <!-- Collapsible List of Commands by Category -->
+        <FluentAccordion ExpandMode="AccordionExpandMode.Multi" Style="margin-top: 1rem; overflow-y: auto; height: calc(100vh - 180px)">
+            @foreach (var category in FilteredCommandsByCategory)
+            {
+                <FluentAccordionItem Heading="@category.Key" Expanded="true">
+                    <FluentListbox Items="category.Value">
+                        <OptionTemplate>
+                            <div style="width: 100%" draggable="true" @ondragstart="(e) => OnDragStart(context)">
+                                <FluentStack VerticalAlignment="VerticalAlignment.Center">
+                                    <FluentLabel Typo="Typography.Body">@(context.DisplayName)</FluentLabel>
+                                    <FluentIcon Id="@(context.DisplayName + "-tooltip")" Value="@(new Icons.Regular.Size16.Info())"/>
+                                    <FluentTooltip Anchor="@(context.DisplayName + "-tooltip")">
+                                        @context.Description
+                                    </FluentTooltip>
+                                </FluentStack>
+                            </div>
+                        </OptionTemplate>
+                    </FluentListbox>
+                </FluentAccordionItem>
+            }
+        </FluentAccordion>
+    </FluentGridItem>
+    <FluentGridItem xs="10">
+        <div class="editor-block">
+            <FluentLabel Style="padding-bottom: 1rem" Typo="Typography.H2">Macro Editor</FluentLabel>
+            <div class="drop-area" id="dropArea" @ondrop="OnDrop">
+                @foreach (var command in CurrentMacro.Commands)
+                {
+                    <FluentStack Class="macro-command" Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
+
+                        @* Main Content*@
+                        <FluentStack Orientation="Orientation.Vertical">
+                            <FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
+                                <FluentLabel Typo="Typography.H6">@command.CommandVerb.DisplayName</FluentLabel>
+                                <FluentIcon Id="@(command.CommandVerb.DisplayName + "-tooltip2")" Value="@(new Icons.Regular.Size16.Info())"/>
+                                <FluentTooltip Anchor="@(command.CommandVerb.DisplayName + "-tooltip2")">
+                                    @command.CommandVerb.Description
+                                </FluentTooltip>
+                            </FluentStack>
+                            
+                            @* Command Objects *@
+                            @foreach (var commandObject in command.CommandObjects)
+                            {
+                                <FluentStack Orientation="Orientation.Horizontal" VerticalAlignment="VerticalAlignment.Center">
+                                    <FluentLabel Typo="Typography.Body">@commandObject.ToString()</FluentLabel>
+                                    <FluentButton IconStart="@(new Icons.Regular.Size12.Add())" OnClick="() => AddCondition(commandObject)">Add condition</FluentButton>
+                                    <FluentButton IconStart="@(new Icons.Regular.Size12.Add())" OnClick="() => AddParameter(commandObject)">Add parameter</FluentButton>
+                                </FluentStack>
+                            }
+                            
+                            <FluentButton IconStart="@(new Icons.Regular.Size16.Add())" OnClick="() => AddCommandObject(command)">
+                                Add a line of parameters
+                            </FluentButton>
+                        </FluentStack>
+                        <FluentStack VerticalAlignment="VerticalAlignment.Center" Wrap="true" Width="">
+                            <FluentButton IconStart="@(new Icons.Regular.Size20.Delete())" OnClick="() => DeleteCommand(command)"></FluentButton>
+                        </FluentStack>
+
+                    </FluentStack>
+                }
+            </div>
+        </div>
+        <br/>
+        <div class="output-block">
+            <FluentLabel Style="padding-bottom: 1rem" Typo="Typography.H2">Macro Preview</FluentLabel>
+            <div class="macro-output">
+                <FluentTextArea Value="@CurrentMacro.ToString()" ReadOnly="true" Rows="5" Style="width: 80%"/>
+                <FluentButton IconStart="@(new Icons.Regular.Size16.Copy())" OnClick="CopyToClipboard">Copy to Clipboard</FluentButton>
+            </div>
+        </div>
+    </FluentGridItem>
+</FluentGrid>

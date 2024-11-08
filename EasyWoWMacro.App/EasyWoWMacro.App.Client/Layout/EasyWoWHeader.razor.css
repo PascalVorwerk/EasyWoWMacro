@@ -1,0 +1,6 @@
+﻿::deep .siteheader {
+    background-color: var(--neutral-layer-floating) !important;
+    border-bottom: 2px solid var(--accent-fill-rest) !important;
+    height: calc(124px * calc(44/66)) !important;
+    color: var(--neutral-foreground-rest) !important;
+}
