@@ -16,12 +16,7 @@ public partial class MainLayout : LayoutComponentBase
             // Set to dark mode by default
             await BaseLayerLuminance.WithDefault((float)0.15);
             
-            // Set the accent color
-            await AccentBaseColor.WithDefault("#FFD700".ToSwatch());
             
-            await NeutralBaseColor.WithDefault("#202020".ToSwatch()); // Dark gray color for dark mode
-            
-            StateHasChanged();
         }
     }
 }

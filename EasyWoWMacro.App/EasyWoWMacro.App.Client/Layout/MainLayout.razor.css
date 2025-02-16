@@ -4,3 +4,7 @@
 .header {
     background-color: white; !important;
 }
+
+.body-content{
+    flex-direction: row;
+}

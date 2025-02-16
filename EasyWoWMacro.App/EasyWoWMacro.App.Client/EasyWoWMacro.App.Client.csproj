@@ -21,10 +21,7 @@
 
     <ItemGroup>
       <_ContentIncludedByDefault Remove="Dialogs\CommandVerbDialog.razor" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Components\" />
+      <_ContentIncludedByDefault Remove="wwwroot\js\CacheStorageAccessor.js" />
     </ItemGroup>
 
 </Project>
