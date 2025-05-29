@@ -4,19 +4,32 @@ namespace EasyWoWMacro.Business.Models;
 
 public class Macro
 {
-    public string Value { get; set; } = string.Empty;
-    public List<MacroCommand> Commands { get; set; } = new();
+    public List<Command> Commands { get; } = [];
+
+    public void AddCommand(Command command)
+    {
+        Commands.Add(command);
+    }
     
-    public override string ToString() => ToString(trim: false);
+    public void RemoveCommand(Command command)
+    {
+        Commands.Remove(command);
+    }
     
-    public string ToString(bool trim)
+    public void ClearCommands()
+    {
+        Commands.Clear();
+    }
+
+    public override string ToString()
     {
         var sb = new StringBuilder();
+
         foreach (var command in Commands)
         {
-            // Each command is prefixed with a slash.
-            sb.Append($"/{command.ToString(trim)} ");
+            sb.AppendLine("/" + command);
         }
-        return trim ? sb.ToString().Trim() : sb.ToString();
+        
+        return sb.ToString().TrimEnd();
     }
 }
