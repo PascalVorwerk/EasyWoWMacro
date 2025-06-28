@@ -481,5 +481,163 @@ public class MacroParserTests
         Assert.True(true); // Always pass for debug
     }
 
+    [Fact]
+    public void ValidateMacro_UnclosedBracket_ShouldReturnError()
+    {
+        // Arrange
+        var macroText = @"#showtooltip
+/cast [@target,harm,nodead] Smite; [@target,help,nodead] Flash Heal
+/use [combat Healthstone";
+
+        // Act
+        var macro = _parser.Parse(macroText);
+        var errors = _parser.ValidateMacroText(macroText);
+
+        // Assert
+        Assert.Contains(errors, e => e.Contains("Unclosed conditional bracket"));
+    }
+
+    [Fact]
+    public void ValidateMacro_MalformedConditional_ShouldReturnError()
+    {
+        // Arrange
+        var macroText = @"/use [invalid Healthstone";
+
+        // Act
+        var macro = _parser.Parse(macroText);
+        var errors = _parser.ValidateMacroText(macroText);
+
+        // Assert
+        Assert.Contains(errors, e => e.Contains("Unclosed conditional bracket"));
+    }
+
+    [Fact]
+    public void ValidateMacro_ProblematicMacro_ShouldBeInvalid()
+    {
+        // Arrange - This is the problematic macro from the user
+        var macroText = @"#showtooltip
+/cast [@target,harm,nodead] Smite; @target,help,nodead Flash Heal
+/use [combat] Healthstone";
+
+        // Act
+        var errors = _parser.ValidateMacroText(macroText);
+
+        // Assert - This macro should be invalid because of the malformed conditional
+        // The second part "@target,help,nodead Flash Heal" is missing the opening bracket
+        Assert.NotEmpty(errors);
+        Assert.Contains(errors, e => e.Contains("Malformed clause") || e.Contains("Unclosed conditional bracket") || e.Contains("Invalid conditional"));
+    }
+
+    [Fact]
+    public void ValidateMacro_NonBracketedConditionalList_ShouldBeInvalid()
+    {
+        // Arrange
+        var macroText = @"#showtooltip
+/cast [@target,harm,nodead] @target,help,nodead Flash Heal
+/use [combat] Healthstone";
+
+        // Act
+        var errors = _parser.ValidateMacroText(macroText);
+
+        // Assert
+        Assert.NotEmpty(errors);
+        Assert.Contains(errors, e => e.Contains("Malformed clause"));
+    }
+
+    [Fact]
+    public void ValidateMacro_EmptyConditional_ShouldBeValid()
+    {
+        // Arrange - Empty conditionals are valid in WoW macros
+        var macroText = @"#showtooltip
+/cast [] Smite; [@target,help,nodead] Flash Heal
+/use [combat] Healthstone";
+
+        // Act
+        var errors = _parser.ValidateMacroText(macroText);
+
+        // Assert - Empty conditionals should be valid
+        Assert.Empty(errors);
+    }
+
+    [Fact]
+    public void Parse_EmptyConditional_ShouldParseCorrectly()
+    {
+        // Arrange
+        var macroText = "/cast [] Smite";
+
+        // Act
+        var macro = _parser.Parse(macroText);
+
+        // Assert
+        Assert.Single(macro.Lines);
+        var command = Assert.IsType<CommandLine>(macro.Lines[0]);
+        Assert.Equal("/cast", command.Command);
+        Assert.Single(command.Arguments);
+        Assert.Equal("Smite", command.Arguments[0].Value);
+        
+        // Should have conditionals but with empty condition sets
+        Assert.NotNull(command.Conditionals);
+        Assert.Single(command.Conditionals.ConditionSets);
+        var conditionSet = command.Conditionals.ConditionSets[0];
+        Assert.Empty(conditionSet.Conditions); // Empty conditional means no conditions
+    }
+
+    [Fact]
+    public void ValidateMacro_UserSpecificMacro_ShouldBeValid()
+    {
+        // Arrange - This is the specific macro from the user
+        var macroText = @"#showtooltip
+/cast [] Smite; [@target,help,nodead] Flash Heal
+/use [combat] Healthstone";
+
+        // Act
+        var errors = _parser.ValidateMacroText(macroText);
+
+        // Assert - This macro should be valid with empty conditionals
+        Assert.Empty(errors);
+    }
+
+    [Fact]
+    public void Parse_UserSpecificMacro_ShouldParseCorrectly()
+    {
+        // Arrange
+        var macroText = @"#showtooltip
+/cast [] Smite; [@target,help,nodead] Flash Heal
+/use [combat] Healthstone";
+
+        // Act
+        var macro = _parser.Parse(macroText);
+
+        // Assert
+        Assert.Equal(3, macro.Lines.Count);
+        
+        // First line should be directive
+        var directive = Assert.IsType<DirectiveLine>(macro.Lines[0]);
+        Assert.Equal("#showtooltip", directive.Directive);
+        
+        // Second line should be command with two clauses
+        var command = Assert.IsType<CommandLine>(macro.Lines[1]);
+        Assert.Equal("/cast", command.Command);
+        Assert.Equal(2, command.Clauses.Count);
+        
+        // First clause: [] Smite (empty conditional)
+        var (firstConditionals, firstArg) = command.Clauses[0];
+        Assert.NotNull(firstConditionals);
+        Assert.Single(firstConditionals.ConditionSets);
+        Assert.Empty(firstConditionals.ConditionSets[0].Conditions); // Empty conditional
+        Assert.Equal("Smite", firstArg?.Value);
+        
+        // Second clause: [@target,help,nodead] Flash Heal
+        var (secondConditionals, secondArg) = command.Clauses[1];
+        Assert.NotNull(secondConditionals);
+        Assert.Single(secondConditionals.ConditionSets);
+        Assert.Equal(3, secondConditionals.ConditionSets[0].Conditions.Count);
+        Assert.Equal("Flash Heal", secondArg?.Value);
+        
+        // Third line should be command
+        var thirdCommand = Assert.IsType<CommandLine>(macro.Lines[2]);
+        Assert.Equal("/use", thirdCommand.Command);
+    }
+
     #endregion
 } 

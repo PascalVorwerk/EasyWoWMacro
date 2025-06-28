@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using EasyWoWMacro.Core.Parsing;
+using EasyWoWMacro.Core.Validation;
 
 namespace EasyWoWMacro.Core.Models;
 
@@ -28,6 +30,7 @@ public class Macro
     public string GetFormattedMacro()
     {
         var lines = new List<string>();
+        var parser = new MacroParser();
         
         // Add name and icon line
         if (!string.IsNullOrEmpty(Name) || !string.IsNullOrEmpty(Icon))
@@ -40,32 +43,63 @@ public class Macro
             lines.Add(nameIconLine);
         }
         
-        // Add macro lines
+        // Add macro lines, skipping lines with bracket errors
         foreach (var line in Lines)
         {
+            // Only check CommandLine and DirectiveLine for bracket errors
+            string raw = line.RawText;
+            if ((line is CommandLine || line is DirectiveLine) && parser.ValidateBrackets(raw).Count > 0)
+            {
+                // Skip this line, or optionally add a marker
+                continue;
+            }
             switch (line)
             {
                 case DirectiveLine d:
                     lines.Add(d.Argument != null ? $"{d.Directive} {d.Argument}" : d.Directive);
                     break;
                 case CommandLine c:
-                    var commandLine = c.Command;
-                    
-                    // Add conditionals if they exist
-                    if (c.Conditionals != null && c.Conditionals.ConditionSets.Count > 0)
+                    if (c.Clauses != null && c.Clauses.Count > 0)
                     {
-                        var conditionalStrings = new List<string>();
-                        foreach (var conditionSet in c.Conditionals.ConditionSets)
+                        var clauseStrings = new List<string>();
+                        foreach (var (conds, arg) in c.Clauses)
                         {
-                            var conditions = conditionSet.Conditions.Select(cond => cond.ToString());
-                            conditionalStrings.Add($"[{string.Join(",", conditions)}]");
+                            var clause = "";
+                            if (conds != null && conds.ConditionSets.Count > 0)
+                            {
+                                foreach (var conditionSet in conds.ConditionSets)
+                                {
+                                    var conditions = conditionSet.Conditions.Select(cond => cond.ToString());
+                                    clause += $"[{string.Join(",", conditions)}]";
+                                }
+                                clause += " ";
+                            }
+                            if (arg != null && !string.IsNullOrWhiteSpace(arg.Value))
+                            {
+                                clause += arg.Value.Trim();
+                            }
+                            clauseStrings.Add(clause.TrimEnd());
                         }
-                        commandLine += string.Join("", conditionalStrings);
+                        lines.Add($"{c.Command} {string.Join("; ", clauseStrings).Trim()}");
                     }
-                    
-                    // Add arguments
-                    var args = c.Arguments != null && c.Arguments.Count > 0 ? " " + string.Join(" ", c.Arguments.Select(a => a.Value)) : string.Empty;
-                    lines.Add($"{commandLine}{args}");
+                    else
+                    {
+                        // fallback to old logic if no clauses
+                        var commandLine = c.Command;
+                        var hasConditionals = c.Conditionals != null && c.Conditionals.ConditionSets.Count > 0;
+                        if (hasConditionals)
+                        {
+                            var conditionalStrings = new List<string>();
+                            foreach (var conditionSet in c.Conditionals.ConditionSets)
+                            {
+                                var conditions = conditionSet.Conditions.Select(cond => cond.ToString());
+                                conditionalStrings.Add($"[{string.Join(",", conditions)}]");
+                            }
+                            commandLine += " " + string.Join("", conditionalStrings);
+                        }
+                        var args = c.Arguments != null && c.Arguments.Count > 0 ? " " + string.Join(" ", c.Arguments.Select(a => a.Value)) : string.Empty;
+                        lines.Add($"{commandLine}{args}");
+                    }
                     break;
                 case CommentLine cm:
                     lines.Add($"; {cm.Comment}");
@@ -91,31 +125,11 @@ public class Macro
             errors.Add("Macro must contain at least one command");
         }
         
-        // Check for common macro syntax issues
-        foreach (var line in Lines)
-        {
-            if (line is CommandLine c && c.Command.StartsWith("/") && !IsValidSlashCommand(c.Command))
-            {
-                errors.Add($"Invalid slash command: {c.Command}");
-            }
-        }
+        // Use the dedicated parser for validation
+        var parser = new MacroParser();
+        var macroErrors = parser.ValidateMacro(this);
+        errors.AddRange(macroErrors);
         
         return errors;
-    }
-    
-    private bool IsValidSlashCommand(string command)
-    {
-        // Basic validation for common slash commands
-        var validCommands = new[]
-        {
-            "/cast", "/use", "/target", "/focus", "/assist", "/follow", "/stopcasting",
-            "/cancelaura", "/cancelform", "/cancelbuff", "/cleartarget", "/dismount",
-            "/equip", "/equipslot", "/invite", "/kick", "/leave", "/macro", "/petattack",
-            "/petfollow", "/petstay", "/petpassive", "/petdefensive", "/petaggressive",
-            "/random", "/roll", "/say", "/yell", "/whisper", "/party", "/raid", "/guild",
-            "/emote", "/dance", "/sit", "/stand", "/sleep", "/mount", "/dismount"
-        };
-        
-        return validCommands.Any(valid => command.StartsWith(valid, StringComparison.OrdinalIgnoreCase));
     }
 } 

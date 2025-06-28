@@ -242,25 +242,34 @@
             // Update macro text from the textarea
             macroText = macroText.Trim();
             
-            // Parse the macro
-            parsedMacro = parser.Parse(macroText);
+            // Validate the macro text first (includes bracket validation)
+            validationErrors = parser.ValidateMacroText(macroText);
             
-            // Preserve the name and icon from the UI
-            parsedMacro.Name = macro.Name;
-            parsedMacro.Icon = macro.Icon;
-            
-            // Validate the macro
-            validationErrors = parser.ValidateMacro(parsedMacro);
-            
-            // Also validate the macro object itself
-            var macroErrors = parsedMacro.Validate();
-            validationErrors.AddRange(macroErrors);
-            
-            // Add character limit validation
-            var formattedLength = parsedMacro.GetFormattedMacro().Length;
-            if (formattedLength > WOW_MACRO_LIMIT)
+            // Only parse if there are no validation errors
+            if (validationErrors.Count == 0)
             {
-                validationErrors.Add($"Macro exceeds WoW's 255 character limit ({formattedLength} characters). Use the 'Trim to 255' button to shorten it.");
+                // Parse the macro
+                parsedMacro = parser.Parse(macroText);
+                
+                // Preserve the name and icon from the UI
+                parsedMacro.Name = macro.Name;
+                parsedMacro.Icon = macro.Icon;
+                
+                // Also validate the parsed macro object
+                var macroErrors = parsedMacro.Validate();
+                validationErrors.AddRange(macroErrors);
+                
+                // Add character limit validation
+                var formattedLength = parsedMacro.GetFormattedMacro().Length;
+                if (formattedLength > WOW_MACRO_LIMIT)
+                {
+                    validationErrors.Add($"Macro exceeds WoW's 255 character limit ({formattedLength} characters). Use the 'Trim to 255' button to shorten it.");
+                }
+            }
+            else
+            {
+                // If there are validation errors, don't parse the macro
+                parsedMacro = null;
             }
         }
         catch (Exception ex)

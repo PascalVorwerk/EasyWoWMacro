@@ -382,4 +382,82 @@ code {
     .top-row {
         padding: 1rem;
     }
+}
+
+.macro-structure, .macro-structure * {
+    color: #fff !important;
+}
+
+.macro-structure .text-muted,
+.macro-structure .conditional-info,
+.macro-structure code,
+.macro-structure .badge {
+    color: #fff !important;
+    opacity: 1 !important;
+}
+
+/* Footer Styles */
+.wow-footer {
+    background: linear-gradient(90deg, var(--wow-gray-dark) 0%, var(--wow-gray-medium) 100%);
+    border-top: 2px solid var(--wow-gold);
+    padding: 1rem 2rem;
+    box-shadow: 0 -2px 10px rgba(255, 209, 0, 0.2);
+    width: 100%;
+    flex-shrink: 0;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.footer-links {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+}
+
+.footer-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--wow-text-light);
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+}
+
+.footer-link:hover {
+    color: var(--wow-gold);
+    background: rgba(255, 209, 0, 0.1);
+    border-color: var(--wow-gold);
+    text-decoration: none;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(255, 209, 0, 0.3);
+}
+
+.footer-icon {
+    font-size: 1.2rem;
+    filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.8));
+}
+
+.footer-text {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+@media (max-width: 768px) {
+    .footer-links {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .footer-link {
+        padding: 0.75rem 1.5rem;
+    }
 } 

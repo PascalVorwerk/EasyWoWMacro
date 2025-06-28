@@ -1,4 +1,6 @@
 using EasyWoWMacro.Core.Models;
+using EasyWoWMacro.Core.Parsing.Utilities;
+using EasyWoWMacro.Core.Validation;
 using System.Text.RegularExpressions;
 
 namespace EasyWoWMacro.Core.Parsing;
@@ -82,182 +84,48 @@ public class MacroParser
             RawText = line,
             Command = command,
             Arguments = new List<CommandArgument>(),
-            Conditionals = null
+            Conditionals = null,
+            Clauses = new List<(Conditional? Conditionals, CommandArgument? Argument)>()
         };
 
         // Parse conditionals and arguments
         if (!string.IsNullOrWhiteSpace(rest))
         {
-            var (conditionals, arguments) = ParseConditionalsAndArguments(rest);
+            var (conditionals, arguments, clauses) = ParseConditionalsAndArgumentsWithClauses(rest);
             commandLine.Conditionals = conditionals;
             commandLine.Arguments = arguments;
+            commandLine.Clauses = clauses;
         }
 
         return commandLine;
     }
 
-    private List<string> SplitBySemicolonsOutsideBrackets(string input)
-    {
-        var result = new List<string>();
-        int bracketDepth = 0;
-        int lastSplit = 0;
-        for (int i = 0; i < input.Length; i++)
-        {
-            if (input[i] == '[') bracketDepth++;
-            else if (input[i] == ']') bracketDepth--;
-            else if (input[i] == ';' && bracketDepth == 0)
-            {
-                result.Add(input.Substring(lastSplit, i - lastSplit));
-                lastSplit = i + 1;
-            }
-        }
-        if (lastSplit < input.Length)
-            result.Add(input.Substring(lastSplit));
-        return result;
-    }
-
-    private (Conditional? conditionals, List<CommandArgument> arguments) ParseConditionalsAndArguments(string rest)
+    private (Conditional? conditionals, List<CommandArgument> arguments, List<(Conditional? Conditionals, CommandArgument? Argument)> clauses)
+        ParseConditionalsAndArgumentsWithClauses(string rest)
     {
         var conditionals = new Conditional();
         var arguments = new List<CommandArgument>();
+        var clauses = new List<(Conditional? Conditionals, CommandArgument? Argument)>();
 
-        // Use the new helper to split only on semicolons outside brackets
-        var semicolonParts = SplitBySemicolonsOutsideBrackets(rest);
+        // Use the utility to split only on semicolons outside brackets
+        var semicolonParts = StringUtilities.SplitBySemicolonsOutsideBrackets(rest);
         foreach (var part in semicolonParts)
         {
             var trimmedPart = part.Trim();
             if (!string.IsNullOrWhiteSpace(trimmedPart))
             {
-                var (partConditionals, partArguments) = ParseSingleConditionalArgumentPair(trimmedPart);
+                var (partConditionals, partArguments) = ConditionalParser.ParseConditionalsAndArguments(trimmedPart);
                 if (partConditionals != null)
                 {
                     conditionals.ConditionSets.AddRange(partConditionals.ConditionSets);
                 }
                 arguments.AddRange(partArguments);
+                // For clause output: only use the first argument (WoW only allows one per clause)
+                clauses.Add((partConditionals, partArguments.Count > 0 ? partArguments[0] : null));
             }
         }
 
-        return conditionals.ConditionSets.Count > 0 ? (conditionals, arguments) : (null, arguments);
-    }
-
-    private (Conditional? conditionals, List<CommandArgument> arguments) ParseSingleConditionalArgumentPair(string text)
-    {
-        var conditionals = new Conditional();
-        var arguments = new List<CommandArgument>();
-        var currentPosition = 0;
-
-        // Parse conditionals first (anything in brackets)
-        while (currentPosition < text.Length)
-        {
-            var bracketStart = text.IndexOf('[', currentPosition);
-            if (bracketStart == -1)
-                break;
-
-            var bracketEnd = FindMatchingBracket(text, bracketStart);
-            if (bracketEnd == -1)
-            {
-                // Invalid bracket structure - treat the rest as argument
-                var invalidBracketText = text.Substring(currentPosition).Trim();
-                if (!string.IsNullOrWhiteSpace(invalidBracketText))
-                {
-                    arguments.Add(new CommandArgument { Value = invalidBracketText });
-                }
-                break;
-            }
-
-            var conditionalText = text.Substring(bracketStart + 1, bracketEnd - bracketStart - 1);
-            var conditionSets = ParseConditionSets(conditionalText);
-            conditionals.ConditionSets.AddRange(conditionSets);
-
-            currentPosition = bracketEnd + 1;
-        }
-
-        // Parse remaining arguments (everything after the last bracket)
-        var remainingText = text.Substring(currentPosition).Trim();
-        if (!string.IsNullOrWhiteSpace(remainingText))
-        {
-            arguments.Add(new CommandArgument { Value = remainingText });
-        }
-
-        return conditionals.ConditionSets.Count > 0 ? (conditionals, arguments) : (null, arguments);
-    }
-
-    private List<ConditionSet> ParseConditionSets(string conditionalText)
-    {
-        var conditionSets = new List<ConditionSet>();
-        
-        // Split by semicolons for OR logic (different condition sets within the same bracket)
-        var orParts = conditionalText.Split(';', StringSplitOptions.RemoveEmptyEntries);
-        
-        foreach (var orPart in orParts)
-        {
-            var trimmedOrPart = orPart.Trim();
-            if (!string.IsNullOrWhiteSpace(trimmedOrPart))
-            {
-                var conditionSet = new ConditionSet();
-                
-                // Split by commas for AND logic (conditions within a set)
-                var andParts = trimmedOrPart.Split(',', StringSplitOptions.RemoveEmptyEntries);
-                
-                foreach (var andPart in andParts)
-                {
-                    var trimmedAndPart = andPart.Trim();
-                    if (!string.IsNullOrWhiteSpace(trimmedAndPart))
-                    {
-                        var condition = ParseCondition(trimmedAndPart);
-                        if (condition != null)
-                        {
-                            conditionSet.Conditions.Add(condition);
-                        }
-                    }
-                }
-                
-                if (conditionSet.Conditions.Count > 0)
-                {
-                    conditionSets.Add(conditionSet);
-                }
-            }
-        }
-
-        return conditionSets;
-    }
-
-    private Condition? ParseCondition(string conditionText)
-    {
-        var trimmed = conditionText.Trim();
-        if (string.IsNullOrWhiteSpace(trimmed))
-            return null;
-
-        // Check if it's a key:value format
-        var colonIndex = trimmed.IndexOf(':');
-        if (colonIndex > 0)
-        {
-            var key = trimmed.Substring(0, colonIndex).Trim();
-            var value = trimmed.Substring(colonIndex + 1).Trim();
-            return new Condition { Key = key, Value = value };
-        }
-        else
-        {
-            // Just a key without value
-            return new Condition { Key = trimmed, Value = null };
-        }
-    }
-
-    private int FindMatchingBracket(string text, int startIndex)
-    {
-        var bracketCount = 0;
-        for (int i = startIndex; i < text.Length; i++)
-        {
-            if (text[i] == '[')
-                bracketCount++;
-            else if (text[i] == ']')
-            {
-                bracketCount--;
-                if (bracketCount == 0)
-                    return i;
-            }
-        }
-        return -1; // No matching bracket found
+        return conditionals.ConditionSets.Count > 0 ? (conditionals, arguments, clauses) : (null, arguments, clauses);
     }
 
     /// <summary>
@@ -267,123 +135,24 @@ public class MacroParser
     /// <returns>List of validation errors</returns>
     public List<string> ValidateMacroText(string macroText)
     {
-        var errors = new List<string>();
-        var lines = macroText.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-        
-        if (lines.Length == 0)
-        {
-            errors.Add("Macro text is empty");
-            return errors;
-        }
-        
-        var hasCommands = false;
-        
-        foreach (var line in lines)
-        {
-            var trimmedLine = line.Trim();
-            if (string.IsNullOrWhiteSpace(trimmedLine))
-                continue;
-                
-            // Check for valid directives
-            if (trimmedLine.StartsWith("#"))
-            {
-                if (!IsValidDirective(trimmedLine))
-                {
-                    errors.Add($"Invalid directive: {trimmedLine}");
-                }
-                continue;
-            }
-            
-            // Check for valid slash commands
-            if (trimmedLine.StartsWith("/"))
-            {
-                if (!IsValidSlashCommand(trimmedLine))
-                {
-                    errors.Add($"Invalid slash command: {trimmedLine}");
-                }
-                
-                // Check for unclosed brackets in conditionals
-                var bracketErrors = ValidateBrackets(trimmedLine);
-                errors.AddRange(bracketErrors);
-                
-                hasCommands = true;
-            }
-            else
-            {
-                // Non-slash commands are also valid (like spell names)
-                hasCommands = true;
-            }
-        }
-        
-        if (!hasCommands)
-        {
-            errors.Add("Macro must contain at least one command");
-        }
-        
-        return errors;
-    }
-    
-    private bool IsValidDirective(string directive)
-    {
-        var validDirectives = new[]
-        {
-            "#showtooltip", "#show", "#hide", "#icon"
-        };
-        
-        return validDirectives.Any(valid => directive.StartsWith(valid, StringComparison.OrdinalIgnoreCase));
-    }
-    
-    private bool IsValidSlashCommand(string command)
-    {
-        // Basic validation for common slash commands
-        var validCommands = new[]
-        {
-            "/cast", "/use", "/target", "/focus", "/assist", "/follow", "/stopcasting",
-            "/cancelaura", "/cancelform", "/cancelbuff", "/cleartarget", "/dismount",
-            "/equip", "/equipslot", "/invite", "/kick", "/leave", "/macro", "/petattack",
-            "/petfollow", "/petstay", "/petpassive", "/petdefensive", "/petaggressive",
-            "/random", "/roll", "/say", "/yell", "/whisper", "/party", "/raid", "/guild",
-            "/emote", "/dance", "/sit", "/stand", "/sleep", "/mount", "/dismount"
-        };
-        
-        return validCommands.Any(valid => command.StartsWith(valid, StringComparison.OrdinalIgnoreCase));
+        return SyntaxValidator.ValidateMacroText(macroText);
     }
 
-    private List<string> ValidateBrackets(string line)
+    /// <summary>
+    /// Validates bracket syntax in a command line
+    /// </summary>
+    /// <param name="line">The line to validate</param>
+    /// <returns>List of validation errors</returns>
+    public List<string> ValidateBrackets(string line)
     {
-        var errors = new List<string>();
-        var bracketCount = 0;
-        var bracketStart = -1;
-        
-        for (int i = 0; i < line.Length; i++)
-        {
-            if (line[i] == '[')
-            {
-                bracketCount++;
-                if (bracketCount == 1)
-                {
-                    bracketStart = i;
-                }
-            }
-            else if (line[i] == ']')
-            {
-                bracketCount--;
-                if (bracketCount < 0)
-                {
-                    errors.Add($"Unexpected closing bracket ']' at position {i + 1}");
-                    bracketCount = 0;
-                }
-            }
-        }
-        
-        if (bracketCount > 0)
-        {
-            errors.Add($"Unclosed conditional bracket '[' starting at position {bracketStart + 1}");
-        }
-        
-        return errors;
+        return SyntaxValidator.ValidateBrackets(line);
     }
 
+    /// <summary>
+    /// Validates a parsed macro object
+    /// </summary>
+    /// <param name="macro">The macro to validate</param>
+    /// <returns>List of validation errors</returns>
     public List<string> ValidateMacro(Macro macro)
     {
         var errors = new List<string>();
@@ -411,8 +180,7 @@ public class MacroParser
     {
         var errors = new List<string>();
         
-        var validDirectives = new[] { "#showtooltip", "#show", "#hide", "#icon" };
-        if (!validDirectives.Contains(directive.Directive, StringComparer.OrdinalIgnoreCase))
+        if (!WoWMacroConstants.ValidDirectives.Contains(directive.Directive, StringComparer.OrdinalIgnoreCase))
         {
             errors.Add($"Invalid directive: {directive.Directive}");
         }
@@ -424,7 +192,7 @@ public class MacroParser
     {
         var errors = new List<string>();
 
-        // Validate command name using the new CommandValidator
+        // Validate command name using the CommandValidator
         if (!CommandValidator.IsValidCommand(command.Command))
         {
             errors.Add($"Invalid command: {command.Command}");

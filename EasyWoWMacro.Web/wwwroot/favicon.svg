@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <defs>
+    <linearGradient id="swordGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffd100;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#cc9e00;stop-opacity:1" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Sword blade -->
+  <path d="M16 2 L20 6 L18 8 L16 6 L14 8 L12 6 L16 2 Z" fill="url(#swordGradient)" filter="url(#glow)"/>
+  
+  <!-- Sword handle -->
+  <rect x="15" y="8" width="2" height="8" fill="#8B4513" stroke="#654321" stroke-width="0.5"/>
+  
+  <!-- Sword guard -->
+  <rect x="12" y="16" width="8" height="2" fill="#DAA520" stroke="#B8860B" stroke-width="0.5"/>
+  
+  <!-- Sword pommel -->
+  <circle cx="16" cy="18" r="1.5" fill="#DAA520" stroke="#B8860B" stroke-width="0.5"/>
+</svg> 
