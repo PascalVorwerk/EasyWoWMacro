@@ -26,8 +26,11 @@ jobs:
         run: dotnet restore
       - name: Install .NET WASM Build Tools
         run: dotnet workload install wasm-tools
-      - name: Clean publish output
-        run: rm -rf dist/Web
+      - name: Clean all build and publish output
+        run: |
+          rm -rf EasyWoWMacro.Web/bin
+          rm -rf EasyWoWMacro.Web/obj
+          rm -rf dist/Web
       - name: Publish Blazor WASM Project
         run: dotnet publish EasyWoWMacro.Web/EasyWoWMacro.Web.csproj -c:Release -p:GHPages=true -o dist/Web --nologo
       - name: Deploy to GitHub Pages
