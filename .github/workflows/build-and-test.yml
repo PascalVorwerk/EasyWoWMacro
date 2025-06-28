@@ -9,7 +9,7 @@ on:
 
   push:
     branches:
-      - master
+      - main
 
     paths-ignore:
       - '**/*.gitignore'
@@ -17,7 +17,7 @@ on:
 
   pull_request:
     branches:
-      - master
+      - main
 
     paths-ignore:
       - '**/*.gitignore'
@@ -121,7 +121,7 @@ jobs:
       - name: Report Generator
         uses: danielpalme/ReportGenerator-GitHub-Action@5.2.4
         with:
-          reports: '**/coverage.cobertura.xml;**/coverage.net10.0.cobertura.xml'
+          reports: '**/TestResults/coverage.cobertura.xml'
           targetdir: 'CoverageReports'
           title: 'EasyWoWMacro Unit Tests Code Coverage'
           reporttypes: 'HtmlInline;MarkdownSummaryGithub'
