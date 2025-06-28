@@ -49,8 +49,23 @@ public class Macro
                     lines.Add(d.Argument != null ? $"{d.Directive} {d.Argument}" : d.Directive);
                     break;
                 case CommandLine c:
+                    var commandLine = c.Command;
+                    
+                    // Add conditionals if they exist
+                    if (c.Conditionals != null && c.Conditionals.ConditionSets.Count > 0)
+                    {
+                        var conditionalStrings = new List<string>();
+                        foreach (var conditionSet in c.Conditionals.ConditionSets)
+                        {
+                            var conditions = conditionSet.Conditions.Select(cond => cond.ToString());
+                            conditionalStrings.Add($"[{string.Join(",", conditions)}]");
+                        }
+                        commandLine += string.Join("", conditionalStrings);
+                    }
+                    
+                    // Add arguments
                     var args = c.Arguments != null && c.Arguments.Count > 0 ? " " + string.Join(" ", c.Arguments.Select(a => a.Value)) : string.Empty;
-                    lines.Add($"{c.Command}{args}");
+                    lines.Add($"{commandLine}{args}");
                     break;
                 case CommentLine cm:
                     lines.Add($"; {cm.Comment}");

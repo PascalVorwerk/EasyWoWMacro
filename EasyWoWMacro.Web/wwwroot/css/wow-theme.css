@@ -265,23 +265,27 @@ code {
     color: var(--wow-text-light) !important;
 }
 
-/* Macro structure styling */
+/* Macro Structure Display */
 .macro-structure {
-    background: var(--wow-gray-dark);
+    max-height: 300px;
+    overflow-y: auto;
+    background-color: var(--wow-gray-dark);
     border: 1px solid var(--wow-border);
     border-radius: 6px;
-    color: var(--wow-text-light);
+    padding: 1rem;
 }
 
 .macro-line {
+    margin-bottom: 0.5rem;
+    padding: 0.25rem 0;
     border-bottom: 1px solid var(--wow-border);
-    padding: 0.5rem;
-    transition: background-color 0.3s ease;
-    color: var(--wow-text-light);
 }
 
 .macro-line:hover {
-    background-color: rgba(255, 209, 0, 0.05);
+    background-color: var(--wow-gray-medium);
+    border-radius: 4px;
+    padding: 0.25rem 0.5rem;
+    margin: 0 -0.5rem;
 }
 
 .macro-line:last-child {
@@ -291,15 +295,23 @@ code {
 .conditional-info {
     margin-top: 0.25rem;
     padding-left: 1rem;
-    color: var(--wow-text-gray);
-    font-style: italic;
+    color: var(--wow-text-gray) !important;
+    font-size: 0.875rem;
 }
 
-/* Ensure code in macro-structure and macro-line is light */
+/* Override Bootstrap text-muted for better readability */
+.text-muted {
+    color: var(--wow-text-gray) !important;
+}
+
 .macro-structure code,
-.macro-line code {
+.macro-structure .badge {
     color: var(--wow-text-light) !important;
-    background: none !important;
+    background-color: var(--wow-gray-light) !important;
+    border: 1px solid var(--wow-border);
+    padding: 0.125rem 0.25rem;
+    border-radius: 3px;
+    font-size: 0.875rem;
 }
 
 /* Jumbotron */

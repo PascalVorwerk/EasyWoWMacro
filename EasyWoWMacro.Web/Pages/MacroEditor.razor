@@ -94,10 +94,16 @@
                                             {
                                                 <span class="text-muted">@string.Join(" ", c.Arguments.Select(a => a.Value))</span>
                                             }
-                                            @if (c.Conditionals != null)
+                                            @if (c.Conditionals != null && c.Conditionals.ConditionSets.Count > 0)
                                             {
                                                 <div class="conditional-info">
-                                                    <small class="text-muted">Conditionals: @c.Conditionals.ConditionSets.Count sets</small>
+                                                    <small class="text-muted">Conditionals (@c.Conditionals.ConditionSets.Count sets):</small>
+                                                    @foreach (var conditionSet in c.Conditionals.ConditionSets)
+                                                    {
+                                                        <div class="ms-2">
+                                                            <small class="text-muted">[@string.Join(",", conditionSet.Conditions.Select(cond => cond.ToString()))]</small>
+                                                        </div>
+                                                    }
                                                 </div>
                                             }
                                             break;

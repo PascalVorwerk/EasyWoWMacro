@@ -301,6 +301,11 @@ public class MacroParser
                 {
                     errors.Add($"Invalid slash command: {trimmedLine}");
                 }
+                
+                // Check for unclosed brackets in conditionals
+                var bracketErrors = ValidateBrackets(trimmedLine);
+                errors.AddRange(bracketErrors);
+                
                 hasCommands = true;
             }
             else
@@ -342,6 +347,41 @@ public class MacroParser
         };
         
         return validCommands.Any(valid => command.StartsWith(valid, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private List<string> ValidateBrackets(string line)
+    {
+        var errors = new List<string>();
+        var bracketCount = 0;
+        var bracketStart = -1;
+        
+        for (int i = 0; i < line.Length; i++)
+        {
+            if (line[i] == '[')
+            {
+                bracketCount++;
+                if (bracketCount == 1)
+                {
+                    bracketStart = i;
+                }
+            }
+            else if (line[i] == ']')
+            {
+                bracketCount--;
+                if (bracketCount < 0)
+                {
+                    errors.Add($"Unexpected closing bracket ']' at position {i + 1}");
+                    bracketCount = 0;
+                }
+            }
+        }
+        
+        if (bracketCount > 0)
+        {
+            errors.Add($"Unclosed conditional bracket '[' starting at position {bracketStart + 1}");
+        }
+        
+        return errors;
     }
 
     public List<string> ValidateMacro(Macro macro)
