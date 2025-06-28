@@ -32,7 +32,7 @@ jobs:
           rm -rf EasyWoWMacro.Web/obj
           rm -rf dist/Web
       - name: Publish Blazor WASM Project
-        run: dotnet publish EasyWoWMacro.Web/EasyWoWMacro.Web.csproj -c:Release -p:GHPages=true -o dist/Web --nologo
+        run: dotnet publish EasyWoWMacro.Web/EasyWoWMacro.Web.csproj -c:Release -o dist/Web --nologo
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
