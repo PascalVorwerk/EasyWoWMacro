@@ -33,10 +33,11 @@ jobs:
           rm -rf dist/Web
       - name: Publish Blazor WASM Project
         run: dotnet publish EasyWoWMacro.Web/EasyWoWMacro.Web.csproj -c:Release -p:GHPages=true -o dist/Web --nologo
-      - name: Fix base href for custom domain
-        run: |
-          sed -i 's|<base href="[^"]*"|<base href="/"|g' dist/Web/wwwroot/index.html
-          cp dist/Web/wwwroot/index.html dist/Web/wwwroot/404.html
+      - name: Rewrite base href for custom domain in all HTML files
+        uses: SteveSandersonMS/ghaction-rewrite-base-href@v1.1.0
+        with:
+          html_glob: 'dist/Web/wwwroot/*.html'
+          base_href: '/'
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
