@@ -1,129 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html>
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    
-    <!-- Primary Meta Tags -->
-    <title>EasyWoWMacro - Free World of Warcraft Macro Editor & Validator</title>
-    <meta name="title" content="EasyWoWMacro - Free World of Warcraft Macro Editor & Validator">
-    <meta name="description" content="Create, edit, and validate World of Warcraft macros with our free online tool. Real-time syntax checking, character limit validation, and instant feedback. Perfect for WoW players of all levels.">
-    <meta name="keywords" content="World of Warcraft, WoW macros, macro editor, macro validator, WoW addons, gaming tools, MMO macros, WoW guide, macro syntax, WoW conditionals">
-    <meta name="author" content="Pascal Vorwerk">
-    <meta name="robots" content="index, follow">
-    <meta name="language" content="English">
-    <meta name="revisit-after" content="7 days">
-    
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://easywowmacro.com/">
-    <meta property="og:title" content="EasyWoWMacro - Free World of Warcraft Macro Editor & Validator">
-    <meta property="og:description" content="Create, edit, and validate World of Warcraft macros with our free online tool. Real-time syntax checking, character limit validation, and instant feedback.">
-    <meta property="og:image" content="https://easywowmacro.com/favicon.svg">
-    <meta property="og:site_name" content="EasyWoWMacro">
-    <meta property="og:locale" content="en_US">
-    
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://easywowmacro.com/">
-    <meta property="twitter:title" content="EasyWoWMacro - Free World of Warcraft Macro Editor & Validator">
-    <meta property="twitter:description" content="Create, edit, and validate World of Warcraft macros with our free online tool. Real-time syntax checking and validation.">
-    <meta property="twitter:image" content="https://easywowmacro.com/favicon.svg">
-    
-    <!-- Additional SEO Meta Tags -->
-    <meta name="theme-color" content="#ffd100">
-    <meta name="msapplication-TileColor" content="#ffd100">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="EasyWoWMacro">
-    
-    <!-- Canonical URL -->
-    <link rel="canonical" href="https://easywowmacro.com/">
-    
-    <!-- Preconnect for Performance -->
-    <base href="/EasyWoWMacro/" />
-    <link href="_framework/dotnet.9dxwk1hktd.js" rel="preload" as="script" fetchpriority="high" crossorigin="anonymous" integrity="sha256-E0e/Ybr7E8+Ljkt3VwAeAzgpZWTiESagPC6DISnVIoM=" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Stylesheets -->
-    <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="css/app.css" />
-    <link rel="stylesheet" href="css/wow-theme.css" />
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
-    <link rel="apple-touch-icon" href="favicon.svg">
-    <link rel="manifest" href="manifest.json">
-    
-    <link href="EasyWoWMacro.Web.styles.css" rel="stylesheet" />
-    <script type="importmap">{
-  "imports": {
-    "./_framework/blazor.webassembly.js": "./_framework/blazor.webassembly.nwy2mjqz22.js",
-    "./_framework/dotnet.js": "./_framework/dotnet.9dxwk1hktd.js",
-    "./_framework/dotnet.native.js": "./_framework/dotnet.native.12ohvktoqc.js",
-    "./_framework/dotnet.runtime.js": "./_framework/dotnet.runtime.h39b6vs7vh.js"
-  },
-  "scopes": {},
-  "integrity": {
-    "./_framework/blazor.webassembly.js": "sha256-yYB7QvRa6pDmWvSR6AXIhMJBqAdUZQ/H7snId1Lqc6w=",
-    "./_framework/blazor.webassembly.nwy2mjqz22.js": "sha256-yYB7QvRa6pDmWvSR6AXIhMJBqAdUZQ/H7snId1Lqc6w=",
-    "./_framework/dotnet.9dxwk1hktd.js": "sha256-E0e/Ybr7E8+Ljkt3VwAeAzgpZWTiESagPC6DISnVIoM=",
-    "./_framework/dotnet.js": "sha256-E0e/Ybr7E8+Ljkt3VwAeAzgpZWTiESagPC6DISnVIoM=",
-    "./_framework/dotnet.native.12ohvktoqc.js": "sha256-CbMAbxylRdc1y9Tu/MlzGbH/LhNFz48XiDBh51LLuew=",
-    "./_framework/dotnet.native.js": "sha256-CbMAbxylRdc1y9Tu/MlzGbH/LhNFz48XiDBh51LLuew=",
-    "./_framework/dotnet.runtime.h39b6vs7vh.js": "sha256-M9sntfqO7Ars311+59y1zo+amzELUvU93sPQ9je9NTk=",
-    "./_framework/dotnet.runtime.js": "sha256-M9sntfqO7Ars311+59y1zo+amzELUvU93sPQ9je9NTk="
-  }
-}</script>
-    
-    <!-- Structured Data -->
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "WebApplication",
-        "name": "EasyWoWMacro",
-        "description": "Free World of Warcraft macro editor and validator with real-time syntax checking",
-        "url": "https://easywowmacro.com/",
-        "applicationCategory": "Game",
-        "operatingSystem": "Web Browser",
-        "offers": {
-            "@type": "Offer",
-            "price": "0",
-            "priceCurrency": "USD"
-        },
-        "author": {
-            "@type": "Person",
-            "name": "Pascal Vorwerk",
-            "url": "https://github.com/PascalVorwerk"
-        },
-        "creator": {
-            "@type": "Person",
-            "name": "Pascal Vorwerk"
-        },
-        "keywords": "World of Warcraft, WoW macros, macro editor, gaming tools",
-        "screenshot": "https://easywowmacro.com/favicon.svg"
-    }
+    <meta charset="utf-8">
+    <title>EasyWoWMacro - Page Not Found</title>
+    <script type="text/javascript">
+        // Single Page Apps for GitHub Pages
+        // MIT License
+        // https://github.com/rafgraph/spa-github-pages
+        // This script takes the current url and converts the path and query
+        // string into just a query string, and then redirects the browser
+        // to the new url with only a query string and hash fragment.
+        var pathSegmentsToKeep = 0;
+
+        var l = window.location;
+        l.replace(
+            l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+            l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/?/' +
+            l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/').replace(/&/g, '~and~') +
+            (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
+            l.hash
+        );
     </script>
 </head>
-
 <body>
-    <div id="app">
-        <svg class="loading-progress">
-            <circle r="40%" cx="50%" cy="50%" />
-            <circle r="40%" cx="50%" cy="50%" />
-        </svg>
-        <div class="loading-progress-text"></div>
-    </div>
-
-    <div id="blazor-error-ui">
-        An unhandled error has occurred.
-        <a href="." class="reload">Reload</a>
-        <span class="dismiss">🗙</span>
-    </div>
-    <script src="_framework/blazor.webassembly.nwy2mjqz22.js"></script>
+    Redirecting...
 </body>
-
-</html>
+</html> 
