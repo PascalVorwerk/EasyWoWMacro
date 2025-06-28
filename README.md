@@ -100,46 +100,7 @@ The system validates against a comprehensive list of WoW conditionals including:
 
 The application is automatically deployed to GitHub Pages on push to the `main` branch.
 
-**Live Site**: `https://yourusername.github.io/EasyWoWMacro/`
-
-### GitHub Actions
-
-Two automated workflows are configured:
-
-1. **Build and Test** (`build-and-test.yml`):
-   - Runs on every push and pull request
-   - Builds the solution with .NET 10.0
-   - Runs all unit tests with coverage reporting
-   - Posts test results to pull requests
-
-2. **Deploy** (`deploy.yml`):
-   - Deploys the Blazor WASM app to GitHub Pages
-   - Publishes to the `gh-pages` branch
-   - Available at the GitHub Pages URL
-
-### Custom Domain Setup
-
-To use a custom domain with GitHub Pages:
-
-1. **Update the CNAME file**: Edit `EasyWoWMacro.Web/wwwroot/CNAME` and replace `yourdomain.com` with your actual domain.
-
-2. **Configure DNS records** with your domain provider:
-   - **A records**: Point your domain to GitHub Pages IP addresses:
-     ```
-     185.199.108.153
-     185.199.109.153
-     185.199.110.153
-     185.199.111.153
-     ```
-   - **CNAME record**: Point `www.yourdomain.com` to `yourusername.github.io`
-
-3. **Enable custom domain in GitHub**:
-   - Go to your repository Settings → Pages
-   - Under "Custom domain", enter your domain
-   - Check "Enforce HTTPS" (recommended)
-   - Save the settings
-
-4. **Wait for DNS propagation** (can take up to 24 hours)
+**Live Site**: `https://pcwvorwerk.github.io/EasyWoWMacro/`
 
 ## Testing
 
