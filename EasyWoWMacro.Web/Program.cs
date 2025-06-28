@@ -8,4 +8,12 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
-await builder.Build().RunAsync();
+// Add error handling
+builder.Services.AddLogging();
+
+var app = builder.Build();
+
+// Configure error handling
+app.Services.GetRequiredService<ILogger<Program>>().LogInformation("Starting EasyWoWMacro WebAssembly application");
+
+await app.RunAsync();
