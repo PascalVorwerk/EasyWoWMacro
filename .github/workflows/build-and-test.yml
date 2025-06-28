@@ -59,7 +59,7 @@ jobs:
       # Unit Tests
 
       - name: Tests
-        run: dotnet test ${{ env.TESTS }} --logger:trx --results-directory ./TestResults --verbosity normal --configuration Release /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:DebugType=Full
+        run: dotnet test ${{ env.TESTS }} --logger:trx --results-directory ./TestResults --verbosity normal --configuration Release --collect:"XPlat Code Coverage" --settings:CodeCoverage.runsettings
         working-directory: ${{ github.workspace }}
 
       - name: Publish Unit Tests
@@ -121,7 +121,7 @@ jobs:
       - name: Report Generator
         uses: danielpalme/ReportGenerator-GitHub-Action@5.2.4
         with:
-          reports: '**/TestResults/coverage.cobertura.xml'
+          reports: '**/coverage.cobertura.xml'
           targetdir: 'CoverageReports'
           title: 'EasyWoWMacro Unit Tests Code Coverage'
           reporttypes: 'HtmlInline;MarkdownSummaryGithub'
