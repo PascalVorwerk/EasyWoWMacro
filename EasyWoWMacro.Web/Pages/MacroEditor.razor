@@ -1,0 +1,284 @@
+@page "/macro-editor"
+@using EasyWoWMacro.Core.Models
+@using EasyWoWMacro.Core.Parsing
+@inject IJSRuntime JS
+
+<PageTitle>WoW Macro Editor</PageTitle>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Macro Editor</h3>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="macroName" class="form-label">Macro Name</label>
+                        <input type="text" class="form-control" id="macroName" @bind="macro.Name" placeholder="Enter macro name">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="macroIcon" class="form-label">Icon (optional)</label>
+                        <input type="text" class="form-control" id="macroIcon" @bind="macro.Icon" placeholder="e.g., spell_nature_healingtouch">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="macroText" class="form-label">Macro Text</label>
+                        <div class="character-counter @GetCharacterCounterClass()">
+                            <span>@GetCharacterCount() / 255 characters</span>
+                            @if (IsOverLimit())
+                            {
+                                <span class="text-danger ms-2">⚠️ Exceeds WoW limit!</span>
+                            }
+                        </div>
+                        <textarea class="form-control @GetTextareaClass()" id="macroText" rows="10" @bind="macroText" 
+                                  placeholder="#showtooltip
+/cast [@@target,harm,nodead] Smite; [@@target,help,nodead] Flash Heal
+/use [combat] Healthstone"></textarea>
+                    </div>
+                    
+                    <div class="d-flex gap-2 flex-wrap">
+                        <button class="btn btn-primary" @onclick="ParseMacro">Parse & Validate</button>
+                        <button class="btn btn-success" @onclick="CopyToClipboard">Copy to Clipboard</button>
+                        <button class="btn btn-secondary" @onclick="ClearMacro">Clear</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Validation & Preview</h3>
+                </div>
+                <div class="card-body">
+                    @if (validationErrors.Count > 0)
+                    {
+                        <div class="alert alert-danger">
+                            <h5>Validation Errors:</h5>
+                            <ul class="mb-0">
+                                @foreach (var error in validationErrors)
+                                {
+                                    <li>@error</li>
+                                }
+                            </ul>
+                        </div>
+                    }
+                    
+                    @if (parsedMacro != null && validationErrors.Count == 0)
+                    {
+                        <div class="alert alert-success">
+                            <h5>✓ Macro is valid!</h5>
+                            @if (!IsOverLimit())
+                            {
+                                <p class="mb-0">Character count: @GetFormattedMacroLength() / 255</p>
+                            }
+                        </div>
+                        
+                        <h5>Parsed Structure:</h5>
+                        <div class="macro-structure">
+                            @foreach (var line in parsedMacro.Lines)
+                            {
+                                <div class="macro-line">
+                                    @switch (line)
+                                    {
+                                        case DirectiveLine d:
+                                            <span class="badge bg-info">Directive</span>
+                                            <code>@d.Directive @(d.Argument ?? "")</code>
+                                            break;
+                                        case CommandLine c:
+                                            <span class="badge bg-primary">Command</span>
+                                            <code>@c.Command</code>
+                                            @if (c.Arguments?.Count > 0)
+                                            {
+                                                <span class="text-muted">@string.Join(" ", c.Arguments.Select(a => a.Value))</span>
+                                            }
+                                            @if (c.Conditionals != null)
+                                            {
+                                                <div class="conditional-info">
+                                                    <small class="text-muted">Conditionals: @c.Conditionals.ConditionSets.Count sets</small>
+                                                </div>
+                                            }
+                                            break;
+                                        case CommentLine cm:
+                                            <span class="badge bg-secondary">Comment</span>
+                                            <code>; @cm.Comment</code>
+                                            break;
+                                        default:
+                                            <span class="badge bg-warning">Unknown</span>
+                                            <code>@line.RawText</code>
+                                            break;
+                                    }
+                                </div>
+                            }
+                        </div>
+                        
+                        <hr />
+                        
+                        <h5>Formatted Output:</h5>
+                        <div class="formatted-macro">
+                            <pre class="bg-light p-3 rounded"><code>@parsedMacro.GetFormattedMacro()</code></pre>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .macro-structure {
+        max-height: 300px;
+        overflow-y: auto;
+    }
+    
+    .macro-line {
+        margin-bottom: 0.5rem;
+        padding: 0.25rem 0;
+    }
+    
+    .macro-line:last-child {
+        border-bottom: none;
+    }
+    
+    .conditional-info {
+        margin-top: 0.25rem;
+        padding-left: 1rem;
+    }
+    
+    .formatted-macro pre {
+        font-size: 0.875rem;
+        line-height: 1.4;
+    }
+    
+    .character-counter {
+        font-size: 0.875rem;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+    }
+    
+    .character-counter.warning {
+        color: var(--wow-orange);
+    }
+    
+    .character-counter.danger {
+        color: var(--wow-red);
+    }
+    
+    .textarea-warning {
+        border-color: var(--wow-orange) !important;
+        box-shadow: 0 0 0 0.2rem rgba(255, 165, 0, 0.25) !important;
+    }
+    
+    .textarea-danger {
+        border-color: var(--wow-red) !important;
+        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+    }
+</style>
+
+@code {
+    private Macro macro = new();
+    private Macro? parsedMacro;
+    private string macroText = "";
+    private List<string> validationErrors = new();
+    private MacroParser parser = new();
+    private const int WOW_MACRO_LIMIT = 255;
+
+    protected override void OnInitialized()
+    {
+        // Set default macro text
+        macroText = @"#showtooltip
+/cast [@target,harm,nodead] Smite; [@target,help,nodead] Flash Heal
+/use [combat] Healthstone";
+    }
+
+    private int GetCharacterCount()
+    {
+        return macroText?.Length ?? 0;
+    }
+
+    private bool IsOverLimit()
+    {
+        return GetCharacterCount() > WOW_MACRO_LIMIT;
+    }
+
+    private bool IsNearLimit()
+    {
+        return GetCharacterCount() > WOW_MACRO_LIMIT * 0.9; // 90% of limit
+    }
+
+    private string GetCharacterCounterClass()
+    {
+        if (IsOverLimit()) return "danger";
+        if (IsNearLimit()) return "warning";
+        return "";
+    }
+
+    private string GetTextareaClass()
+    {
+        if (IsOverLimit()) return "textarea-danger";
+        if (IsNearLimit()) return "textarea-warning";
+        return "";
+    }
+
+    private string GetFormattedMacroLength()
+    {
+        if (parsedMacro == null) return "0";
+        var formatted = parsedMacro.GetFormattedMacro().Length;
+        return formatted.ToString();
+    }
+
+    private void ParseMacro()
+    {
+        try
+        {
+            // Update macro text from the textarea
+            macroText = macroText.Trim();
+            
+            // Parse the macro
+            parsedMacro = parser.Parse(macroText);
+            
+            // Preserve the name and icon from the UI
+            parsedMacro.Name = macro.Name;
+            parsedMacro.Icon = macro.Icon;
+            
+            // Validate the macro
+            validationErrors = parser.ValidateMacro(parsedMacro);
+            
+            // Also validate the macro object itself
+            var macroErrors = parsedMacro.Validate();
+            validationErrors.AddRange(macroErrors);
+            
+            // Add character limit validation
+            var formattedLength = parsedMacro.GetFormattedMacro().Length;
+            if (formattedLength > WOW_MACRO_LIMIT)
+            {
+                validationErrors.Add($"Macro exceeds WoW's 255 character limit ({formattedLength} characters). Use the 'Trim to 255' button to shorten it.");
+            }
+        }
+        catch (Exception ex)
+        {
+            validationErrors.Clear();
+            validationErrors.Add($"Parsing error: {ex.Message}");
+            parsedMacro = null;
+        }
+    }
+
+    private async Task CopyToClipboard()
+    {
+        if (parsedMacro != null)
+        {
+            var formattedMacro = parsedMacro.GetFormattedMacro();
+            await JS.InvokeVoidAsync("navigator.clipboard.writeText", formattedMacro);
+        }
+    }
+
+    private void ClearMacro()
+    {
+        macro = new Macro();
+        macroText = "";
+        parsedMacro = null;
+        validationErrors.Clear();
+    }
+} 

@@ -1,0 +1,373 @@
+/* WoW Theme CSS - Inspired by WoWhead and WoW websites */
+
+:root {
+    --wow-gold: #ffd100;
+    --wow-gold-dark: #cc9e00;
+    --wow-gold-light: #ffe066;
+    --wow-blue: #0070dd;
+    --wow-blue-dark: #0055aa;
+    --wow-green: #1eff00;
+    --wow-red: #ff0000;
+    --wow-purple: #a335ee;
+    --wow-orange: #ff7d0a;
+    --wow-gray-dark: #1a1a1a;
+    --wow-gray-medium: #2d2d2d;
+    --wow-gray-light: #404040;
+    --wow-text-light: #ffffff;
+    --wow-text-gray: #cccccc;
+    --wow-border: #4a4a4a;
+}
+
+/* Global Styles */
+body {
+    background: linear-gradient(135deg, #0f1419 0%, #1a1a1a 50%, #0f1419 100%);
+    color: var(--wow-text-light);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Page Layout */
+.page {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1;
+    width: 100%;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Cinzel', 'Times New Roman', serif;
+    color: var(--wow-gold);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.display-4 {
+    font-size: 3.5rem;
+    font-weight: bold;
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.9);
+}
+
+/* Top Row Header - More specific to override Bootstrap */
+.top-row {
+    background: linear-gradient(90deg, var(--wow-gray-dark) 0%, var(--wow-gray-medium) 100%) !important;
+    border-bottom: 2px solid var(--wow-gold) !important;
+    padding: 1rem 2rem !important;
+    box-shadow: 0 2px 10px rgba(255, 209, 0, 0.2) !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    text-align: center !important;
+    width: 100% !important;
+}
+
+.wow-header {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    justify-content: center !important;
+    width: 100% !important;
+    text-align: center !important;
+}
+
+.wow-icon {
+    font-size: 1.5rem;
+    filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.8));
+}
+
+.wow-text {
+    color: var(--wow-gold) !important;
+    font-family: 'Cinzel', 'Times New Roman', serif !important;
+    font-weight: bold !important;
+    font-size: 1.2rem !important;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8) !important;
+    text-align: center !important;
+}
+
+/* Cards */
+.card {
+    background: linear-gradient(135deg, var(--wow-gray-medium) 0%, var(--wow-gray-light) 100%);
+    border: 1px solid var(--wow-border);
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+}
+
+.card-header {
+    background: linear-gradient(90deg, var(--wow-gray-dark) 0%, var(--wow-gray-medium) 100%);
+    border-bottom: 2px solid var(--wow-gold);
+    color: var(--wow-gold);
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.card-body {
+    color: var(--wow-text-light);
+}
+
+/* Buttons */
+.btn {
+    border-radius: 6px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--wow-blue) 0%, var(--wow-blue-dark) 100%);
+    border-color: var(--wow-blue);
+    color: white;
+    box-shadow: 0 2px 8px rgba(0, 112, 221, 0.4);
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, var(--wow-blue-dark) 0%, var(--wow-blue) 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 112, 221, 0.6);
+}
+
+.btn-success {
+    background: linear-gradient(135deg, var(--wow-green) 0%, #00cc00 100%);
+    border-color: var(--wow-green);
+    color: black;
+    box-shadow: 0 2px 8px rgba(30, 255, 0, 0.4);
+}
+
+.btn-success:hover {
+    background: linear-gradient(135deg, #00cc00 0%, var(--wow-green) 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(30, 255, 0, 0.6);
+}
+
+.btn-secondary {
+    background: linear-gradient(135deg, var(--wow-gray-light) 0%, var(--wow-gray-medium) 100%);
+    border-color: var(--wow-gray-light);
+    color: var(--wow-text-light);
+}
+
+.btn-secondary:hover {
+    background: linear-gradient(135deg, var(--wow-gray-medium) 0%, var(--wow-gray-light) 100%);
+    transform: translateY(-2px);
+}
+
+/* Form Controls */
+.form-control {
+    background-color: var(--wow-gray-dark);
+    border: 2px solid var(--wow-border);
+    color: var(--wow-text-light);
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    background-color: var(--wow-gray-medium);
+    border-color: var(--wow-gold);
+    box-shadow: 0 0 0 0.2rem rgba(255, 209, 0, 0.25);
+    color: var(--wow-text-light);
+}
+
+.form-control::placeholder {
+    color: var(--wow-text-gray);
+}
+
+.form-label {
+    color: var(--wow-gold);
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* Alerts */
+.alert {
+    border-radius: 8px;
+    border: 2px solid;
+    font-weight: bold;
+}
+
+.alert-danger {
+    background: linear-gradient(135deg, rgba(255, 0, 0, 0.1) 0%, rgba(255, 0, 0, 0.2) 100%);
+    border-color: var(--wow-red);
+    color: #ffcccc;
+}
+
+.alert-success {
+    background: linear-gradient(135deg, rgba(30, 255, 0, 0.1) 0%, rgba(30, 255, 0, 0.2) 100%);
+    border-color: var(--wow-green);
+    color: #ccffcc;
+}
+
+/* Badges */
+.badge {
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-radius: 4px;
+}
+
+.bg-info {
+    background: linear-gradient(135deg, var(--wow-blue) 0%, var(--wow-blue-dark) 100%) !important;
+}
+
+.bg-primary {
+    background: linear-gradient(135deg, var(--wow-purple) 0%, #7b2cbf 100%) !important;
+}
+
+.bg-secondary {
+    background: linear-gradient(135deg, var(--wow-gray-light) 0%, var(--wow-gray-medium) 100%) !important;
+}
+
+.bg-warning {
+    background: linear-gradient(135deg, var(--wow-orange) 0%, #cc6600 100%) !important;
+    color: white !important;
+}
+
+/* Code blocks - Fixed text color issues */
+pre {
+    background: var(--wow-gray-dark) !important;
+    border: 1px solid var(--wow-border) !important;
+    border-radius: 6px !important;
+    color: var(--wow-text-light) !important;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace !important;
+}
+
+pre code {
+    color: var(--wow-text-light) !important;
+    background-color: transparent !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+}
+
+code {
+    color: var(--wow-gold);
+    background-color: rgba(255, 209, 0, 0.1);
+    padding: 2px 4px;
+    border-radius: 3px;
+}
+
+/* Formatted macro output */
+.formatted-macro pre {
+    background: var(--wow-gray-dark) !important;
+    color: var(--wow-text-light) !important;
+}
+
+.formatted-macro pre code {
+    color: var(--wow-text-light) !important;
+    background-color: transparent !important;
+}
+
+/* Override Bootstrap's bg-light class for code blocks */
+.bg-light {
+    background-color: var(--wow-gray-dark) !important;
+    color: var(--wow-text-light) !important;
+}
+
+/* Macro structure styling */
+.macro-structure {
+    background: var(--wow-gray-dark);
+    border: 1px solid var(--wow-border);
+    border-radius: 6px;
+    color: var(--wow-text-light);
+}
+
+.macro-line {
+    border-bottom: 1px solid var(--wow-border);
+    padding: 0.5rem;
+    transition: background-color 0.3s ease;
+    color: var(--wow-text-light);
+}
+
+.macro-line:hover {
+    background-color: rgba(255, 209, 0, 0.05);
+}
+
+.macro-line:last-child {
+    border-bottom: none;
+}
+
+.conditional-info {
+    margin-top: 0.25rem;
+    padding-left: 1rem;
+    color: var(--wow-text-gray);
+    font-style: italic;
+}
+
+/* Ensure code in macro-structure and macro-line is light */
+.macro-structure code,
+.macro-line code {
+    color: var(--wow-text-light) !important;
+    background: none !important;
+}
+
+/* Jumbotron */
+.jumbotron {
+    background: linear-gradient(135deg, rgba(255, 209, 0, 0.05) 0%, rgba(0, 112, 221, 0.05) 100%);
+    border: 2px solid var(--wow-gold);
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(255, 209, 0, 0.2);
+}
+
+/* Icons */
+.bi {
+    color: var(--wow-gold);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--wow-gray-dark);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--wow-gold);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--wow-gold-light);
+}
+
+/* Animations */
+@keyframes glow {
+    0% { box-shadow: 0 0 5px var(--wow-gold); }
+    50% { box-shadow: 0 0 20px var(--wow-gold), 0 0 30px var(--wow-gold); }
+    100% { box-shadow: 0 0 5px var(--wow-gold); }
+}
+
+/* Subtle hover effect for cards */
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+    transition: all 0.3s ease;
+}
+
+/* Removed the card hover glow effect for a cleaner look */
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .display-4 {
+        font-size: 2.5rem;
+    }
+    
+    .card {
+        margin-bottom: 1rem;
+    }
+    
+    .wow-text {
+        font-size: 1rem;
+    }
+    
+    .wow-icon {
+        font-size: 1.2rem;
+    }
+    
+    .top-row {
+        padding: 1rem;
+    }
+} 

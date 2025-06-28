@@ -1,0 +1,65 @@
+﻿@page "/"
+
+<PageTitle>EasyWoWMacro - World of Warcraft Macro Editor</PageTitle>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="jumbotron text-center py-5">
+                <h1 class="display-4">EasyWoWMacro</h1>
+                <p class="lead">Create and edit World of Warcraft macros with validation and a user-friendly interface</p>
+                <hr class="my-4">
+                <p>Build complex macros with conditionals, validate your syntax, and get instant feedback on your macro structure.</p>
+                <a class="btn btn-primary btn-lg" href="macro-editor" role="button">Start Creating Macros</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-check-circle text-success" style="font-size: 3rem;"></i>
+                    <h5 class="card-title mt-3">Real-time Validation</h5>
+                    <p class="card-text">Get instant feedback on your macro syntax and structure. Our parser validates commands, conditionals, and arguments against WoW's macro system.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-eye text-info" style="font-size: 3rem;"></i>
+                    <h5 class="card-title mt-3">Visual Structure</h5>
+                    <p class="card-text">See your macro broken down into its components - directives, commands, conditionals, and arguments - for better understanding and debugging.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-clipboard text-warning" style="font-size: 3rem;"></i>
+                    <h5 class="card-title mt-3">Easy Export</h5>
+                    <p class="card-text">Copy your validated macro directly to your clipboard with one click, ready to paste into World of Warcraft's macro interface.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Example Macro</h4>
+                </div>
+                <div class="card-body">
+                    <p>Here's an example of a complex macro that the editor can parse and validate:</p>
+                    <pre class="bg-light p-3 rounded"><code>#showtooltip
+/cast [@@target,harm,nodead] Smite; [@@target,help,nodead] Flash Heal
+/use [combat] Healthstone
+/say [combat] Using Healthstone!</code></pre>
+                    <p class="mt-3">This macro shows how to use conditionals to cast different spells based on target type, use items in combat, and send chat messages.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
