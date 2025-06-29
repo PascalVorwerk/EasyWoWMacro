@@ -1,0 +1,256 @@
+<!-- Debug: Modal visibility state: @IsVisible -->
+
+@if (IsVisible)
+{
+    <!-- Debug: Modal is visible, rendering modal -->
+    <div class="modal fade show" id="conditionalModal" tabindex="-1" aria-labelledby="conditionalModalLabel" aria-hidden="false" style="display: block; background-color: rgba(0,0,0,0.5);">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="conditionalModalLabel">Add Conditional Group</h5>
+                    <button type="button" class="btn-close" @onclick="OnCancel" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Search Conditionals</label>
+                                <input type="text" class="form-control" @bind="SearchTerm" placeholder="Type to search...">
+                            </div>
+
+                            <div class="accordion" id="conditionalAccordion">
+                                <!-- Modifiers -->
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button @(GetAccordionClass("modifiers"))" type="button" data-bs-toggle="collapse" data-bs-target="#modifiersCollapse">
+                                            Modifiers
+                                        </button>
+                                    </h2>
+                                    <div id="modifiersCollapse" class="accordion-collapse collapse @(GetAccordionShowClass("modifiers"))">
+                                        <div class="accordion-body">
+                                            @foreach (var conditional in GetFilteredConditionals(WoWMacroConstants.Conditionals.Modifiers))
+                                            {
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox"
+                                                           @onchange="(e) => OnConditionalToggle(conditional, e.Value)"
+                                                           checked="@IsConditionalSelected(conditional)">
+                                                    <label class="form-check-label">
+                                                        @conditional
+                                                    </label>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Combat & State -->
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button @(GetAccordionClass("combat"))" type="button" data-bs-toggle="collapse" data-bs-target="#combatCollapse">
+                                            Combat & State
+                                        </button>
+                                    </h2>
+                                    <div id="combatCollapse" class="accordion-collapse collapse @(GetAccordionShowClass("combat"))">
+                                        <div class="accordion-body">
+                                            @foreach (var conditional in GetFilteredConditionals(WoWMacroConstants.Conditionals.CombatAndState))
+                                            {
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox"
+                                                           @onchange="(e) => OnConditionalToggle(conditional, e.Value)"
+                                                           checked="@IsConditionalSelected(conditional)">
+                                                    <label class="form-check-label">
+                                                        @conditional
+                                                    </label>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Targets -->
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button @(GetAccordionClass("targets"))" type="button" data-bs-toggle="collapse" data-bs-target="#targetsCollapse">
+                                            Targets
+                                        </button>
+                                    </h2>
+                                    <div id="targetsCollapse" class="accordion-collapse collapse @(GetAccordionShowClass("targets"))">
+                                        <div class="accordion-body">
+                                            @foreach (var conditional in GetFilteredConditionals(WoWMacroConstants.Conditionals.Targets))
+                                            {
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox"
+                                                           @onchange="(e) => OnConditionalToggle(conditional, e.Value)"
+                                                           checked="@IsConditionalSelected(conditional)">
+                                                    <label class="form-check-label">
+                                                        @conditional
+                                                    </label>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Forms -->
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button @(GetAccordionClass("forms"))" type="button" data-bs-toggle="collapse" data-bs-target="#formsCollapse">
+                                            Forms
+                                        </button>
+                                    </h2>
+                                    <div id="formsCollapse" class="accordion-collapse collapse @(GetAccordionShowClass("forms"))">
+                                        <div class="accordion-body">
+                                            @foreach (var conditional in GetFilteredConditionals(WoWMacroConstants.Conditionals.Forms))
+                                            {
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox"
+                                                           @onchange="(e) => OnConditionalToggle(conditional, e.Value)"
+                                                           checked="@IsConditionalSelected(conditional)">
+                                                    <label class="form-check-label">
+                                                        @conditional
+                                                    </label>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Equipment -->
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button @(GetAccordionClass("equipment"))" type="button" data-bs-toggle="collapse" data-bs-target="#equipmentCollapse">
+                                            Equipment
+                                        </button>
+                                    </h2>
+                                    <div id="equipmentCollapse" class="accordion-collapse collapse @(GetAccordionShowClass("equipment"))">
+                                        <div class="accordion-body">
+                                            @foreach (var conditional in GetFilteredConditionals(WoWMacroConstants.Conditionals.Equipment))
+                                            {
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox"
+                                                           @onchange="(e) => OnConditionalToggle(conditional, e.Value)"
+                                                           checked="@IsConditionalSelected(conditional)">
+                                                    <label class="form-check-label">
+                                                        @conditional
+                                                    </label>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Action Bars -->
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button @(GetAccordionClass("actionbars"))" type="button" data-bs-toggle="collapse" data-bs-target="#actionbarsCollapse">
+                                            Action Bars
+                                        </button>
+                                    </h2>
+                                    <div id="actionbarsCollapse" class="accordion-collapse collapse @(GetAccordionShowClass("actionbars"))">
+                                        <div class="accordion-body">
+                                            @foreach (var conditional in GetFilteredConditionals(WoWMacroConstants.Conditionals.ActionBars))
+                                            {
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox"
+                                                           @onchange="(e) => OnConditionalToggle(conditional, e.Value)"
+                                                           checked="@IsConditionalSelected(conditional)">
+                                                    <label class="form-check-label">
+                                                        @conditional
+                                                    </label>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Buttons -->
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button @(GetAccordionClass("buttons"))" type="button" data-bs-toggle="collapse" data-bs-target="#buttonsCollapse">
+                                            Buttons
+                                        </button>
+                                    </h2>
+                                    <div id="buttonsCollapse" class="accordion-collapse collapse @(GetAccordionShowClass("buttons"))">
+                                        <div class="accordion-body">
+                                            @foreach (var conditional in GetFilteredConditionals(WoWMacroConstants.Conditionals.Buttons))
+                                            {
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox"
+                                                           @onchange="(e) => OnConditionalToggle(conditional, e.Value)"
+                                                           checked="@IsConditionalSelected(conditional)">
+                                                    <label class="form-check-label">
+                                                        @conditional
+                                                    </label>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- UI State -->
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button @(GetAccordionClass("uistate"))" type="button" data-bs-toggle="collapse" data-bs-target="#uistateCollapse">
+                                            UI State
+                                        </button>
+                                    </h2>
+                                    <div id="uistateCollapse" class="accordion-collapse collapse @(GetAccordionShowClass("uistate"))">
+                                        <div class="accordion-body">
+                                            @foreach (var conditional in GetFilteredConditionals(WoWMacroConstants.Conditionals.UIState))
+                                            {
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox"
+                                                           @onchange="(e) => OnConditionalToggle(conditional, e.Value)"
+                                                           checked="@IsConditionalSelected(conditional)">
+                                                    <label class="form-check-label">
+                                                        @conditional
+                                                    </label>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <h6>Current Group</h6>
+                            <div class="border rounded p-3 mb-3" style="min-height: 200px;">
+                                @if (SelectedConditionals.Count == 0)
+                                {
+                                    <p class="text-muted">No conditionals selected</p>
+                                }
+                                else
+                                {
+                                    @foreach (var conditional in SelectedConditionals)
+                                    {
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span class="badge bg-primary">@conditional</span>
+                                            <button type="button" class="btn btn-sm btn-outline-danger" @onclick="() => RemoveConditional(conditional)">
+                                                ×
+                                            </button>
+                                        </div>
+                                    }
+                                }
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <button type="button" class="btn btn-success" @onclick="OnSave" disabled="@(SelectedConditionals.Count == 0)">
+                                    Save Conditional Group
+                                </button>
+                                <button type="button" class="btn btn-secondary" @onclick="OnCancel">
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show"></div>
+}
+else
+{
+    <!-- Debug: Modal is NOT visible -->
+}

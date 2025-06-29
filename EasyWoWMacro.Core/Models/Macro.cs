@@ -1,6 +1,4 @@
-using System.Collections.Generic;
 using EasyWoWMacro.Core.Parsing;
-using EasyWoWMacro.Core.Validation;
 
 namespace EasyWoWMacro.Core.Models;
 

@@ -1,0 +1,130 @@
+.building-block {
+    display: inline-block;
+    margin: 2px;
+    padding: 4px 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+}
+
+.building-block:hover {
+    background-color: #f8f9fa;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.building-block:active {
+    transform: translateY(0);
+}
+
+.building-block-type {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    border: 2px dashed #dee2e6;
+    border-radius: 8px;
+    cursor: grab;
+    transition: all 0.2s ease;
+    background-color: #f8f9fa;
+    min-height: 80px;
+    text-align: center;
+}
+
+.building-block-type:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.building-block-type:active {
+    cursor: grabbing;
+    transform: translateY(0);
+}
+
+/* Color-coded building block types */
+.directive-block {
+    border-color: #17a2b8;
+    background-color: #e7f8fa;
+}
+
+.directive-block:hover {
+    border-color: #138496;
+    background-color: #d1ecf1;
+}
+
+.directive-block .building-block-content i {
+    color: #17a2b8;
+}
+
+.command-block {
+    border-color: #0d6efd;
+    background-color: #e7f3ff;
+}
+
+.command-block:hover {
+    border-color: #0b5ed7;
+    background-color: #cce7ff;
+}
+
+.command-block .building-block-content i {
+    color: #0d6efd;
+}
+
+.conditional-block {
+    border-color: #ffc107;
+    background-color: #fff8e1;
+}
+
+.conditional-block:hover {
+    border-color: #e0a800;
+    background-color: #fff3cd;
+}
+
+.conditional-block .building-block-content i {
+    color: #ffc107;
+}
+
+.argument-block {
+    border-color: #6c757d;
+    background-color: #f8f9fa;
+}
+
+.argument-block:hover {
+    border-color: #5a6268;
+    background-color: #e9ecef;
+}
+
+.argument-block .building-block-content i {
+    color: #6c757d;
+}
+
+.building-block-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.building-block-content i {
+    font-size: 1.5rem;
+}
+
+.building-block-content span {
+    font-weight: 600;
+    color: #495057;
+}
+
+.building-block-content small {
+    font-size: 0.75rem;
+}
+
+/* Drag and drop visual feedback */
+.building-block-type[draggable="true"]:hover {
+    border-style: solid;
+}
+
+.building-block-type[draggable="true"]:active {
+    opacity: 0.7;
+} 

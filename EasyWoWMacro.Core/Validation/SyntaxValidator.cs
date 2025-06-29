@@ -275,7 +275,7 @@ public static class SyntaxValidator
         
         // Check if it's a known conditional
         var simpleCondition = condition.ToLowerInvariant();
-        if (WoWMacroConstants.KnownConditionals.Contains(simpleCondition))
+        if (WoWMacroConstants.Conditionals.AllConditionals.Contains(simpleCondition, StringComparer.OrdinalIgnoreCase))
             return true;
             
         // Check for target conditions (@target, @focus, etc.)

@@ -1,0 +1,77 @@
+@page "/macro-builder"
+@using EasyWoWMacro.Web.Pages.Components
+
+<PageTitle>WoW Macro Builder - Drag & Drop Macro Creator | EasyWoWMacro</PageTitle>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Visual Macro Builder</h3>
+                    <p class="mb-0">Drag and drop building blocks to create your World of Warcraft macro</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <!-- Building Blocks Panel -->
+        <div class="col-md-3">
+            <BuildingBlocks />
+        </div>
+
+        <!-- Macro Construction Area -->
+        <div class="col-md-6">
+            <MacroConstruction
+                @key="@GetMacroKey()"
+                MacroLines="@_macroLines"
+                OnAddLine="@(() => AddNewLine())"
+                OnClearMacro="@(() => ClearMacro())"
+                OnRemoveBlock="@(args => RemoveBlock(args.lineIndex, args.block))"
+                OnRemoveLine="@(lineIndex => RemoveLine(lineIndex))"
+                OnDropOnLineWithBlockType="@(args => OnDropOnLineWithBlockType(args.lineIndex, args.blockType))"
+                OnEditBlock="@(args => EditBlock(args.lineIndex, args.blockIndex, args.type))" />
+        </div>
+
+        <!-- Preview and Export -->
+        <div class="col-md-3">
+            <PreviewExport
+                MacroName="@_macroName"
+                GeneratedMacro="@GetGeneratedMacro()"
+                ValidationErrors="_validationErrors"
+                IsValid="_isValid"
+                OnCopyToClipboard="@(() => CopyToClipboard())"
+                OnValidateMacro="@(() => ValidateMacro())" />
+        </div>
+    </div>
+
+    <!-- Quick Templates -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <QuickTemplates OnLoadTemplate="@(templateName => LoadTemplate(templateName))" />
+        </div>
+    </div>
+</div>
+
+<!-- Configuration Modals -->
+<DirectiveModal
+    IsVisible="@_showDirectiveModal"
+    OnSelectCallback="@SaveEditDirective"
+    OnCancelCallback="@HideDirectiveModal" />
+
+<CommandModal
+    IsVisible="@_showCommandModal"
+    OnSelectCallback="@SaveEditCommand"
+    OnCancelCallback="@HideCommandModal" />
+
+<ConditionalModal
+    IsVisible="@_showConditionalModal"
+    SelectedConditionals="@_currentConditionalGroup"
+    OnSaveCallback="@SaveEditConditionalGroup"
+    OnCancelCallback="@HideConditionalModal" />
+
+<ArgumentModal
+    IsVisible="@_showArgumentModal"
+    OnSaveCallback="@SaveEditArgument"
+    OnCancelCallback="@HideArgumentModal" />

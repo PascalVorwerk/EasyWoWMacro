@@ -1,0 +1,41 @@
+@if (IsVisible)
+{
+    <div class="modal fade show" id="directiveModal" tabindex="-1" aria-labelledby="directiveModalLabel" aria-hidden="false" style="display: block;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="directiveModalLabel">Select Directive</h5>
+                    <button type="button" class="btn-close" @onclick="OnCancel" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Search Directives</label>
+                        <input type="text" class="form-control" @bind="SearchTerm" placeholder="Type to search...">
+                    </div>
+                    
+                    <div class="row">
+                        @foreach (var directive in GetFilteredDirectives())
+                        {
+                            <div class="col-md-6 mb-2">
+                                <button class="btn btn-outline-secondary w-100" @onclick="() => OnSelectDirective(directive)">
+                                    @directive
+                                </button>
+                            </div>
+                        }
+                    </div>
+                    
+                    @if (GetFilteredDirectives().Count() == 0)
+                    {
+                        <div class="text-center text-muted">
+                            <p>No directives found matching your search.</p>
+                        </div>
+                    }
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="OnCancel">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show"></div>
+} 

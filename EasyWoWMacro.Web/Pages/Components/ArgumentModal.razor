@@ -1,0 +1,41 @@
+@if (IsVisible)
+{
+    <div class="modal fade show" id="argumentModal" tabindex="-1" aria-labelledby="argumentModalLabel" aria-hidden="false" style="display: block;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="argumentModalLabel">Enter Argument</h5>
+                    <button type="button" class="btn-close" @onclick="OnCancel" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Custom Argument</label>
+                        <input type="text" class="form-control" @bind="ArgumentValue" placeholder="Enter argument value..." @onkeydown="HandleKeyDown">
+                        <div class="form-text">Enter a spell name, target, or other argument value.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Common Arguments</label>
+                        <div class="row">
+                            @foreach (var commonArg in CommonArguments)
+                            {
+                                <div class="col-md-6 mb-2">
+                                    <button class="btn btn-outline-info btn-sm w-100" @onclick="() => SelectCommonArgument(commonArg)">
+                                        @commonArg
+                                    </button>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="OnCancel">Cancel</button>
+                    <button type="button" class="btn btn-primary" @onclick="OnSave" disabled="@string.IsNullOrWhiteSpace(ArgumentValue)">
+                        Save
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show"></div>
+}

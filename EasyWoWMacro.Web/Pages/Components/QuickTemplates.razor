@@ -1,0 +1,29 @@
+<div class="card">
+    <div class="card-header">
+        <h5>Quick Templates</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-3 mb-2">
+                <button class="btn btn-outline-primary w-100" @onclick="@(() => OnLoadTemplate.InvokeAsync("mouseover-heal"))">
+                    Mouseover Heal
+                </button>
+            </div>
+            <div class="col-md-3 mb-2">
+                <button class="btn btn-outline-primary w-100" @onclick="@(() => OnLoadTemplate.InvokeAsync("combat-item"))">
+                    Combat Item
+                </button>
+            </div>
+            <div class="col-md-3 mb-2">
+                <button class="btn btn-outline-primary w-100" @onclick="@(() => OnLoadTemplate.InvokeAsync("modifier-spell"))">
+                    Modifier Spell
+                </button>
+            </div>
+            <div class="col-md-3 mb-2">
+                <button class="btn btn-outline-primary w-100" @onclick="@(() => OnLoadTemplate.InvokeAsync("target-switch"))">
+                    Target Switch
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

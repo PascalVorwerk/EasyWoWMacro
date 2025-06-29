@@ -1,5 +1,4 @@
 using EasyWoWMacro.Core.Models;
-using Xunit;
 
 namespace EasyWoWMacro.Tests;
 

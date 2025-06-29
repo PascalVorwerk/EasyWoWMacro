@@ -1,0 +1,60 @@
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5>Macro Construction</h5>
+        <div>
+            <button class="btn btn-sm btn-outline-secondary" @onclick="OnAddLine">Add Line</button>
+            <button class="btn btn-sm btn-outline-danger" @onclick="OnClearMacro">Clear All</button>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="macro-construction-area">
+            @for (int i = 0; i < MacroLines.Count; i++)
+            {
+                var lineIndex = i;
+                <div class="macro-line-container">
+
+                    <!-- Line Number -->
+                    <div class="line-number">@(lineIndex + 1)</div>
+
+                    <!-- Line Content -->
+                    <div class="line-content">
+                        @if (MacroLines[lineIndex].Count > 0)
+                        {
+                            @for (int j = 0; j < MacroLines[lineIndex].Count; j++)
+                            {
+                                var blockIndex = j;
+                                var block = MacroLines[lineIndex][blockIndex];
+                                var currentLineIndex = lineIndex;
+                                var currentBlockIndex = blockIndex;
+                                <div class="building-block"
+                                     @onclick="() => TestClick(currentLineIndex, currentBlockIndex, block.Type)">
+                                    <span class="badge @GetBlockClass(block.Type)">
+                                        @block.Content
+                                    </span>
+                                    <span class="remove-block" @onclick="() => OnRemoveBlock.InvokeAsync((currentLineIndex, block))" @onclick:stopPropagation>×</span>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <!-- Empty Line Drop Zone -->
+                            <div class="empty-line-drop-zone">
+                                <i class="bi bi-plus-circle"></i>
+                                <span>Drop building blocks here</span>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Line Actions (hover only) -->
+                    <div class="line-actions">
+                        <button class="btn btn-sm btn-outline-danger"
+                                @onclick="() => OnRemoveLine.InvokeAsync(lineIndex)"
+                                title="Remove line">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

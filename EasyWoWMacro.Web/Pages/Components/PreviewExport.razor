@@ -1,0 +1,49 @@
+<div class="card">
+    <div class="card-header">
+        <h5>Preview & Export</h5>
+    </div>
+    <div class="card-body">
+        <div class="mb-3">
+            <label class="form-label">Macro Name</label>
+            <input type="text" class="form-control" @bind="MacroName" placeholder="My Macro">
+        </div>
+        
+        <div class="mb-3">
+            <label class="form-label">Generated Macro</label>
+            <div class="character-counter @GetCharacterCounterClass()">
+                <small>@GetCharacterCount() / 255 characters</small>
+            </div>
+            <textarea class="form-control" rows="8" readonly>@GeneratedMacro</textarea>
+        </div>
+        
+        <div class="d-grid gap-2">
+            <button class="btn btn-success" @onclick="OnCopyToClipboard" disabled="@(string.IsNullOrEmpty(GeneratedMacro))">
+                Copy to Clipboard
+            </button>
+            <button class="btn btn-primary" @onclick="OnValidateMacro" disabled="@(string.IsNullOrEmpty(GeneratedMacro))">
+                Validate Macro
+            </button>
+        </div>
+        
+        @if (ValidationErrors.Count > 0)
+        {
+            <div class="alert alert-danger mt-3">
+                <h6>Validation Errors:</h6>
+                <ul class="mb-0">
+                    @foreach (var error in ValidationErrors)
+                    {
+                        <li>@error</li>
+                    }
+                </ul>
+            </div>
+        }
+        
+        @if (IsValid && !string.IsNullOrEmpty(GeneratedMacro))
+        {
+            <div class="alert alert-success mt-3">
+                <h6>✓ Macro is valid!</h6>
+                <p class="mb-0">Your macro is ready to use in World of Warcraft.</p>
+            </div>
+        }
+    </div>
+</div> 

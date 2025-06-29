@@ -1,6 +1,5 @@
 using EasyWoWMacro.Core.Models;
 using EasyWoWMacro.Core.Parsing;
-using Xunit;
 
 namespace EasyWoWMacro.Tests;
 

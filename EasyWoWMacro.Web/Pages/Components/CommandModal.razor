@@ -1,0 +1,41 @@
+@if (IsVisible)
+{
+    <div class="modal fade show" id="commandModal" tabindex="-1" aria-labelledby="commandModalLabel" aria-hidden="false" style="display: block;">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="commandModalLabel">Select Command</h5>
+                    <button type="button" class="btn-close" @onclick="OnCancel" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Search Commands</label>
+                        <input type="text" class="form-control" @bind="SearchTerm" placeholder="Type to search...">
+                    </div>
+                    
+                    <div class="row">
+                        @foreach (var command in GetFilteredCommands())
+                        {
+                            <div class="col-md-4 mb-2">
+                                <button class="btn btn-outline-primary w-100" @onclick="() => OnSelectCommand(command)">
+                                    @command
+                                </button>
+                            </div>
+                        }
+                    </div>
+                    
+                    @if (GetFilteredCommands().Count() == 0)
+                    {
+                        <div class="text-center text-muted">
+                            <p>No commands found matching your search.</p>
+                        </div>
+                    }
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="OnCancel">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show"></div>
+} 
