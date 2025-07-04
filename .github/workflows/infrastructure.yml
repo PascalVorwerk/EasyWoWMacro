@@ -39,7 +39,6 @@ jobs:
               --resource-group ${{ env.RESOURCE_GROUP_NAME }} \
               --template-file infrastructure/main.bicep \
               --parameters infrastructure/parameters.json
-        continue-on-error: true
 
   deploy-infrastructure:
     runs-on: ubuntu-latest
@@ -50,11 +49,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Setup Azure CLI
-        uses: azure/setup-azure-cli@v1
-        with:
-          version: latest
-          
       - name: Login to Azure
         uses: azure/login@v1
         with:
