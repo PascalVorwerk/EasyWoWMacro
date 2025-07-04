@@ -10,8 +10,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fcceae2f-7256-40d5-8bce-841b3c39236c" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.EasyWoWMacro/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.EasyWoWMacro/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EasyWoWMacro.Web/Pages/MacroEditor.razor" beforeDir="false" afterPath="$PROJECT_DIR$/EasyWoWMacro.Web/Pages/MacroEditor.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EasyWoWMacro.Web/Components/BuildingBlocks/ConditionalConfigurationModal.razor" beforeDir="false" afterPath="$PROJECT_DIR$/EasyWoWMacro.Web/Components/BuildingBlocks/ConditionalConfigurationModal.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EasyWoWMacro.Web/Components/BuildingBlocks/ConditionalConfigurationModal.razor.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EasyWoWMacro.Web/Components/BuildingBlocks/ConditionalConfigurationModal.razor.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EasyWoWMacro.Web/Pages/MacroEditor.razor.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EasyWoWMacro.Web/Pages/MacroEditor.razor.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
