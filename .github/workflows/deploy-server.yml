@@ -4,6 +4,10 @@
 name: Deploy Blazor Server to Azure
 
 on:
+  push:
+    branches: [ "master" ]
+    paths: [ "EasyWoWMacro.Web/**", "EasyWoWMacro.Core/**" ]
+  workflow_dispatch:
   workflow_run:
     workflows: ["Deploy Infrastructure"]
     types:

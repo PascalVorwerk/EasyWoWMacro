@@ -2,11 +2,10 @@
 name: Deploy Infrastructure
 
 on:
-  workflow_dispatch:
-
   push:
     branches: [ "master" ]
     paths: [ "infrastructure/**" ]
+  workflow_dispatch:
   
 
 env:
