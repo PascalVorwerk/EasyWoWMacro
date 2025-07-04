@@ -1,0 +1,83 @@
+@rendermode InteractiveServer
+@using EasyWoWMacro.Core.Models
+
+<div class="modal @(IsVisible ? "show" : "")" tabindex="-1" style="display: @(IsVisible ? "block" : "none")">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Configure Conditional Group</h5>
+                <button type="button" class="btn-close" @onclick="OnClose"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Select Conditions (multiple allowed)</label>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Basic Conditions</h6>
+                            @foreach (var condition in basicConditions)
+                            {
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" 
+                                           id="@condition" 
+                                           checked="@SelectedConditions.Contains(condition)"
+                                           @onchange="@(e => HandleConditionChange(condition, e))" />
+                                    <label class="form-check-label" for="@condition">
+                                        @condition
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Advanced Conditions</h6>
+                            @foreach (var condition in advancedConditions)
+                            {
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" 
+                                           id="@condition" 
+                                           checked="@SelectedConditions.Contains(condition)"
+                                           @onchange="@(e => HandleConditionChange(condition, e))" />
+                                    <label class="form-check-label" for="@condition">
+                                        @condition
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+                
+                @if (SelectedConditions.Contains("mod:") || SelectedConditions.Contains("nomod:"))
+                {
+                    <div class="mb-3">
+                        <label class="form-label">Modifier Key</label>
+                        <select class="form-select" @bind="selectedModifier">
+                            <option value="">Select modifier...</option>
+                            <option value="alt">Alt</option>
+                            <option value="ctrl">Ctrl</option>
+                            <option value="shift">Shift</option>
+                            <option value="alt,ctrl">Alt+Ctrl</option>
+                            <option value="alt,shift">Alt+Shift</option>
+                            <option value="ctrl,shift">Ctrl+Shift</option>
+                            <option value="alt,ctrl,shift">Alt+Ctrl+Shift</option>
+                        </select>
+                    </div>
+                }
+                
+                <div class="mb-3">
+                    <label class="form-label">Preview</label>
+                    <div class="form-control-plaintext bg-light">
+                        @GetConditionalPreview()
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" @onclick="OnClose">Cancel</button>
+                <button type="button" class="btn btn-primary" @onclick="HandleSave">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (IsVisible)
+{
+    <div class="modal-backdrop show"></div>
+} 
