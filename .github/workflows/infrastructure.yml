@@ -2,10 +2,12 @@
 name: Deploy Infrastructure
 
 on:
+  workflow_dispatch:
+  
   push:
     branches: [ "master" ]
     paths: [ "infrastructure/**" ]
-  workflow_dispatch:
+  
 
 env:
   RESOURCE_GROUP_NAME: EasyWoWMacro-RG
