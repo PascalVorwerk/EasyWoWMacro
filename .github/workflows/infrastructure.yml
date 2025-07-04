@@ -1,0 +1,92 @@
+# Infrastructure as Code deployment using Bicep
+name: Deploy Infrastructure
+
+on:
+  push:
+    branches: [ "master" ]
+    paths: [ "infrastructure/**" ]
+  pull_request:
+    branches: [ "master" ]
+    paths: [ "infrastructure/**" ]
+  workflow_dispatch:
+
+env:
+  RESOURCE_GROUP_NAME: EasyWoWMacro-RG
+  LOCATION: West Europe
+
+jobs:
+  validate-infrastructure:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 10.0.x
+          
+      - name: Setup Azure CLI
+        uses: azure/setup-azure-cli@v1
+        with:
+          version: latest
+          
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          
+      - name: Validate Bicep Template
+        run: |
+          az deployment group validate \
+            --resource-group ${{ env.RESOURCE_GROUP_NAME }} \
+            --template-file infrastructure/main.bicep \
+            --parameters infrastructure/parameters.json
+        continue-on-error: true
+
+  deploy-infrastructure:
+    runs-on: ubuntu-latest
+    needs: validate-infrastructure
+    if: github.ref == 'refs/heads/master'
+    environment: production
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Azure CLI
+        uses: azure/setup-azure-cli@v1
+        with:
+          version: latest
+          
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          
+      - name: Create Resource Group (if not exists)
+        run: |
+          az group create \
+            --name ${{ env.RESOURCE_GROUP_NAME }} \
+            --location ${{ env.LOCATION }} \
+            --output none
+        continue-on-error: true
+          
+      - name: Deploy Infrastructure
+        run: |
+          az deployment group create \
+            --resource-group ${{ env.RESOURCE_GROUP_NAME }} \
+            --template-file infrastructure/main.bicep \
+            --parameters infrastructure/parameters.json \
+            --mode Incremental
+            
+      - name: Get Deployment Outputs
+        run: |
+          echo "Web App Name: $(az deployment group show \
+            --resource-group ${{ env.RESOURCE_GROUP_NAME }} \
+            --name main \
+            --query 'properties.outputs.webAppName.value' \
+            --output tsv)"
+          echo "Web App URL: $(az deployment group show \
+            --resource-group ${{ env.RESOURCE_GROUP_NAME }} \
+            --name main \
+            --query 'properties.outputs.webAppUrl.value' \
+            --output tsv)" 

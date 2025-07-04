@@ -1,19 +1,39 @@
 using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.AspNetCore.Components.Server;
 using EasyWoWMacro.Web;
 
-var builder = WebAssemblyHostBuilder.CreateDefault(args);
-builder.RootComponents.Add<App>("#app");
-builder.RootComponents.Add<HeadOutlet>("head::after");
+var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+// Add services to the container
+builder.Services.AddRazorComponents()
+    .AddInteractiveServerComponents();
+
+// Add HttpClient for any API calls
+builder.Services.AddHttpClient();
 
 // Add error handling
 builder.Services.AddLogging();
 
 var app = builder.Build();
 
-// Configure error handling
-app.Services.GetRequiredService<ILogger<Program>>().LogInformation("Starting EasyWoWMacro WebAssembly application");
+// Configure the HTTP request pipeline
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Error");
+    app.UseHsts();
+}
 
-await app.RunAsync();
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+
+app.UseRouting();
+
+app.UseAntiforgery();
+
+app.MapRazorComponents<App>()
+    .AddInteractiveServerRenderMode();
+
+// Configure error handling
+app.Services.GetRequiredService<ILogger<Program>>().LogInformation("Starting EasyWoWMacro Blazor Server application");
+
+app.Run();
