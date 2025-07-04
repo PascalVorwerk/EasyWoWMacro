@@ -1,0 +1,147 @@
+.macro-editor {
+    padding: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    min-height: 400px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    padding: 24px 24px 16px 24px;
+    margin-top: 24px;
+    position: relative;
+}
+
+.macro-lines {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.editor-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.validation-panel {
+    padding: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #f8f9fa;
+    min-height: 400px;
+}
+
+.formatted-macro {
+    margin-top: 1rem;
+}
+
+.formatted-macro pre {
+    font-size: 0.875rem;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.copy-clipboard-btn {
+    color: #007bff;
+    font-size: 0.9rem;
+    background: #fff;
+    border: 1px solid #007bff;
+    outline: none;
+    box-shadow: none;
+    padding: 6px 12px;
+    margin-left: 0.5rem;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    text-decoration: none;
+    border-radius: 4px;
+    line-height: 1.2;
+    font-weight: 500;
+}
+.copy-clipboard-btn:hover {
+    color: #fff;
+    background: #007bff;
+    text-decoration: none;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 123, 255, 0.2);
+}
+.copy-clipboard-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(0, 123, 255, 0.2);
+}
+
+.copy-clipboard-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.copy-clipboard-btn.loading {
+    position: relative;
+    color: transparent;
+}
+
+.copy-clipboard-btn.loading::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 16px;
+    height: 16px;
+    margin: -8px 0 0 -8px;
+    border: 2px solid #007bff;
+    border-top: 2px solid transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.copy-toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    animation: slideInRight 0.3s ease-out;
+}
+
+.copy-toast-content {
+    background: #28a745;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+.copy-toast.fade-out {
+    animation: slideOutRight 0.3s ease-in forwards;
+} 

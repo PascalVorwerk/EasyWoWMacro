@@ -1,0 +1,78 @@
+.macro-line {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    margin: 4px 0;
+    border: 2px dashed #ccc;
+    border-radius: 4px;
+    min-height: 40px;
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.macro-line.drag-over {
+    border-color: #007bff;
+    background-color: rgba(0, 123, 255, 0.1);
+}
+
+.line-content {
+    flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+}
+
+.drop-zone-placeholder {
+    color: #999;
+    font-style: italic;
+    text-align: center;
+    width: 100%;
+}
+
+.delete-line {
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-left: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease;
+}
+
+.delete-line:hover {
+    background: #c82333;
+}
+
+.block-container {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.delete-block {
+    background: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    font-size: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease;
+    opacity: 0.7;
+}
+
+.delete-block:hover {
+    background: #5a6268;
+    opacity: 1;
+} 

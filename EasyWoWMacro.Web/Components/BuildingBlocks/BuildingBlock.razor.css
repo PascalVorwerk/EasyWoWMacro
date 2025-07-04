@@ -1,0 +1,30 @@
+.building-block {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: white;
+    cursor: move;
+    user-select: none;
+    transition: all 0.2s ease;
+}
+
+.building-block:hover {
+    background-color: #e9ecef;
+    transform: translateX(2px);
+}
+
+.building-block.command {
+    border-left: 4px solid #007bff;
+}
+
+.building-block.conditional {
+    border-left: 4px solid #28a745;
+}
+
+.building-block.directive {
+    border-left: 4px solid #dc3545;
+}
+
+.building-block.argument {
+    border-left: 4px solid #ffc107;
+} 
