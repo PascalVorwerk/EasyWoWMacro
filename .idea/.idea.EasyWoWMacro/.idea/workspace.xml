@@ -9,20 +9,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fcceae2f-7256-40d5-8bce-841b3c39236c" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.EasyWoWMacro/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.EasyWoWMacro/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AZURE_SETUP.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/DNS_SETUP.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/EasyWoWMacro.Core/Models/Macro.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EasyWoWMacro.Core/Models/Macro.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EasyWoWMacro.Tests/CommandValidatorTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EasyWoWMacro.Tests/CommandValidatorTests.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EasyWoWMacro.Tests/ConditionalValidatorTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EasyWoWMacro.Tests/ConditionalValidatorTests.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EasyWoWMacro.Tests/MacroParserTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EasyWoWMacro.Tests/MacroParserTests.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EasyWoWMacro.Web/Pages/MacroEditor.razor" beforeDir="false" afterPath="$PROJECT_DIR$/EasyWoWMacro.Web/Pages/MacroEditor.razor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EasyWoWMacro.Web/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EasyWoWMacro.Web/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/add-custom-domain.ps1" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/infrastructure/main.bicep" beforeDir="false" afterPath="$PROJECT_DIR$/infrastructure/main.bicep" afterDir="false" />
-    </list>
+    <list default="true" id="fcceae2f-7256-40d5-8bce-841b3c39236c" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -67,7 +54,7 @@
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "#1 on feat/new__deploy",
+    "git-widget-placeholder": "master",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
