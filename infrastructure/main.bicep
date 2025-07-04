@@ -25,9 +25,15 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2023-01-01' = {
   location: location
   sku: {
     name: appServicePlanSku
-    tier: appServicePlanSku == 'F1' ? 'Free' : 
-          appServicePlanSku == 'B1' ? 'Basic' : 
-          appServicePlanSku == 'S1' ? 'Standard' : 'Premium'
+    tier: if (appServicePlanSku == 'F1') {
+      'Free'
+    } else if (appServicePlanSku == 'B1') {
+      'Basic'
+    } else if (appServicePlanSku == 'S1') {
+      'Standard'
+    } else {
+      'Premium'
+    }
   }
   kind: 'linux'
   reserved: true
@@ -58,7 +64,8 @@ resource webApp 'Microsoft.Web/sites@2023-01-01' = {
 
 // Custom domain binding (if provided)
 resource customDomainBinding 'Microsoft.Web/sites/hostNameBindings@2023-01-01' = if (!empty(customDomain)) {
-  name: '${webApp.name}/${customDomain}'
+  parent: webApp
+  name: customDomain
   properties: {
     hostNameType: 'Verified'
   }
