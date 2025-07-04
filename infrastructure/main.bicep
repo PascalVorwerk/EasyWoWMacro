@@ -21,10 +21,10 @@ param httpsOnly bool = true
 
 // SKU to tier mapping
 var skuToTier = {
-  'F1': 'Free'
-  'B1': 'Basic'
-  'S1': 'Standard'
-  'P1': 'Premium'
+  F1: 'Free'
+  B1: 'Basic'
+  S1: 'Standard'
+  P1: 'Premium'
 }
 
 // App Service Plan
@@ -36,7 +36,9 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2023-01-01' = {
     tier: skuToTier[appServicePlanSku]
   }
   kind: 'linux'
-  reserved: true
+  properties: {
+    reserved: true
+  }
 }
 
 // Web App
