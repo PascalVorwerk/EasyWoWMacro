@@ -20,9 +20,7 @@ param customDomain string = 'www.easywowmacro.com'
 param httpsOnly bool = true
 
 // Determine the tier based on SKU
-var appServicePlanTier = appServicePlanSku == 'F1' ? 'Free' : 
-                         appServicePlanSku == 'B1' ? 'Basic' : 
-                         appServicePlanSku == 'S1' ? 'Standard' : 'Premium'
+var appServicePlanTier = appServicePlanSku == 'F1' ? 'Free' : appServicePlanSku == 'B1' ? 'Basic' : appServicePlanSku == 'S1' ? 'Standard' : 'Premium'
 
 // App Service Plan
 resource appServicePlan 'Microsoft.Web/serverfarms@2023-01-01' = {
