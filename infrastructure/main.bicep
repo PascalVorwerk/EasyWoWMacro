@@ -19,15 +19,18 @@ param customDomain string = 'www.easywowmacro.com'
 @description('Enable HTTPS only')
 param httpsOnly bool = true
 
+// Determine the tier based on SKU
+var appServicePlanTier = appServicePlanSku == 'F1' ? 'Free' : 
+                         appServicePlanSku == 'B1' ? 'Basic' : 
+                         appServicePlanSku == 'S1' ? 'Standard' : 'Premium'
+
 // App Service Plan
 resource appServicePlan 'Microsoft.Web/serverfarms@2023-01-01' = {
   name: '${webAppName}-Plan'
   location: location
   sku: {
     name: appServicePlanSku
-    tier: appServicePlanSku == 'F1' ? 'Free' : 
-          appServicePlanSku == 'B1' ? 'Basic' : 
-          appServicePlanSku == 'S1' ? 'Standard' : 'Premium'
+    tier: appServicePlanTier
   }
   kind: 'linux'
   reserved: true
