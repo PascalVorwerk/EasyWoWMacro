@@ -33,7 +33,7 @@ jobs:
       - name: Azure CLI - Validate Bicep Template
         uses: azure/cli@v2
         with:
-          azcliversion: '2.56.0'
+          azcliversion: '2.75.0'
           inlineScript: |
             az deployment group validate \
               --resource-group ${{ env.RESOURCE_GROUP_NAME }} \
