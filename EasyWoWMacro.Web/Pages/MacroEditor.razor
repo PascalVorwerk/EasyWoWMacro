@@ -1,135 +1,150 @@
 @page "/macro-editor"
-@using EasyWoWMacro.Core.Models
-@using EasyWoWMacro.Core.Parsing
+@rendermode InteractiveServer
 @inject IJSRuntime JS
 
 <PageTitle>Macro Editor</PageTitle>
 
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h3>Macro Editor</h3>
+@if (!RendererInfo.IsInteractive)
+{
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12 text-center py-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading editor...</span>
                 </div>
-                <div class="card-body">
-                    <div class="mb-3">
-                        <label for="macroName" class="form-label">Macro Name</label>
-                        <input type="text" class="form-control" id="macroName" @bind="macro.Name" placeholder="Enter macro name">
+                <p class="mt-3">Loading interactive editor...</p>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Macro Editor</h3>
                     </div>
-                    
-                    <div class="mb-3">
-                        <label for="macroIcon" class="form-label">Icon (optional)</label>
-                        <input type="text" class="form-control" id="macroIcon" @bind="macro.Icon" placeholder="e.g., spell_nature_healingtouch">
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="macroText" class="form-label">Macro Text</label>
-                        <div class="character-counter @GetCharacterCounterClass()">
-                            <span>@GetCharacterCount() / 255 characters</span>
-                            @if (IsOverLimit())
-                            {
-                                <span class="text-danger ms-2">⚠️ Exceeds limit</span>
-                            }
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="macroName" class="form-label">Macro Name</label>
+                            <input type="text" class="form-control" id="macroName" @bind="macro.Name" placeholder="Enter macro name">
                         </div>
-                        <textarea class="form-control @GetTextareaClass()" id="macroText" rows="10" @bind="macroText" 
-                                  placeholder="#showtooltip&#10;/cast [&#64;target,harm,nodead] Smite; [&#64;target,help,nodead] Flash Heal&#10;/use [combat] Healthstone"></textarea>
-                    </div>
-                    
-                    <div class="d-flex gap-2 flex-wrap">
-                        <button class="btn btn-primary" @onclick="ParseMacro">Parse & Validate</button>
-                        <button class="btn btn-success" @onclick="CopyToClipboard">Copy to Clipboard</button>
-                        <button class="btn btn-secondary" @onclick="ClearMacro">Clear</button>
+
+                        <div class="mb-3">
+                            <label for="macroIcon" class="form-label">Icon (optional)</label>
+                            <input type="text" class="form-control" id="macroIcon" @bind="macro.Icon" placeholder="e.g., spell_nature_healingtouch">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="macroText" class="form-label">Macro Text</label>
+                            <div class="character-counter @GetCharacterCounterClass()">
+                                <span>@GetCharacterCount() / 255 characters</span>
+                                @if (IsOverLimit())
+                                {
+                                    <span class="text-danger ms-2">⚠️ Exceeds limit</span>
+                                }
+                            </div>
+                            <textarea class="form-control @GetTextareaClass()" id="macroText" rows="10" @bind="macroText"
+                                      placeholder="#showtooltip&#10;/cast [&#64;target,harm,nodead] Smite; [&#64;target,help,nodead] Flash Heal&#10;/use [combat] Healthstone"></textarea>
+                        </div>
+
+                        <div class="d-flex gap-2 flex-wrap">
+                            <button class="btn btn-primary" @onclick="ParseMacro">Parse & Validate</button>
+                            <button class="btn btn-success" @onclick="CopyToClipboard">Copy to Clipboard</button>
+                            <button class="btn btn-secondary" @onclick="ClearMacro">Clear</button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h3>Validation & Preview</h3>
-                </div>
-                <div class="card-body">
-                    @if (validationErrors.Count > 0)
-                    {
-                        <div class="alert alert-danger">
-                            <h5>Validation Errors:</h5>
-                            <ul class="mb-0">
-                                @foreach (var error in validationErrors)
-                                {
-                                    <li>@error</li>
-                                }
-                            </ul>
-                        </div>
-                    }
-                    
-                    @if (parsedMacro != null && validationErrors.Count == 0)
-                    {
-                        <div class="alert alert-success">
-                            <h5>✓ Macro is valid!</h5>
-                            @if (!IsOverLimit())
-                            {
-                                <p class="mb-0">Character count: @GetFormattedMacroLength() / 255</p>
-                            }
-                        </div>
-                        
-                        <h5>Parsed Structure:</h5>
-                        <div class="macro-structure">
-                            @foreach (var line in parsedMacro.Lines)
-                            {
-                                <div class="macro-line">
-                                    @switch (line)
+
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Validation & Preview</h3>
+                    </div>
+                    <div class="card-body">
+                        @if (validationErrors.Count > 0)
+                        {
+                            <div class="alert alert-danger">
+                                <h5>Validation Errors:</h5>
+                                <ul class="mb-0">
+                                    @foreach (var error in validationErrors)
                                     {
-                                        case DirectiveLine d:
-                                            <span class="badge bg-info">Directive</span>
-                                            <code>@d.Directive @(d.Argument ?? "")</code>
-                                            break;
-                                        case CommandLine c:
-                                            <span class="badge bg-primary">Command</span>
-                                            <code>@c.Command</code>
-                                            @if (c.Arguments?.Count > 0)
-                                            {
-                                                <span class="text-muted">@string.Join(" ", c.Arguments.Select(a => a.Value))</span>
-                                            }
-                                            @if (c.Conditionals != null && c.Conditionals.ConditionSets.Count > 0)
-                                            {
-                                                <div class="conditional-info">
-                                                    <small class="text-muted">Conditionals (@c.Conditionals.ConditionSets.Count sets):</small>
-                                                    @foreach (var conditionSet in c.Conditionals.ConditionSets)
-                                                    {
-                                                        <div class="ms-2">
-                                                            <small class="text-muted">[@string.Join(",", conditionSet.Conditions.Select(cond => cond.ToString()))]</small>
-                                                        </div>
-                                                    }
-                                                </div>
-                                            }
-                                            break;
-                                        case CommentLine cm:
-                                            <span class="badge bg-secondary">Comment</span>
-                                            <code>; @cm.Comment</code>
-                                            break;
-                                        default:
-                                            <span class="badge bg-warning">Unknown</span>
-                                            <code>@line.RawText</code>
-                                            break;
+                                        <li>@error</li>
                                     }
-                                </div>
-                            }
-                        </div>
-                        
-                        <hr />
-                        
-                        <h5>Formatted Output:</h5>
-                        <div class="formatted-macro">
-                            <pre class="bg-light p-3 rounded"><code>@parsedMacro.GetFormattedMacro()</code></pre>
-                        </div>
-                    }
+                                </ul>
+                            </div>
+                        }
+
+                        @if (parsedMacro != null && validationErrors.Count == 0)
+                        {
+                            <div class="alert alert-success">
+                                <h5>✓ Macro is valid!</h5>
+                                @if (!IsOverLimit())
+                                {
+                                    <p class="mb-0">Character count: @GetFormattedMacroLength() / 255</p>
+                                }
+                            </div>
+
+                            <h5>Parsed Structure:</h5>
+                            <div class="macro-structure">
+                                @foreach (var line in parsedMacro.Lines)
+                                {
+                                    <div class="macro-line">
+                                        @switch (line)
+                                        {
+                                            case DirectiveLine d:
+                                                <span class="badge bg-info">Directive</span>
+                                                <code>@d.Directive @(d.Argument ?? "")</code>
+                                                break;
+                                            case CommandLine c:
+                                                <span class="badge bg-primary">Command</span>
+                                                <code>@c.Command</code>
+                                                @if (c.Arguments?.Count > 0)
+                                                {
+                                                    <span class="text-muted">@string.Join(" ", c.Arguments.Select(a => a.Value))</span>
+                                                }
+                                                @if (c.Conditionals != null && c.Conditionals.ConditionSets.Count > 0)
+                                                {
+                                                    <div class="conditional-info">
+                                                        <small class="text-muted">Conditionals (@c.Conditionals.ConditionSets.Count sets):</small>
+                                                        @foreach (var conditionSet in c.Conditionals.ConditionSets)
+                                                        {
+                                                            <div class="ms-2">
+                                                                <small class="text-muted">[@string.Join(",", conditionSet.Conditions.Select(cond => cond.ToString()))]</small>
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                }
+                                                break;
+                                            case CommentLine cm:
+                                                <span class="badge bg-secondary">Comment</span>
+                                                <code>; @cm.Comment</code>
+                                                break;
+                                            default:
+                                                <span class="badge bg-warning">Unknown</span>
+                                                <code>@line.RawText</code>
+                                                break;
+                                        }
+                                    </div>
+                                }
+                            </div>
+
+                            <hr />
+
+                            <h5>Formatted Output:</h5>
+                            <div class="formatted-macro">
+                                <pre class="bg-light p-3 rounded"><code>@parsedMacro.GetFormattedMacro()</code></pre>
+                            </div>
+                        }
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+}
 
 @code {
     private Macro macro = new();
@@ -143,7 +158,7 @@
     {
         // Set default macro text
         macroText = @"#showtooltip
-/cast [@@target,harm,nodead] Smite; [@@target,help,nodead] Flash Heal
+/cast [@target,harm,nodead] Smite; [@target,help,nodead] Flash Heal
 /use [combat] Healthstone";
     }
 
@@ -189,24 +204,24 @@
         {
             // Update macro text from the textarea
             macroText = macroText.Trim();
-            
+
             // Validate the macro text first (includes bracket validation)
             validationErrors = parser.ValidateMacroText(macroText);
-            
+
             // Only parse if there are no validation errors
             if (validationErrors.Count == 0)
             {
                 // Parse the macro
                 parsedMacro = parser.Parse(macroText);
-                
+
                 // Preserve the name and icon from the UI
                 parsedMacro.Name = macro.Name;
                 parsedMacro.Icon = macro.Icon;
-                
+
                 // Also validate the parsed macro object
                 var macroErrors = parsedMacro.Validate();
                 validationErrors.AddRange(macroErrors);
-                
+
                 // Add character limit validation
                 var formattedLength = parsedMacro.GetFormattedMacro().Length;
                 if (formattedLength > WOW_MACRO_LIMIT)
@@ -244,4 +259,4 @@
         parsedMacro = null;
         validationErrors.Clear();
     }
-} 
+}

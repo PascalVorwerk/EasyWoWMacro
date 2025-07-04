@@ -1,0 +1,92 @@
+# Infrastructure as Code deployment using Bicep
+name: Deploy Infrastructure
+
+on:
+  workflow_dispatch:
+  
+  push:
+    branches: [ "master" ]
+    paths: [ "infrastructure/**" ]
+  
+
+env:
+  RESOURCE_GROUP_NAME: EasyWoWMacro-RG
+  LOCATION: West Europe
+
+jobs:
+  validate-infrastructure:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+          
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          
+      - name: Azure CLI - Validate Bicep Template
+        uses: azure/cli@v2
+        with:
+          azcliversion: latest
+          inlineScript: |
+            az deployment group validate \
+              --resource-group ${{ env.RESOURCE_GROUP_NAME }} \
+              --template-file infrastructure/main.bicep \
+              --parameters infrastructure/parameters.json
+
+  deploy-infrastructure:
+    runs-on: ubuntu-latest
+    needs: validate-infrastructure
+    if: github.ref == 'refs/heads/master'
+    environment: production
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          
+      - name: Azure CLI - Create Resource Group (if not exists)
+        uses: azure/cli@v2
+        with:
+          azcliversion: latest
+          inlineScript: |
+            az group create \
+              --name ${{ env.RESOURCE_GROUP_NAME }} \
+              --location ${{ env.LOCATION }} \
+              --output none
+        continue-on-error: true
+          
+      - name: Azure CLI - Deploy Infrastructure
+        uses: azure/cli@v2
+        with:
+          azcliversion: latest
+          inlineScript: |
+            az deployment group create \
+              --resource-group ${{ env.RESOURCE_GROUP_NAME }} \
+              --template-file infrastructure/main.bicep \
+              --parameters infrastructure/parameters.json \
+              --mode Incremental
+            
+      - name: Azure CLI - Get Deployment Outputs
+        uses: azure/cli@v2
+        with:
+          azcliversion: latest
+          inlineScript: |
+            echo "Web App Name: $(az deployment group show \
+              --resource-group ${{ env.RESOURCE_GROUP_NAME }} \
+              --name main \
+              --query 'properties.outputs.webAppName.value' \
+              --output tsv)"
+            echo "Web App URL: $(az deployment group show \
+              --resource-group ${{ env.RESOURCE_GROUP_NAME }} \
+              --name main \
+              --query 'properties.outputs.webAppUrl.value' \
+              --output tsv)" 
