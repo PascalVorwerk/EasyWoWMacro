@@ -33,7 +33,7 @@ jobs:
       - name: Azure CLI - Validate Bicep Template
         uses: azure/cli@v2
         with:
-          azcliversion: '2.57.0'
+          azcliversion: '2.56.0'
           inlineScript: |
             az deployment group validate \
               --resource-group ${{ env.RESOURCE_GROUP_NAME }} \
@@ -57,7 +57,7 @@ jobs:
       - name: Azure CLI - Create Resource Group (if not exists)
         uses: azure/cli@v2
         with:
-          azcliversion: '2.55.0'
+          azcliversion: '2.56.0'
           inlineScript: |
             az group create \
               --name ${{ env.RESOURCE_GROUP_NAME }} \
@@ -68,7 +68,7 @@ jobs:
       - name: Azure CLI - Deploy Infrastructure
         uses: azure/cli@v2
         with:
-          azcliversion: '2.55.0'
+          azcliversion: '2.56.0'
           inlineScript: |
             az deployment group create \
               --resource-group ${{ env.RESOURCE_GROUP_NAME }} \
