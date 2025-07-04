@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Components.Server;
 using EasyWoWMacro.Web;
 
 var builder = WebApplication.CreateBuilder(args);

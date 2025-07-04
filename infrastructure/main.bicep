@@ -14,7 +14,7 @@ param appServicePlanSku string = 'B1'
 param runtime string = 'DOTNETCORE:9.0'
 
 @description('Custom domain name (optional)')
-param customDomain string = ''
+param customDomain string = 'www.easywowmacro.com'
 
 @description('Enable HTTPS only')
 param httpsOnly bool = true
@@ -72,31 +72,31 @@ resource customDomainBinding 'Microsoft.Web/sites/hostNameBindings@2023-01-01' =
 }
 
 // Application Insights (optional - uncomment if needed)
-// resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
-//   name: '${webAppName}-insights'
-//   location: location
-//   kind: 'web'
-//   properties: {
-//     Application_Type: 'web'
-//     WorkspaceResourceId: logAnalyticsWorkspace.id
-//   }
-// }
+resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
+  name: '${webAppName}-insights'
+  location: location
+  kind: 'web'
+  properties: {
+    Application_Type: 'web'
+    WorkspaceResourceId: logAnalyticsWorkspace.id
+  }
+}
 
 // Log Analytics Workspace (optional - uncomment if needed)
-// resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
-//   name: '${webAppName}-logs'
-//   location: location
-//   properties: {
-//     sku: {
-//       name: 'PerGB2018'
-//     }
-//     retentionInDays: 30
-//   }
-// }
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
+  name: '${webAppName}-logs'
+  location: location
+  properties: {
+    sku: {
+      name: 'PerGB2018'
+    }
+    retentionInDays: 30
+  }
+}
 
 // Outputs
 output webAppName string = webApp.name
 output webAppUrl string = 'https://${webApp.properties.defaultHostName}'
 output customDomainUrl string = !empty(customDomain) ? 'https://${customDomain}' : ''
 output resourceGroupName string = resourceGroupName
-output appServicePlanName string = appServicePlan.name 
+output appServicePlanName string = appServicePlan.name
