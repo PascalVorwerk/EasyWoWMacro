@@ -5,7 +5,7 @@ name: Deploy Blazor Server to Azure
 
 on:
   workflow_run:
-    workflows: ["Build and Test"]
+    workflows: ["Deploy Infrastructure"]
     types:
       - completed
 

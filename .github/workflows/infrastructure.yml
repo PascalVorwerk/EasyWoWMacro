@@ -5,9 +5,6 @@ on:
   push:
     branches: [ "master" ]
     paths: [ "infrastructure/**" ]
-  pull_request:
-    branches: [ "master" ]
-    paths: [ "infrastructure/**" ]
   workflow_dispatch:
 
 env:
