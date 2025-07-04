@@ -30,7 +30,7 @@ public partial class MacroLine : ComponentBase
         IsOver = false;
     }
 
-    private async Task HandleDrop(DragEventArgs args)
+    private void HandleDrop(DragEventArgs args)
     {
         IsOver = false;
         var blockType = DragDropService.DraggedBlockType;

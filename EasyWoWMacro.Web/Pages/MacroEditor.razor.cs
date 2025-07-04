@@ -18,9 +18,9 @@ public partial class MacroEditor : ComponentBase
     private Macro? parsedMacro;
     private List<string> validationErrors = new();
     private MacroParser parser = new();
-    private bool showCopyToast = false;
+    private bool showCopyToast;
     private string toastMessage = "";
-    private bool isCopying = false;
+    private bool isCopying;
 
     private void AddNewLine()
     {
