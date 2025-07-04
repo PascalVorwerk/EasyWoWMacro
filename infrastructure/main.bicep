@@ -25,15 +25,9 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2023-01-01' = {
   location: location
   sku: {
     name: appServicePlanSku
-    tier: if (appServicePlanSku == 'F1') {
-      'Free'
-    } else if (appServicePlanSku == 'B1') {
-      'Basic'
-    } else if (appServicePlanSku == 'S1') {
-      'Standard'
-    } else {
-      'Premium'
-    }
+    tier: appServicePlanSku == 'F1' ? 'Free' : 
+          appServicePlanSku == 'B1' ? 'Basic' : 
+          appServicePlanSku == 'S1' ? 'Standard' : 'Premium'
   }
   kind: 'linux'
   reserved: true
@@ -71,17 +65,6 @@ resource customDomainBinding 'Microsoft.Web/sites/hostNameBindings@2023-01-01' =
   }
 }
 
-// Application Insights (optional - uncomment if needed)
-resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
-  name: '${webAppName}-insights'
-  location: location
-  kind: 'web'
-  properties: {
-    Application_Type: 'web'
-    WorkspaceResourceId: logAnalyticsWorkspace.id
-  }
-}
-
 // Log Analytics Workspace (optional - uncomment if needed)
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
   name: '${webAppName}-logs'
@@ -91,6 +74,17 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10
       name: 'PerGB2018'
     }
     retentionInDays: 30
+  }
+}
+
+// Application Insights (optional - uncomment if needed)
+resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
+  name: '${webAppName}-insights'
+  location: location
+  kind: 'web'
+  properties: {
+    Application_Type: 'web'
+    WorkspaceResourceId: logAnalyticsWorkspace.id
   }
 }
 
