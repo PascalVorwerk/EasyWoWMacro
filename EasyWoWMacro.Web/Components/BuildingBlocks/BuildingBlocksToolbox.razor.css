@@ -1,0 +1,37 @@
+.building-blocks-toolbox {
+    border: 1px solid #ccc;
+    padding: 1rem;
+    border-radius: 4px;
+    background-color: #f8f9fa;
+}
+
+.blocks-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.block-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.25rem;
+}
+
+.block-content i {
+    font-size: 1.5rem;
+    margin-bottom: 0.25rem;
+}
+
+.block-content span {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.block-content small {
+    color: #6c757d;
+    font-size: 0.75rem;
+    line-height: 1.2;
+} 
