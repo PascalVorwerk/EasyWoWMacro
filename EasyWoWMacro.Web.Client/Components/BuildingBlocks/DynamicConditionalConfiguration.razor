@@ -1,0 +1,127 @@
+@using EasyWoWMacro.Web.Client.Models
+@rendermode InteractiveWebAssembly
+
+
+<div class="mb-3">
+    <label class="form-label">@ConfigurationInfo.Label</label>
+    @if (!string.IsNullOrEmpty(ConfigurationInfo.Description))
+    {
+        <small class="text-muted d-block mb-2">@ConfigurationInfo.Description</small>
+    }
+
+    @switch (ConfigurationInfo.Type)
+    {
+        case ConfigurationType.Text:
+            <input type="text" class="form-control"
+                   placeholder="@ConfigurationInfo.Placeholder"
+                   value="@Value"
+                   @onchange="@(ValueChanged)" />
+
+            break;
+
+        case ConfigurationType.Select:
+            <select class="form-select" value="@Value" @onchange="ValueChanged">
+                <option value="">Select @(ConfigurationInfo.Label.ToLower())...</option>
+                @if (ConfigurationInfo.Options != null)
+                {
+                    var groupedOptions = ConfigurationInfo.Options
+                        .GroupBy(o => o.Group)
+                        .ToList();
+
+                    if (groupedOptions.Any(g => !string.IsNullOrEmpty(g.Key)))
+                    {
+                        foreach (var group in groupedOptions.Where(g => !string.IsNullOrEmpty(g.Key)))
+                        {
+                            <optgroup label="@group.Key">
+                                @foreach (var option in group)
+                                {
+                                    <option value="@option.Value">@option.Label</option>
+                                }
+                            </optgroup>
+                        }
+                        foreach (var option in groupedOptions.Where(g => string.IsNullOrEmpty(g.Key)).SelectMany(g => g))
+                        {
+                            <option value="@option.Value">@option.Label</option>
+                        }
+                    }
+                    else
+                    {
+                        foreach (var option in ConfigurationInfo.Options)
+                        {
+                            <option value="@option.Value">@option.Label</option>
+                        }
+                    }
+                }
+            </select>
+            break;
+
+        case ConfigurationType.EquipmentSlot:
+            <div class="input-group">
+                <select class="form-select" value="@EquipmentType" @onchange="EquipmentTypeChanged">
+                    <option value="slot">Equipment Slot</option>
+                    <option value="item">Specific Item</option>
+                </select>
+                @if (EquipmentType == "slot")
+                {
+                    <select class="form-select" value="@SlotValue" @onchange="SlotValueChanged">
+                        <option value="">Select slot...</option>
+                        <option value="head">Head</option>
+                        <option value="neck">Neck</option>
+                        <option value="shoulder">Shoulder</option>
+                        <option value="shirt">Shirt</option>
+                        <option value="chest">Chest</option>
+                        <option value="waist">Waist</option>
+                        <option value="legs">Legs</option>
+                        <option value="feet">Boots</option>
+                        <option value="wrist">Wrist</option>
+                        <option value="hands">Gloves</option>
+                        <option value="finger1">Ring 1</option>
+                        <option value="finger2">Ring 2</option>
+                        <option value="trinket1">Trinket 1</option>
+                        <option value="trinket2">Trinket 2</option>
+                        <option value="back">Back</option>
+                        <option value="weapon">Main Hand</option>
+                        <option value="offhand">Off Hand</option>
+                        <option value="ranged">Ranged</option>
+                        <option value="tabard">Tabard</option>
+                    </select>
+                }
+                else
+                {
+                    <input type="text" class="form-control"
+                           placeholder="Item name (e.g., 'Sword of Truth')"
+                           @bind="ItemValue" />
+                }
+            </div>
+            break;
+    }
+</div>
+
+@code {
+    [Parameter]
+    public ConditionalConfigurationInfo ConfigurationInfo { get; set; } = null!;
+
+    [Parameter]
+    public string Value { get; set; } = "";
+
+    [Parameter]
+    public EventCallback<ChangeEventArgs> ValueChanged { get; set; }
+
+    [Parameter]
+    public string EquipmentType { get; set; } = "slot";
+
+    [Parameter]
+    public EventCallback<ChangeEventArgs> EquipmentTypeChanged { get; set; }
+
+    [Parameter]
+    public string SlotValue { get; set; } = "";
+
+    [Parameter]
+    public EventCallback<ChangeEventArgs> SlotValueChanged { get; set; }
+
+    [Parameter]
+    public string ItemValue { get; set; } = "";
+
+    [Parameter]
+    public EventCallback<string> ItemValueChanged { get; set; }
+}

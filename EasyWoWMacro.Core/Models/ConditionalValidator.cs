@@ -6,15 +6,15 @@ namespace EasyWoWMacro.Core.Models;
 public static class ConditionalValidator
 {
     /// <summary>
-    /// Valid conditionals in WoW macros
+    /// Valid conditionals in WoW macros based on official documentation
     /// </summary>
     private static readonly Dictionary<string, string[]> ValidConditionals = new()
     {
-        // Modifier keys
+        // Modifier conditions
         ["mod"] = ["alt", "ctrl", "shift"],
         ["nomod"] = ["alt", "ctrl", "shift"],
         
-        // Target conditions
+        // Target conditions (with @ prefix)
         ["@target"] = [],
         ["@mouseover"] = [],
         ["@focus"] = [],
@@ -68,7 +68,7 @@ public static class ConditionalValidator
         ["@raid39"] = [],
         ["@raid40"] = [],
         
-        // Combat conditions
+        // Combat and state conditions
         ["combat"] = [],
         ["nocombat"] = [],
         ["harm"] = [],
@@ -91,13 +91,21 @@ public static class ConditionalValidator
         ["solo"] = [],
         ["pet"] = [],
         ["nopet"] = [],
+        ["channeling"] = [],
+        ["casting"] = [],
+        ["nocasting"] = [],
+        ["exists"] = [],
+        ["noexists"] = [],
+        
+        // Form and stance conditions
         ["form"] = ["bear", "cat", "travel", "aquatic", "flight", "moonkin", "tree", "battle", "defensive", "berserker"],
         ["stance"] = ["1", "2", "3", "4", "5", "6"],
-        ["equipped"] = ["weapon", "offhand", "shield", "2h", "1h", "ranged", "ammo"],
-        ["worn"] = ["weapon", "offhand", "shield", "2h", "1h", "ranged", "ammo"],
-        ["channeling"] = [],
-        ["nocasting"] = [],
-        ["casting"] = [],
+        
+        // Equipment conditions
+        ["equipped"] = ["weapon", "offhand", "shield", "2h", "1h", "ranged", "ammo", "chest", "head", "legs", "feet", "hands", "waist", "back", "neck", "finger1", "finger2", "trinket1", "trinket2"],
+        ["worn"] = ["weapon", "offhand", "shield", "2h", "1h", "ranged", "ammo", "chest", "head", "legs", "feet", "hands", "waist", "back", "neck", "finger1", "finger2", "trinket1", "trinket2"],
+        
+        // Action bar conditions
         ["actionbar"] = ["1", "2", "3", "4", "5", "6"],
         ["bar"] = ["1", "2", "3", "4", "5", "6"],
         ["extrabar"] = [],
@@ -106,6 +114,8 @@ public static class ConditionalValidator
         ["nopossessbar"] = [],
         ["overridebar"] = [],
         ["nooverridebar"] = [],
+        
+        // Vehicle conditions
         ["vehicleui"] = [],
         ["novehicleui"] = [],
         ["unithasvehicleui"] = [],
@@ -114,15 +124,27 @@ public static class ConditionalValidator
         ["nocanexitvehicle"] = [],
         ["invehicle"] = [],
         ["notinvehicle"] = [],
-        ["modifier"] = ["alt", "ctrl", "shift"],
+        
+        // Mouse button conditions
         ["button"] = ["1", "2", "3", "4", "5"],
-        ["exists"] = [],
-        ["noexists"] = [],
-        ["dead"] = [],
-        ["nodead"] = [],
+        ["btn"] = ["1", "2", "3", "4", "5"],
+        
+        // Threat conditions
         ["threat"] = ["1", "2", "3"],
-        ["harm"] = [],
-        ["help"] = [],
+        
+        // Special conditions
+        ["advflyable"] = [],
+        ["flyable"] = [],
+        ["spec"] = ["1", "2", "3", "4"], // Specialization numbers
+        ["talent"] = [], // Talent names (free text)
+        ["glyph"] = [], // Glyph names (free text)
+        ["spell"] = [], // Spell names (free text)
+        ["item"] = [], // Item names (free text)
+        ["aura"] = [], // Aura names (free text)
+        ["buff"] = [], // Buff names (free text)
+        ["debuff"] = [], // Debuff names (free text)
+        
+        // Additional target conditions (without @ prefix for backward compatibility)
         ["player"] = [],
         ["target"] = [],
         ["mouseover"] = [],

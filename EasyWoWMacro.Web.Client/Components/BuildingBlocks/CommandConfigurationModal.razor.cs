@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
 using EasyWoWMacro.Core.Models;
 using EasyWoWMacro.Web.Client.Models;
 
@@ -22,10 +21,10 @@ public partial class CommandConfigurationModal : ComponentBase
     private string _selectedCommand = "";
     private string _searchTerm = "";
 
-    private IEnumerable<string> FilteredCommands => 
-        string.IsNullOrWhiteSpace(_searchTerm) 
-            ? WoWMacroConstants.ValidSlashCommands 
-            : WoWMacroConstants.ValidSlashCommands.Where(cmd => 
+    private IEnumerable<string> FilteredCommands =>
+        string.IsNullOrWhiteSpace(_searchTerm)
+            ? WoWMacroConstants.ValidSlashCommands
+            : WoWMacroConstants.ValidSlashCommands.Where(cmd =>
                 cmd.Contains(_searchTerm, StringComparison.OrdinalIgnoreCase));
 
     protected override void OnParametersSet()
@@ -48,8 +47,8 @@ public partial class CommandConfigurationModal : ComponentBase
         {
             Block.Configuration["command"] = _selectedCommand;
             Block.DisplayText = _selectedCommand;
-            
+
             await OnSave.InvokeAsync(Block);
         }
     }
-} 
+}

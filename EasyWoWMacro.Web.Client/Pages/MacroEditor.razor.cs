@@ -2,6 +2,7 @@ using System.Globalization;
 using EasyWoWMacro.Core.Models;
 using EasyWoWMacro.Core.Parsing;
 using EasyWoWMacro.Web.Client.Models;
+using EasyWoWMacro.Web.Client.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 
@@ -10,7 +11,10 @@ namespace EasyWoWMacro.Web.Client.Pages;
 public partial class MacroEditor : ComponentBase
 {
     [Inject]
-    private IJSRuntime Js { get; set; } = default!;
+    private IJSRuntime Js { get; set; } = null!;
+
+    [Inject]
+    private IConditionalService? ConditionalService { get; set; }
 
     private readonly List<List<MacroBlockModel>> _macroLines = [new()];
     private Macro? _parsedMacro;
@@ -183,87 +187,9 @@ public partial class MacroEditor : ComponentBase
                         }
                         break;
                     case "Conditional":
-                        if (block.Configuration.TryGetValue("conditions", out var conditions))
+                        if (block.Configuration.TryGetValue("conditionals", out var conditions))
                         {
-                            var conditionList = conditions.Split(',', StringSplitOptions.RemoveEmptyEntries)
-                                .Select(c => c.Trim()).Where(c => !string.IsNullOrEmpty(c)).ToList();
-                            var formattedConditions = new List<string>();
-                            foreach (var condition in conditionList)
-                            {
-                                if (condition == "mod:" && block.Configuration.TryGetValue("modifier", out var modifier))
-                                {
-                                    formattedConditions.Add($"mod:{modifier}");
-                                }
-                                else if (condition == "nomod:" && block.Configuration.TryGetValue("modifier", out var nomodifier))
-                                {
-                                    formattedConditions.Add($"nomod:{nomodifier}");
-                                }
-                                else if (condition == "stance:" && block.Configuration.TryGetValue("stance", out var stance))
-                                {
-                                    formattedConditions.Add($"stance:{stance}");
-                                }
-                                else if (condition == "equipped:" && block.Configuration.TryGetValue("equippedType", out var eqType))
-                                {
-                                    if (eqType == "slot" && block.Configuration.TryGetValue("equippedSlot", out var eqSlot))
-                                    {
-                                        formattedConditions.Add($"equipped:{eqSlot}");
-                                    }
-                                    else if (eqType == "item" && block.Configuration.TryGetValue("equippedItem", out var eqItem))
-                                    {
-                                        formattedConditions.Add($"equipped:{eqItem}");
-                                    }
-                                    else
-                                    {
-                                        formattedConditions.Add("equipped:");
-                                    }
-                                }
-                                else if (condition == "form:" && block.Configuration.TryGetValue("form", out var form))
-                                {
-                                    formattedConditions.Add($"form:{form}");
-                                }
-                                else if (condition == "button:" && block.Configuration.TryGetValue("button", out var button))
-                                {
-                                    formattedConditions.Add($"button:{button}");
-                                }
-                                else if (condition == "threat:" && block.Configuration.TryGetValue("threat", out var threat))
-                                {
-                                    formattedConditions.Add($"threat:{threat}");
-                                }
-                                else if (condition == "spec:" && block.Configuration.TryGetValue("spec", out var spec))
-                                {
-                                    formattedConditions.Add($"spec:{spec}");
-                                }
-                                else if (condition == "talent:" && block.Configuration.TryGetValue("talent", out var talent))
-                                {
-                                    formattedConditions.Add($"talent:{talent}");
-                                }
-                                else if (condition == "glyph:" && block.Configuration.TryGetValue("glyph", out var glyph))
-                                {
-                                    formattedConditions.Add($"glyph:{glyph}");
-                                }
-                                else if (condition == "spell:" && block.Configuration.TryGetValue("spell", out var spell))
-                                {
-                                    formattedConditions.Add($"spell:{spell}");
-                                }
-                                else if (condition == "item:" && block.Configuration.TryGetValue("item", out var item))
-                                {
-                                    formattedConditions.Add($"item:{item}");
-                                }
-                                else if (condition == "aura:" && block.Configuration.TryGetValue("aura", out var aura))
-                                {
-                                    formattedConditions.Add($"aura:{aura}");
-                                }
-                                else if ((condition == "buff:" || condition == "debuff:") && block.Configuration.TryGetValue("buff", out var buff))
-                                {
-                                    formattedConditions.Add($"{condition}{buff}");
-                                }
-                                else
-                                {
-                                    formattedConditions.Add(condition);
-                                }
-                            }
-                            // Output as a single group: [cond1, cond2, cond3]
-                            lineText += $"[{string.Join(", ", formattedConditions)}] ";
+                            lineText += $"{conditions} ";
                         }
                         break;
                     case "Directive":

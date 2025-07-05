@@ -1,10 +1,14 @@
 using EasyWoWMacro.Web.Components;
+using EasyWoWMacro.Web.Client.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents();
+
+// Register client services for server-side prerendering
+builder.Services.AddScoped<IConditionalService, ConditionalService>();
 
 // Add HttpClient for any API calls
 builder.Services.AddHttpClient();

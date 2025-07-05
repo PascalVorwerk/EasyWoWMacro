@@ -13,23 +13,36 @@
                     <div class="row">
                         <div class="col-md-6">
                             <h6>Basic Conditions</h6>
-                            @foreach (var condition in _basicConditions)
-                            {
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox"
-                                           id="@condition"
-                                           checked="@SelectedConditions.Contains(condition)"
-                                           @onchange="@(e => HandleConditionChange(condition, e))" />
-                                    <label class="form-check-label" for="@condition">
-                                        @condition
-                                    </label>
+                            <div class="mb-2">
+                                <div class="input-group input-group-sm">
+                                    <input type="text" class="form-control" placeholder="Search conditions..."
+                                           @bind-value="_basicConditionSearch" @bind-value:event="Input" />
                                 </div>
-                            }
+                            </div>
+                            <div class="basic-conditions-list" style="max-height: 300px; overflow-y: auto;">
+                                @foreach (var condition in BasicConditions)
+                                {
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox"
+                                               id="@condition"
+                                               checked="@SelectedConditions.Contains(condition)"
+                                               @onchange="@(e => HandleConditionChange(condition, e))" />
+                                        <label class="form-check-label" for="@condition">
+                                            @condition
+                                        </label>
+                                    </div>
+                                }
+                            </div>
                         </div>
                         <div class="col-md-6">
                             <h6>Advanced Conditions</h6>
                             <small class="text-muted mb-2 d-block">These conditionals require additional configuration</small>
-                            @foreach (var condition in _advancedConditions)
+                            <div class="mb-2">
+                                <input type="text" class="form-control form-control-sm" placeholder="Search advanced conditions..."
+                                       @bind-value="_advancedConditionSearch" @bind-value:event="Input" />
+                            </div>
+                            <div class="advanced-conditions-list" style="max-height: 300px; overflow-y: auto;">
+                                @foreach (var condition in AdvancedConditions)
                             {
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox"
@@ -93,193 +106,23 @@
                                     </label>
                                 </div>
                             }
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                @if (SelectedConditions.Contains("mod:") || SelectedConditions.Contains("nomod:"))
+                @foreach (var configInfo in SelectedConditionConfigurations)
                 {
-                    <div class="mb-3">
-                        <label class="form-label">Modifier Key</label>
-                        <select class="form-select" @bind="_selectedModifier">
-                            <option value="">Select modifier...</option>
-                            <option value="alt">Alt</option>
-                            <option value="ctrl">Ctrl</option>
-                            <option value="shift">Shift</option>
-                            <option value="alt,ctrl">Alt+Ctrl</option>
-                            <option value="alt,shift">Alt+Shift</option>
-                            <option value="ctrl,shift">Ctrl+Shift</option>
-                            <option value="alt,ctrl,shift">Alt+Ctrl+Shift</option>
-                        </select>
-                    </div>
-                }
-
-                @if (SelectedConditions.Contains("stance:"))
-                {
-                    <div class="mb-3">
-                        <label class="form-label">Stance/Form</label>
-                        <select class="form-select" @bind="_stanceValue">
-                            <option value="">Select stance/form...</option>
-                            <optgroup label="Warrior Stances">
-                                <option value="1">1 - Battle Stance</option>
-                                <option value="2">2 - Defensive Stance</option>
-                                <option value="3">3 - Berserker Stance</option>
-                            </optgroup>
-                            <optgroup label="Druid Forms">
-                                <option value="bear">Bear Form</option>
-                                <option value="aquatic">Aquatic Form</option>
-                                <option value="cat">Cat Form</option>
-                                <option value="travel">Travel Form</option>
-                                <option value="moonkin">Moonkin Form</option>
-                            </optgroup>
-                            <optgroup label="Other">
-                                <option value="stealth">Stealth (Rogue)</option>
-                                <option value="shadowform">Shadowform (Priest)</option>
-                            </optgroup>
-                        </select>
-                    </div>
-                }
-
-                @if (SelectedConditions.Contains("equipped:"))
-                {
-                    <div class="mb-3">
-                        <label class="form-label">Equipment Slot/Item</label>
-                        <div class="input-group">
-                            <select class="form-select" @bind="_equippedType">
-                                <option value="slot">Equipment Slot</option>
-                                <option value="item">Specific Item</option>
-                            </select>
-                            @if (_equippedType == "slot")
-                            {
-                                <select class="form-select" @bind="_equippedSlot">
-                                    <option value="">Select slot...</option>
-                                    <option value="1">1 - Head</option>
-                                    <option value="2">2 - Neck</option>
-                                    <option value="3">3 - Shoulder</option>
-                                    <option value="4">4 - Shirt</option>
-                                    <option value="5">5 - Chest</option>
-                                    <option value="6">6 - Waist</option>
-                                    <option value="7">7 - Legs</option>
-                                    <option value="8">8 - Boots</option>
-                                    <option value="9">9 - Wrist</option>
-                                    <option value="10">10 - Gloves</option>
-                                    <option value="11">11 - Ring 1</option>
-                                    <option value="12">12 - Ring 2</option>
-                                    <option value="13">13 - Trinket 1</option>
-                                    <option value="14">14 - Trinket 2</option>
-                                    <option value="15">15 - Back</option>
-                                    <option value="16">16 - Main Hand</option>
-                                    <option value="17">17 - Off Hand</option>
-                                    <option value="18">18 - Ranged</option>
-                                    <option value="19">19 - Tabard</option>
-                                </select>
-                            }
-                            else
-                            {
-                                <input type="text" class="form-control" placeholder="Item name (e.g., 'Sword of Truth')" @bind="_equippedItem" />
-                            }
-                        </div>
-                    </div>
-                }
-
-                @if (SelectedConditions.Contains("form:"))
-                {
-                    <div class="mb-3">
-                        <label class="form-label">Form Type</label>
-                        <select class="form-select" @bind="_formValue">
-                            <option value="">Select form...</option>
-                            <option value="bear">Bear Form</option>
-                            <option value="cat">Cat Form</option>
-                            <option value="travel">Travel Form</option>
-                            <option value="aquatic">Aquatic Form</option>
-                            <option value="moonkin">Moonkin Form</option>
-                            <option value="tree">Tree of Life Form</option>
-                        </select>
-                    </div>
-                }
-
-                @if (SelectedConditions.Contains("button:"))
-                {
-                    <div class="mb-3">
-                        <label class="form-label">Mouse Button</label>
-                        <select class="form-select" @bind="_buttonValue">
-                            <option value="">Select button...</option>
-                            <option value="1">1 - Left Click</option>
-                            <option value="2">2 - Right Click</option>
-                            <option value="3">3 - Middle Click</option>
-                            <option value="4">4 - Button 4</option>
-                            <option value="5">5 - Button 5</option>
-                        </select>
-                    </div>
-                }
-
-                @if (SelectedConditions.Contains("threat:"))
-                {
-                    <div class="mb-3">
-                        <label class="form-label">Threat Level</label>
-                        <select class="form-select" @bind="_threatValue">
-                            <option value="">Select threat level...</option>
-                            <option value="1">1 - Low</option>
-                            <option value="2">2 - Medium</option>
-                            <option value="3">3 - High</option>
-                        </select>
-                    </div>
-                }
-
-                @if (SelectedConditions.Contains("spec:"))
-                {
-                    <div class="mb-3">
-                        <label class="form-label">Specialization</label>
-                        <input type="text" class="form-control" placeholder="Spec name or number (e.g., 'Fire', '1')" @bind="_specValue" />
-                    </div>
-                }
-
-                @if (SelectedConditions.Contains("talent:"))
-                {
-                    <div class="mb-3">
-                        <label class="form-label">Talent</label>
-                        <input type="text" class="form-control" placeholder="Talent name or ID" @bind="_talentValue" />
-                    </div>
-                }
-
-                @if (SelectedConditions.Contains("glyph:"))
-                {
-                    <div class="mb-3">
-                        <label class="form-label">Glyph</label>
-                        <input type="text" class="form-control" placeholder="Glyph name" @bind="_glyphValue" />
-                    </div>
-                }
-
-                @if (SelectedConditions.Contains("spell:"))
-                {
-                    <div class="mb-3">
-                        <label class="form-label">Spell</label>
-                        <input type="text" class="form-control" placeholder="Spell name" @bind="_spellValue" />
-                    </div>
-                }
-
-                @if (SelectedConditions.Contains("item:"))
-                {
-                    <div class="mb-3">
-                        <label class="form-label">Item</label>
-                        <input type="text" class="form-control" placeholder="Item name" @bind="_itemValue" />
-                    </div>
-                }
-
-                @if (SelectedConditions.Contains("aura:"))
-                {
-                    <div class="mb-3">
-                        <label class="form-label">Aura</label>
-                        <input type="text" class="form-control" placeholder="Aura/buff/debuff name" @bind="_auraValue" />
-                    </div>
-                }
-
-                @if (SelectedConditions.Contains("buff:") || SelectedConditions.Contains("debuff:"))
-                {
-                    <div class="mb-3">
-                        <label class="form-label">Buff/Debuff</label>
-                        <input type="text" class="form-control" placeholder="Buff/debuff name" @bind="_buffValue" />
-                    </div>
+                    <DynamicConditionalConfiguration
+                        ConfigurationInfo="configInfo"
+                        Value="@_advancedValues.GetValueOrDefault(configInfo.Conditional, string.Empty)"
+                        ValueChanged="@(v => _advancedValues[configInfo.Conditional] = v.Value.ToString())"
+                        EquipmentType="@_equippedType"
+                        EquipmentTypeChanged="@(value => _equippedType = value.Value.ToString())"
+                        SlotValue="@_equippedSlot"
+                        SlotValueChanged="@(value => _equippedSlot = value.Value.ToString())"
+                        ItemValue="@_equippedItem"
+                        ItemValueChanged="@(value => _equippedItem = value)" />
                 }
 
                 @if (_validationErrors.Count > 0)
