@@ -785,7 +785,7 @@ code {
 
 .wow-hero-subtitle {
     font-family: 'Libre Baskerville', serif;
-    font-size: 1.3rem;
+    font-size: 2rem;
     color: var(--wow-parchment);
     margin: 0 0 1.5rem 0;
     font-style: italic;
@@ -1144,7 +1144,7 @@ code {
     }
 
     .wow-hero-subtitle {
-        font-size: 2rem;
+        font-size: 1.3rem;
     }
 
     .wow-feature-card {
