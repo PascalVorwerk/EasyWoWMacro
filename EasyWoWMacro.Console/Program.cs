@@ -3,7 +3,7 @@ using EasyWoWMacro.Core.Parsing;
 
 namespace EasyWoWMacro.Console;
 
-class Program
+sealed class Program
 {
     static void Main(string[] args)
     {

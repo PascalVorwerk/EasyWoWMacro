@@ -1,0 +1,9 @@
+---
+description: Use when working with blazor
+alwaysApply: false
+---
+
+- Read up on the @docs Blazor Render modes and @docs Blazor JS interop, using the latest Blazor features from .NET 9
+- We always work with a Blazor web app template, never a standalone WASM app.
+- We use code behind files wherever possible.
+- Split up large components into smaller components when it feels needed.

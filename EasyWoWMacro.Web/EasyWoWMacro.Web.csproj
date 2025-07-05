@@ -9,6 +9,20 @@
 
   <ItemGroup>
     <ProjectReference Include="..\EasyWoWMacro.Core\EasyWoWMacro.Core.csproj" />
+    <ProjectReference Include="..\EasyWoWMacro.Web.Client\EasyWoWMacro.Web.Client.csproj" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Pages\Home.razor" />
+    <_ContentIncludedByDefault Remove="Pages\MacroEditor.razor" />
+    <_ContentIncludedByDefault Remove="Components\BuildingBlocks\ArgumentConfigurationModal.razor" />
+    <_ContentIncludedByDefault Remove="Components\BuildingBlocks\BuildingBlock.razor" />
+    <_ContentIncludedByDefault Remove="Components\BuildingBlocks\BuildingBlocksToolbox.razor" />
+    <_ContentIncludedByDefault Remove="Components\BuildingBlocks\CommandConfigurationModal.razor" />
+    <_ContentIncludedByDefault Remove="Components\BuildingBlocks\ConditionalConfigurationModal.razor" />
+    <_ContentIncludedByDefault Remove="Components\BuildingBlocks\DirectiveConfigurationModal.razor" />
+    <_ContentIncludedByDefault Remove="Components\BuildingBlocks\MacroLine.razor" />
   </ItemGroup>
 
 </Project>

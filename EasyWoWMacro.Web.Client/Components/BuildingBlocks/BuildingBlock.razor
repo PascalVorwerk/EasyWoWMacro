@@ -1,0 +1,17 @@
+@rendermode InteractiveWebAssembly
+
+@if (RendererInfo.IsInteractive)
+{
+    <div class="building-block @BlockType.ToLower()" draggable="true" @ondragstart="HandleDragStart" @onclick="HandleClick">
+        @ChildContent
+    </div>
+}
+else
+{
+    <div class="building-block skeleton">
+        <div class="block-content">
+            <div class="skeleton-icon"></div>
+            <div class="skeleton-text"></div>
+        </div>
+    </div>
+}

@@ -188,13 +188,12 @@ public static class ConditionalValidator
             return false;
 
         // Check if the key exists
-        if (!ValidConditionals.ContainsKey(condition.Key))
+        if (!ValidConditionals.TryGetValue(condition.Key, out var validValues))
             return false;
 
         // If the condition has a value, check if it's valid for that key
         if (!string.IsNullOrWhiteSpace(condition.Value))
         {
-            var validValues = ValidConditionals[condition.Key];
             return validValues.Length == 0 || validValues.Contains(condition.Value);
         }
 
@@ -254,6 +253,6 @@ public static class ConditionalValidator
     /// <returns>List of valid values for the key</returns>
     public static IEnumerable<string> GetValidValuesForKey(string key)
     {
-        return ValidConditionals.ContainsKey(key) ? ValidConditionals[key] : Enumerable.Empty<string>();
+        return ValidConditionals.TryGetValue(key, out var values) ? values : Enumerable.Empty<string>();
     }
 } 

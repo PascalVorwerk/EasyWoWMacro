@@ -1,10 +1,10 @@
-using EasyWoWMacro.Web;
+using EasyWoWMacro.Web.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container
+// Add services to the container.
 builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents();
+    .AddInteractiveWebAssemblyComponents();
 
 // Add HttpClient for any API calls
 builder.Services.AddHttpClient();
@@ -14,24 +14,26 @@ builder.Services.AddLogging();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline
-if (!app.Environment.IsDevelopment())
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Error");
+    app.UseWebAssemblyDebugging();
+}
+else
+{
+    app.UseExceptionHandler("/Error", createScopeForErrors: true);
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
+app.UseAntiforgery();
 app.MapStaticAssets();
 
-app.UseRouting();
-
-app.UseAntiforgery();
-
 app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode();
+    .AddInteractiveWebAssemblyRenderMode()
+    .AddAdditionalAssemblies(typeof(EasyWoWMacro.Web.Client._Imports).Assembly);
 
 // Configure error handling
-app.Services.GetRequiredService<ILogger<Program>>().LogInformation("Starting EasyWoWMacro Blazor Server application");
+app.Services.GetRequiredService<ILogger<Program>>().LogInformation("Starting EasyWoWMacro Blazor Web App with WASM interactivity");
 
 app.Run();

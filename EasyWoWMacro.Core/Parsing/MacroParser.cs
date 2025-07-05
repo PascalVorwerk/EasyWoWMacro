@@ -71,7 +71,7 @@ public class MacroParser
         return macro;
     }
 
-    private CommandLine ParseCommandLine(string line, int lineNumber)
+    private static CommandLine ParseCommandLine(string line, int lineNumber)
     {
         // Extract command name (e.g., /cast, /use)
         var commandMatch = Regex.Match(line, @"^(/\w+)");
@@ -100,7 +100,7 @@ public class MacroParser
         return commandLine;
     }
 
-    private (Conditional? conditionals, List<CommandArgument> arguments, List<(Conditional? Conditionals, CommandArgument? Argument)> clauses)
+    private static (Conditional? conditionals, List<CommandArgument> arguments, List<(Conditional? Conditionals, CommandArgument? Argument)> clauses)
         ParseConditionalsAndArgumentsWithClauses(string rest)
     {
         var conditionals = new Conditional();
@@ -176,7 +176,7 @@ public class MacroParser
         return errors;
     }
 
-    private List<string> ValidateDirective(DirectiveLine directive)
+    private static List<string> ValidateDirective(DirectiveLine directive)
     {
         var errors = new List<string>();
         
@@ -188,7 +188,7 @@ public class MacroParser
         return errors;
     }
 
-    private List<string> ValidateCommand(CommandLine command)
+    private static List<string> ValidateCommand(CommandLine command)
     {
         var errors = new List<string>();
 
