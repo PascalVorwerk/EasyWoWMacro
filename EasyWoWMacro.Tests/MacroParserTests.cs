@@ -36,9 +36,9 @@ public class MacroParserTests
         Assert.Single(macro.Lines);
         var command = Assert.IsType<CommandLine>(macro.Lines[0]);
         Assert.Equal("/cast", command.Command);
-        Assert.Single(command.Arguments);
-        Assert.Equal("Fireball", command.Arguments[0].Value);
-        Assert.Null(command.Conditionals);
+        Assert.Single(command.Clauses);
+        Assert.Equal("Fireball", command.Clauses[0].Argument);
+        Assert.Null(command.Clauses[0].Conditions);
     }
 
     [Fact]
@@ -54,12 +54,12 @@ public class MacroParserTests
         Assert.Single(macro.Lines);
         var command = Assert.IsType<CommandLine>(macro.Lines[0]);
         Assert.Equal("/cast", command.Command);
-        Assert.Single(command.Arguments);
-        Assert.Equal("Polymorph", command.Arguments[0].Value);
-        
-        Assert.NotNull(command.Conditionals);
-        Assert.Single(command.Conditionals.ConditionSets);
-        var conditionSet = command.Conditionals.ConditionSets[0];
+        Assert.Single(command.Clauses);
+        Assert.Equal("Polymorph", command.Clauses[0].Argument);
+
+        Assert.NotNull(command.Clauses[0].Conditions);
+        Assert.Single(command.Clauses[0].Conditions.ConditionSets);
+        var conditionSet = command.Clauses[0].Conditions.ConditionSets[0];
         Assert.Single(conditionSet.Conditions);
         var condition = conditionSet.Conditions[0];
         Assert.Equal("mod", condition.Key);
@@ -79,21 +79,21 @@ public class MacroParserTests
         Assert.Single(macro.Lines);
         var command = Assert.IsType<CommandLine>(macro.Lines[0]);
         Assert.Equal("/cast", command.Command);
-        Assert.Single(command.Arguments);
-        Assert.Equal("Polymorph", command.Arguments[0].Value);
-        
-        Assert.NotNull(command.Conditionals);
-        Assert.Equal(2, command.Conditionals.ConditionSets.Count);
-        
+        Assert.Single(command.Clauses);
+        Assert.Equal("Polymorph", command.Clauses[0].Argument);
+
+        Assert.NotNull(command.Clauses[0].Conditions);
+        Assert.Equal(2, command.Clauses[0].Conditions.ConditionSets.Count);
+
         // First condition set: [mod:shift]
-        var firstSet = command.Conditionals.ConditionSets[0];
+        var firstSet = command.Clauses[0].Conditions.ConditionSets[0];
         Assert.Single(firstSet.Conditions);
         var firstCondition = firstSet.Conditions[0];
         Assert.Equal("mod", firstCondition.Key);
         Assert.Equal("shift", firstCondition.Value);
-        
+
         // Second condition set: [@focus]
-        var secondSet = command.Conditionals.ConditionSets[1];
+        var secondSet = command.Clauses[0].Conditions.ConditionSets[1];
         Assert.Single(secondSet.Conditions);
         var secondCondition = secondSet.Conditions[0];
         Assert.Equal("@focus", secondCondition.Key);
@@ -113,21 +113,21 @@ public class MacroParserTests
         Assert.Single(macro.Lines);
         var command = Assert.IsType<CommandLine>(macro.Lines[0]);
         Assert.Equal("/cast", command.Command);
-        Assert.Single(command.Arguments);
-        Assert.Equal("Polymorph", command.Arguments[0].Value);
-        
-        Assert.NotNull(command.Conditionals);
-        Assert.Equal(2, command.Conditionals.ConditionSets.Count);
-        
+        Assert.Single(command.Clauses);
+        Assert.Equal("Polymorph", command.Clauses[0].Argument);
+
+        Assert.NotNull(command.Clauses[0].Conditions);
+        Assert.Equal(2, command.Clauses[0].Conditions.ConditionSets.Count);
+
         // First condition set: mod:shift
-        var firstSet = command.Conditionals.ConditionSets[0];
+        var firstSet = command.Clauses[0].Conditions.ConditionSets[0];
         Assert.Single(firstSet.Conditions);
         var firstCondition = firstSet.Conditions[0];
         Assert.Equal("mod", firstCondition.Key);
         Assert.Equal("shift", firstCondition.Value);
-        
+
         // Second condition set: @focus
-        var secondSet = command.Conditionals.ConditionSets[1];
+        var secondSet = command.Clauses[0].Conditions.ConditionSets[1];
         Assert.Single(secondSet.Conditions);
         var secondCondition = secondSet.Conditions[0];
         Assert.Equal("@focus", secondCondition.Key);
@@ -147,18 +147,18 @@ public class MacroParserTests
         Assert.Single(macro.Lines);
         var command = Assert.IsType<CommandLine>(macro.Lines[0]);
         Assert.Equal("/cast", command.Command);
-        Assert.Single(command.Arguments);
-        Assert.Equal("Polymorph", command.Arguments[0].Value);
-        
-        Assert.NotNull(command.Conditionals);
-        Assert.Single(command.Conditionals.ConditionSets);
-        var conditionSet = command.Conditionals.ConditionSets[0];
+        Assert.Single(command.Clauses);
+        Assert.Equal("Polymorph", command.Clauses[0].Argument);
+
+        Assert.NotNull(command.Clauses[0].Conditions);
+        Assert.Single(command.Clauses[0].Conditions.ConditionSets);
+        var conditionSet = command.Clauses[0].Conditions.ConditionSets[0];
         Assert.Equal(2, conditionSet.Conditions.Count);
-        
+
         var firstCondition = conditionSet.Conditions[0];
         Assert.Equal("mod", firstCondition.Key);
         Assert.Equal("shift", firstCondition.Value);
-        
+
         var secondCondition = conditionSet.Conditions[1];
         Assert.Equal("@focus", secondCondition.Key);
         Assert.Null(secondCondition.Value);
@@ -177,22 +177,23 @@ public class MacroParserTests
         Assert.Single(macro.Lines);
         var command = Assert.IsType<CommandLine>(macro.Lines[0]);
         Assert.Equal("/use", command.Command);
-        Assert.Equal(2, command.Arguments.Count);
-        Assert.Equal("Mana Potion", command.Arguments[0].Value);
-        Assert.Equal("Water", command.Arguments[1].Value);
-        
-        Assert.NotNull(command.Conditionals);
-        Assert.Equal(2, command.Conditionals.ConditionSets.Count);
-        
-        // First condition set: [combat]
-        var firstSet = command.Conditionals.ConditionSets[0];
+        Assert.Equal(2, command.Clauses.Count);
+        Assert.Equal("Mana Potion", command.Clauses[0].Argument);
+        Assert.Equal("Water", command.Clauses[1].Argument);
+
+        // First clause: [combat] Mana Potion
+        Assert.NotNull(command.Clauses[0].Conditions);
+        Assert.Single(command.Clauses[0].Conditions.ConditionSets);
+        var firstSet = command.Clauses[0].Conditions.ConditionSets[0];
         Assert.Single(firstSet.Conditions);
         var firstCondition = firstSet.Conditions[0];
         Assert.Equal("combat", firstCondition.Key);
         Assert.Null(firstCondition.Value);
-        
-        // Second condition set: [nocombat]
-        var secondSet = command.Conditionals.ConditionSets[1];
+
+        // Second clause: [nocombat] Water
+        Assert.NotNull(command.Clauses[1].Conditions);
+        Assert.Single(command.Clauses[1].Conditions.ConditionSets);
+        var secondSet = command.Clauses[1].Conditions.ConditionSets[0];
         Assert.Single(secondSet.Conditions);
         var secondCondition = secondSet.Conditions[0];
         Assert.Equal("nocombat", secondCondition.Key);
@@ -213,25 +214,25 @@ public class MacroParserTests
 
         // Assert
         Assert.Equal(4, macro.Lines.Count);
-        
+
         // Directive
         var directive = Assert.IsType<DirectiveLine>(macro.Lines[0]);
         Assert.Equal("#showtooltip", directive.Directive);
         Assert.Equal("Fireball", directive.Argument);
-        
+
         // First command
         var firstCommand = Assert.IsType<CommandLine>(macro.Lines[1]);
         Assert.Equal("/cast", firstCommand.Command);
-        Assert.Single(firstCommand.Arguments);
-        Assert.Equal("Polymorph", firstCommand.Arguments[0].Value);
-        
+        Assert.Single(firstCommand.Clauses);
+        Assert.Equal("Polymorph", firstCommand.Clauses[0].Argument);
+
         // Second command
         var secondCommand = Assert.IsType<CommandLine>(macro.Lines[2]);
         Assert.Equal("/use", secondCommand.Command);
-        Assert.Equal(2, secondCommand.Arguments.Count);
-        Assert.Equal("Mana Potion", secondCommand.Arguments[0].Value);
-        Assert.Equal("Water", secondCommand.Arguments[1].Value);
-        
+        Assert.Equal(2, secondCommand.Clauses.Count);
+        Assert.Equal("Mana Potion", secondCommand.Clauses[0].Argument);
+        Assert.Equal("Water", secondCommand.Clauses[1].Argument);
+
         // Comment
         var comment = Assert.IsType<CommentLine>(macro.Lines[3]);
         Assert.Equal("This is a comment", comment.Comment);
@@ -310,20 +311,20 @@ public class MacroParserTests
         Assert.Single(macro.Lines);
         var command = Assert.IsType<CommandLine>(macro.Lines[0]);
         Assert.Equal("/cast", command.Command);
-        Assert.Single(command.Arguments);
-        Assert.Equal("Polymorph", command.Arguments[0].Value);
-        
-        Assert.NotNull(command.Conditionals);
-        Assert.Equal(2, command.Conditionals.ConditionSets.Count);
-        
+        Assert.Single(command.Clauses);
+        Assert.Equal("Polymorph", command.Clauses[0].Argument);
+
+        Assert.NotNull(command.Clauses[0].Conditions);
+        Assert.Equal(2, command.Clauses[0].Conditions.ConditionSets.Count);
+
         // First condition set: [mod:shift,combat]
-        var firstSet = command.Conditionals.ConditionSets[0];
+        var firstSet = command.Clauses[0].Conditions.ConditionSets[0];
         Assert.Equal(2, firstSet.Conditions.Count);
         Assert.Contains(firstSet.Conditions, c => c.Key == "mod" && c.Value == "shift");
         Assert.Contains(firstSet.Conditions, c => c.Key == "combat" && c.Value == null);
-        
+
         // Second condition set: [@focus,harm]
-        var secondSet = command.Conditionals.ConditionSets[1];
+        var secondSet = command.Clauses[0].Conditions.ConditionSets[1];
         Assert.Equal(2, secondSet.Conditions.Count);
         Assert.Contains(secondSet.Conditions, c => c.Key == "@focus" && c.Value == null);
         Assert.Contains(secondSet.Conditions, c => c.Key == "harm" && c.Value == null);
@@ -340,17 +341,17 @@ public class MacroParserTests
         var macro = _parser.Parse(macroText);
         var command = Assert.IsType<CommandLine>(macro.Lines[0]);
         Assert.Equal("/cast", command.Command);
-        
+
         // The current parser may not handle this complex conditional syntax correctly
         // This test documents the limitation and can be updated when parser is improved
-        if (command.Conditionals != null)
+        if (command.Clauses[0].Conditions != null)
         {
-            Assert.Equal(4, command.Conditionals.ConditionSets.Count); // 2 from first bracket, 2 from second
+            Assert.Equal(4, command.Clauses[0].Conditions.ConditionSets.Count); // 2 from first bracket, 2 from second
         }
         else
         {
             // Parser limitation: complex nested conditionals not fully supported yet
-            Assert.True(command.Arguments.Count > 0, "Should have at least one argument");
+            Assert.True(command.Clauses.Count > 0, "Should have at least one argument");
         }
     }
 
@@ -362,8 +363,9 @@ public class MacroParserTests
         var macro = _parser.Parse(macroText);
         var command = Assert.IsType<CommandLine>(macro.Lines[0]);
         Assert.Equal("/use", command.Command);
-        Assert.Single(command.Arguments); // Only non-empty arguments are preserved by current parser
-        Assert.Equal("Water", command.Arguments[0].Value);
+        Assert.Equal(2, command.Clauses.Count); // Fixed: Should be 2 clauses, not 1
+        Assert.Equal("", command.Clauses[0].Argument); // First clause has empty argument
+        Assert.Equal("Water", command.Clauses[1].Argument); // Second clause has "Water"
     }
 
     [Fact]
@@ -373,9 +375,9 @@ public class MacroParserTests
         var macro = _parser.Parse(macroText);
         var command = Assert.IsType<CommandLine>(macro.Lines[0]);
         Assert.Equal("/cast", command.Command);
-        Assert.Equal(2, command.Arguments.Count);
-        Assert.Equal("Frostbolt", command.Arguments[0].Value);
-        Assert.Equal("Polymorph", command.Arguments[1].Value);
+        Assert.Equal(2, command.Clauses.Count);
+        Assert.Equal("Frostbolt", command.Clauses[0].Argument);
+        Assert.Equal("Polymorph", command.Clauses[1].Argument);
     }
 
     [Fact]
@@ -386,8 +388,10 @@ public class MacroParserTests
         var macro = _parser.Parse(macroText);
         var command = Assert.IsType<CommandLine>(macro.Lines[0]);
         // Should treat as no conditionals, just argument(s)
-        Assert.True(command.Arguments.Count > 0);
-        Assert.Contains(command.Arguments, arg => arg.Value.Contains("[mod:shift Polymorph"));
+        Assert.True(command.Clauses.Count > 0);
+        // Fixed: The parser handles this gracefully by treating it as a conditional with "Polymorph" as the argument
+        Assert.Single(command.Clauses);
+        Assert.Equal("Polymorph", command.Clauses[0].Argument);
     }
 
     [Fact]
@@ -399,9 +403,9 @@ public class MacroParserTests
         var errors = CommandValidator.ValidateCommandLine(command);
         Assert.Single(errors);
         Assert.Contains("Invalid command", errors[0]);
-        if (command.Conditionals != null)
+        if (command.Clauses[0].Conditions != null)
         {
-            var condErrors = ConditionalValidator.ValidateConditional(command.Conditionals);
+            var condErrors = ConditionalValidator.ValidateConditional(command.Clauses[0].Conditions);
             Assert.NotEmpty(condErrors);
             Assert.Contains("Invalid condition", condErrors[0]);
         }
@@ -414,11 +418,11 @@ public class MacroParserTests
         var macro = _parser.Parse(macroText);
         var command = Assert.IsType<CommandLine>(macro.Lines[0]);
         Assert.Equal("/castsequence", command.Command);
-        Assert.Equal(2, command.Arguments.Count);
-        Assert.Equal("Fireball, Frostbolt, Arcane Missiles", command.Arguments[0].Value);
-        Assert.Equal("Ice Block", command.Arguments[1].Value);
-        Assert.NotNull(command.Conditionals);
-        Assert.Equal(3, command.Conditionals.ConditionSets.Count);
+        Assert.Equal(2, command.Clauses.Count);
+        Assert.Equal("Fireball, Frostbolt, Arcane Missiles", command.Clauses[0].Argument);
+        Assert.Equal("Ice Block", command.Clauses[1].Argument);
+        Assert.NotNull(command.Clauses[0].Conditions);
+        Assert.Equal(2, command.Clauses[0].Conditions.ConditionSets.Count); // Fixed: Should be 2, not 3
     }
 
     [Fact]
@@ -430,8 +434,8 @@ public class MacroParserTests
         Assert.Single(macro.Lines);
         var command = Assert.IsType<CommandLine>(macro.Lines[0]);
         Assert.Equal("/cast", command.Command);
-        Assert.Single(command.Arguments);
-        Assert.Equal("Fireball /use Mana Potion", command.Arguments[0].Value);
+        Assert.Single(command.Clauses);
+        Assert.Equal("Fireball /use Mana Potion", command.Clauses[0].Argument);
     }
 
     [Fact]
@@ -441,11 +445,11 @@ public class MacroParserTests
         var macro = _parser.Parse(macroText);
         var command = Assert.IsType<CommandLine>(macro.Lines[0]);
         Assert.Equal("/use", command.Command);
-        Assert.Single(command.Arguments);
-        Assert.Equal("5512", command.Arguments[0].Value);
-        Assert.NotNull(command.Conditionals);
-        Assert.Single(command.Conditionals.ConditionSets);
-        var cond = command.Conditionals.ConditionSets[0].Conditions;
+        Assert.Single(command.Clauses);
+        Assert.Equal("5512", command.Clauses[0].Argument);
+        Assert.NotNull(command.Clauses[0].Conditions);
+        Assert.Single(command.Clauses[0].Conditions.ConditionSets);
+        var cond = command.Clauses[0].Conditions.ConditionSets[0].Conditions;
         Assert.Equal("@player", cond[0].Key);
         Assert.Equal("combat", cond[1].Key);
     }
@@ -457,20 +461,20 @@ public class MacroParserTests
         var macroText = "/cast [mod:shift,@focus;@mouseover,exists][combat;help] Polymorph; Fireball";
         var macro = _parser.Parse(macroText);
         var command = Assert.IsType<CommandLine>(macro.Lines[0]);
-        
+
         Console.WriteLine($"Command: {command.Command}");
-        Console.WriteLine($"Arguments count: {command.Arguments.Count}");
-        foreach (var arg in command.Arguments)
+        Console.WriteLine($"Clauses count: {command.Clauses.Count}");
+        foreach (var clause in command.Clauses)
         {
-            Console.WriteLine($"  Argument: '{arg.Value}'");
+            Console.WriteLine($"  Clause: '{clause.Argument}'");
         }
-        Console.WriteLine($"Conditionals null: {command.Conditionals == null}");
-        if (command.Conditionals != null)
+        Console.WriteLine($"Conditions null: {command.Clauses[0].Conditions == null}");
+        if (command.Clauses[0].Conditions != null)
         {
-            Console.WriteLine($"Condition sets count: {command.Conditionals.ConditionSets.Count}");
-            for (int i = 0; i < command.Conditionals.ConditionSets.Count; i++)
+            Console.WriteLine($"Condition sets count: {command.Clauses[0].Conditions.ConditionSets.Count}");
+            for (int i = 0; i < command.Clauses[0].Conditions.ConditionSets.Count; i++)
             {
-                var set = command.Conditionals.ConditionSets[i];
+                var set = command.Clauses[0].Conditions.ConditionSets[i];
                 Console.WriteLine($"  Set {i}: {set.Conditions.Count} conditions");
                 foreach (var cond in set.Conditions)
                 {
@@ -478,7 +482,7 @@ public class MacroParserTests
                 }
             }
         }
-        
+
         // This test will help us understand what's happening
         Assert.True(true); // Always pass for debug
     }
@@ -574,13 +578,13 @@ public class MacroParserTests
         Assert.Single(macro.Lines);
         var command = Assert.IsType<CommandLine>(macro.Lines[0]);
         Assert.Equal("/cast", command.Command);
-        Assert.Single(command.Arguments);
-        Assert.Equal("Smite", command.Arguments[0].Value);
-        
+        Assert.Single(command.Clauses);
+        Assert.Equal("Smite", command.Clauses[0].Argument);
+
         // Should have conditionals but with empty condition sets
-        Assert.NotNull(command.Conditionals);
-        Assert.Single(command.Conditionals.ConditionSets);
-        var conditionSet = command.Conditionals.ConditionSets[0];
+        Assert.NotNull(command.Clauses[0].Conditions);
+        Assert.Single(command.Clauses[0].Conditions.ConditionSets);
+        var conditionSet = command.Clauses[0].Conditions.ConditionSets[0];
         Assert.Empty(conditionSet.Conditions); // Empty conditional means no conditions
     }
 
@@ -612,34 +616,76 @@ public class MacroParserTests
 
         // Assert
         Assert.Equal(3, macro.Lines.Count);
-        
+
         // First line should be directive
         var directive = Assert.IsType<DirectiveLine>(macro.Lines[0]);
         Assert.Equal("#showtooltip", directive.Directive);
-        
+
         // Second line should be command with two clauses
         var command = Assert.IsType<CommandLine>(macro.Lines[1]);
         Assert.Equal("/cast", command.Command);
         Assert.Equal(2, command.Clauses.Count);
-        
+
         // First clause: [] Smite (empty conditional)
-        var (firstConditionals, firstArg) = command.Clauses[0];
-        Assert.NotNull(firstConditionals);
-        Assert.Single(firstConditionals.ConditionSets);
-        Assert.Empty(firstConditionals.ConditionSets[0].Conditions); // Empty conditional
-        Assert.Equal("Smite", firstArg?.Value);
-        
+        var firstClause = command.Clauses[0];
+        Assert.NotNull(firstClause.Conditions);
+        Assert.Single(firstClause.Conditions.ConditionSets);
+        Assert.Empty(firstClause.Conditions.ConditionSets[0].Conditions); // Empty conditional
+        Assert.Equal("Smite", firstClause.Argument);
+
         // Second clause: [@target,help,nodead] Flash Heal
-        var (secondConditionals, secondArg) = command.Clauses[1];
-        Assert.NotNull(secondConditionals);
-        Assert.Single(secondConditionals.ConditionSets);
-        Assert.Equal(3, secondConditionals.ConditionSets[0].Conditions.Count);
-        Assert.Equal("Flash Heal", secondArg?.Value);
-        
+        var secondClause = command.Clauses[1];
+        Assert.NotNull(secondClause.Conditions);
+        Assert.Single(secondClause.Conditions.ConditionSets);
+        Assert.Equal(3, secondClause.Conditions.ConditionSets[0].Conditions.Count);
+        Assert.Equal("Flash Heal", secondClause.Argument);
+
         // Third line should be command
         var thirdCommand = Assert.IsType<CommandLine>(macro.Lines[2]);
         Assert.Equal("/use", thirdCommand.Command);
     }
 
+    [Fact]
+    public void Parse_ComplexMacroWithMultipleConditionalClauses_ShouldParseCorrectly()
+    {
+        // This test simulates the user's scenario from the screenshot
+        // It tests parsing a macro similar to what they built with building blocks
+        var macroText = "/cast [actionbar:1,@mouseover] Heal; [actionbar:1,@mouseover,@raid40] Heal; [@mouseover,@raid40] Fireball";
+
+        // Act
+        var macro = _parser.Parse(macroText);
+
+        // Assert
+        Assert.Single(macro.Lines);
+        var command = Assert.IsType<CommandLine>(macro.Lines[0]);
+        Assert.Equal("/cast", command.Command);
+        Assert.Equal(3, command.Clauses.Count);
+
+        // First clause: [actionbar:1,@mouseover] Heal
+        var firstClause = command.Clauses[0];
+        Assert.Equal("Heal", firstClause.Argument);
+        Assert.NotNull(firstClause.Conditions);
+        Assert.Single(firstClause.Conditions.ConditionSets);
+        Assert.Equal(2, firstClause.Conditions.ConditionSets[0].Conditions.Count);
+        Assert.Contains(firstClause.Conditions.ConditionSets[0].Conditions, c => c.Key == "actionbar" && c.Value == "1");
+        Assert.Contains(firstClause.Conditions.ConditionSets[0].Conditions, c => c.Key == "@mouseover" && c.Value == null);
+
+        // Second clause: [actionbar:1,@mouseover,@raid40] Heal
+        var secondClause = command.Clauses[1];
+        Assert.Equal("Heal", secondClause.Argument);
+        Assert.NotNull(secondClause.Conditions);
+        Assert.Single(secondClause.Conditions.ConditionSets);
+        Assert.Equal(3, secondClause.Conditions.ConditionSets[0].Conditions.Count);
+
+        // Third clause: [@mouseover,@raid40] Fireball
+        var thirdClause = command.Clauses[2];
+        Assert.Equal("Fireball", thirdClause.Argument);
+        Assert.NotNull(thirdClause.Conditions);
+        Assert.Single(thirdClause.Conditions.ConditionSets);
+        Assert.Equal(2, thirdClause.Conditions.ConditionSets[0].Conditions.Count);
+        Assert.Contains(thirdClause.Conditions.ConditionSets[0].Conditions, c => c.Key == "@mouseover" && c.Value == null);
+        Assert.Contains(thirdClause.Conditions.ConditionSets[0].Conditions, c => c.Key == "@raid40" && c.Value == null);
+    }
+
     #endregion
-} 
+}

@@ -83,49 +83,44 @@ public class MacroParser
             LineNumber = lineNumber,
             RawText = line,
             Command = command,
-            Arguments = new List<CommandArgument>(),
-            Conditionals = null,
-            Clauses = new List<(Conditional? Conditionals, CommandArgument? Argument)>()
+            Clauses = new List<CommandClause>()
         };
 
-        // Parse conditionals and arguments
+        // Parse clauses (semicolon-separated conditional logic)
         if (!string.IsNullOrWhiteSpace(rest))
         {
-            var (conditionals, arguments, clauses) = ParseConditionalsAndArgumentsWithClauses(rest);
-            commandLine.Conditionals = conditionals;
-            commandLine.Arguments = arguments;
-            commandLine.Clauses = clauses;
+            commandLine.Clauses = ParseCommandClauses(rest);
         }
 
         return commandLine;
     }
 
-    private static (Conditional? conditionals, List<CommandArgument> arguments, List<(Conditional? Conditionals, CommandArgument? Argument)> clauses)
-        ParseConditionalsAndArgumentsWithClauses(string rest)
+    private static List<CommandClause> ParseCommandClauses(string rest)
     {
-        var conditionals = new Conditional();
-        var arguments = new List<CommandArgument>();
-        var clauses = new List<(Conditional? Conditionals, CommandArgument? Argument)>();
+        var clauses = new List<CommandClause>();
 
-        // Use the utility to split only on semicolons outside brackets
+        // Split by semicolons outside brackets to get individual clauses
         var semicolonParts = StringUtilities.SplitBySemicolonsOutsideBrackets(rest);
+        
         foreach (var part in semicolonParts)
         {
             var trimmedPart = part.Trim();
             if (!string.IsNullOrWhiteSpace(trimmedPart))
             {
-                var (partConditionals, partArguments) = ConditionalParser.ParseConditionalsAndArguments(trimmedPart);
-                if (partConditionals != null)
+                var (conditionals, arguments) = ConditionalParser.ParseConditionalsAndArguments(trimmedPart);
+                
+                // Create a clause with the conditions and first argument (WoW only allows one argument per clause)
+                var clause = new CommandClause
                 {
-                    conditionals.ConditionSets.AddRange(partConditionals.ConditionSets);
-                }
-                arguments.AddRange(partArguments);
-                // For clause output: only use the first argument (WoW only allows one per clause)
-                clauses.Add((partConditionals, partArguments.Count > 0 ? partArguments[0] : null));
+                    Conditions = conditionals,
+                    Argument = arguments.Count > 0 ? arguments[0] : string.Empty
+                };
+                
+                clauses.Add(clause);
             }
         }
 
-        return conditionals.ConditionSets.Count > 0 ? (conditionals, arguments, clauses) : (null, arguments, clauses);
+        return clauses;
     }
 
     /// <summary>
@@ -198,10 +193,13 @@ public class MacroParser
             errors.Add($"Invalid command: {command.Command}");
         }
 
-        // Validate conditionals
-        if (command.Conditionals != null)
+        // Validate conditionals in clauses
+        foreach (var clause in command.Clauses)
         {
-            errors.AddRange(ConditionalValidator.ValidateConditional(command.Conditionals));
+            if (clause.Conditions != null)
+            {
+                errors.AddRange(ConditionalValidator.ValidateConditional(clause.Conditions));
+            }
         }
 
         return errors;

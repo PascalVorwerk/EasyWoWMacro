@@ -1,0 +1,22 @@
+@rendermode InteractiveWebAssembly
+
+<div class="directive-structure">
+    <div class="structure-item directive-item">
+        <div class="item-icon">
+            <i class="bi bi-hash text-primary"></i>
+        </div>
+        <div class="item-content">
+            <div class="item-main">
+                <span class="directive-name">@Directive.Directive</span>
+                @if (!string.IsNullOrEmpty(Directive.Argument))
+                {
+                    <span class="directive-arrow">→</span>
+                    <span class="directive-argument">@Directive.Argument</span>
+                }
+            </div>
+            <div class="item-meta">
+                <small class="text-muted">Line @Directive.LineNumber</small>
+            </div>
+        </div>
+    </div>
+</div> 

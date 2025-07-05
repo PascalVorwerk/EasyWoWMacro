@@ -1,9 +1,9 @@
-using Microsoft.AspNetCore.Components;
+using System.Text.RegularExpressions;
 using EasyWoWMacro.Web.Client.Models;
 using EasyWoWMacro.Web.Client.Services;
-using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Components;
 
-namespace EasyWoWMacro.Web.Client.Components.BuildingBlocks;
+namespace EasyWoWMacro.Web.Client.Components.Modals;
 
 public partial class ConditionalConfigurationModal : ComponentBase
 {

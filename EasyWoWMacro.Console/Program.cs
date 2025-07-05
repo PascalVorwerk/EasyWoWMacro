@@ -7,20 +7,20 @@ sealed class Program
 {
     static void Main(string[] args)
     {
-        System.Console.WriteLine("=== EasyWoW Macro Testing Console ===");
+        /*System.Console.WriteLine("=== EasyWoW Macro Testing Console ===");
         System.Console.WriteLine();
-        
+
         // Test: Parse macro text with conditionals
         var parser = new MacroParser();
         var macroText = @"#showtooltip Fireball
 /cast [mod:shift,@focus] Polymorph
 /use [combat] Mana Potion; [nocombat] Water
 ; This is a comment";
-        
+
         System.Console.WriteLine("Input macro text:");
         System.Console.WriteLine(macroText);
         System.Console.WriteLine();
-        
+
         var macro = parser.Parse(macroText);
         System.Console.WriteLine("Parsed macro lines:");
         foreach (var line in macro.Lines)
@@ -33,20 +33,13 @@ sealed class Program
                     break;
                 case CommandLine c:
                     System.Console.Write($"Command: {c.Command}");
-                    if (c.Conditionals != null && c.Conditionals.ConditionSets.Count > 0)
+                    if (c.Clauses.Count > 0)
                     {
-                        System.Console.Write(" Conditionals: ");
-                        foreach (var conditionSet in c.Conditionals.ConditionSets)
+                        System.Console.Write(" Clauses:");
+                        foreach (var clause in c.Clauses)
                         {
-                            System.Console.Write("[");
-                            var conditions = conditionSet.Conditions.Select(cond => cond.ToString());
-                            System.Console.Write(string.Join(",", conditions));
-                            System.Console.Write("]");
+                            System.Console.Write($" [{clause}]");
                         }
-                    }
-                    if (c.Arguments.Count > 0)
-                    {
-                        System.Console.Write($" Args: {string.Join("; ", c.Arguments.Select(a => a.Value))}");
                     }
                     System.Console.WriteLine();
                     break;
@@ -58,7 +51,7 @@ sealed class Program
                     break;
             }
         }
-        
+
         System.Console.WriteLine();
         System.Console.WriteLine("Validation:");
         var errors = parser.ValidateMacro(macro);
@@ -73,21 +66,21 @@ sealed class Program
                 System.Console.WriteLine($"✗ {error}");
             }
         }
-        
+
         System.Console.WriteLine();
         System.Console.WriteLine(new string('=', 50));
         System.Console.WriteLine();
-        
+
         // Test: Invalid macro with bad conditionals
         System.Console.WriteLine("Test: Invalid macro with bad conditionals");
         var invalidMacroText = @"#showtooltip
 /cast [invalidcondition] Fireball
 /use [mod:invalid] Mana Potion";
-        
+
         System.Console.WriteLine("Input macro text:");
         System.Console.WriteLine(invalidMacroText);
         System.Console.WriteLine();
-        
+
         var invalidMacro = parser.Parse(invalidMacroText);
         var invalidErrors = parser.ValidateMacro(invalidMacro);
         System.Console.WriteLine("Validation errors:");
@@ -95,9 +88,9 @@ sealed class Program
         {
             System.Console.WriteLine($"✗ {error}");
         }
-        
+
         System.Console.WriteLine();
         System.Console.WriteLine("Press any key to exit...");
-        System.Console.ReadKey();
+        System.Console.ReadKey();*/
     }
 }

@@ -60,43 +60,30 @@ public class Macro
                     if (c.Clauses != null && c.Clauses.Count > 0)
                     {
                         var clauseStrings = new List<string>();
-                        foreach (var (conds, arg) in c.Clauses)
+                        foreach (var clause in c.Clauses)
                         {
-                            var clause = "";
-                            if (conds != null && conds.ConditionSets.Count > 0)
+                            var clauseText = "";
+                            if (clause.Conditions != null && clause.Conditions.ConditionSets.Count > 0)
                             {
-                                foreach (var conditionSet in conds.ConditionSets)
+                                foreach (var conditionSet in clause.Conditions.ConditionSets)
                                 {
                                     var conditions = conditionSet.Conditions.Select(cond => cond.ToString());
-                                    clause += $"[{string.Join(",", conditions)}]";
+                                    clauseText += $"[{string.Join(",", conditions)}]";
                                 }
-                                clause += " ";
+                                clauseText += " ";
                             }
-                            if (arg != null && !string.IsNullOrWhiteSpace(arg.Value))
+                            if (!string.IsNullOrWhiteSpace(clause.Argument))
                             {
-                                clause += arg.Value.Trim();
+                                clauseText += clause.Argument.Trim();
                             }
-                            clauseStrings.Add(clause.TrimEnd());
+                            clauseStrings.Add(clauseText.TrimEnd());
                         }
                         lines.Add($"{c.Command} {string.Join("; ", clauseStrings).Trim()}");
                     }
                     else
                     {
-                        // fallback to old logic if no clauses
-                        var commandLine = c.Command;
-                        var hasConditionals = c.Conditionals != null && c.Conditionals.ConditionSets.Count > 0;
-                        if (hasConditionals)
-                        {
-                            var conditionalStrings = new List<string>();
-                            foreach (var conditionSet in c.Conditionals!.ConditionSets)
-                            {
-                                var conditions = conditionSet.Conditions.Select(cond => cond.ToString());
-                                conditionalStrings.Add($"[{string.Join(",", conditions)}]");
-                            }
-                            commandLine += " " + string.Join("", conditionalStrings);
-                        }
-                        var args = c.Arguments != null && c.Arguments.Count > 0 ? " " + string.Join(" ", c.Arguments.Select(a => a.Value)) : string.Empty;
-                        lines.Add($"{commandLine}{args}");
+                        // Empty command line - just add the command
+                        lines.Add(c.Command);
                     }
                     break;
                 case CommentLine cm:

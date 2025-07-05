@@ -1,7 +1,7 @@
-using Microsoft.AspNetCore.Components;
 using EasyWoWMacro.Web.Client.Models;
+using Microsoft.AspNetCore.Components;
 
-namespace EasyWoWMacro.Web.Client.Components.BuildingBlocks;
+namespace EasyWoWMacro.Web.Client.Components.Modals;
 
 public partial class DirectiveConfigurationModal : ComponentBase
 {
@@ -38,7 +38,7 @@ public partial class DirectiveConfigurationModal : ComponentBase
         {
             Block.Configuration["directive"] = _selectedDirective;
             Block.Configuration["value"] = _directiveValue;
-            
+
             if (!string.IsNullOrEmpty(_directiveValue))
             {
                 Block.DisplayText = $"{_selectedDirective} {_directiveValue}";
@@ -47,8 +47,8 @@ public partial class DirectiveConfigurationModal : ComponentBase
             {
                 Block.DisplayText = _selectedDirective;
             }
-            
+
             await OnSave.InvokeAsync(Block);
         }
     }
-} 
+}

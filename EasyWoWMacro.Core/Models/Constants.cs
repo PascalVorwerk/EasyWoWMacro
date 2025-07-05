@@ -19,7 +19,7 @@ public static class WoWMacroConstants
     public static readonly string[] ValidSlashCommands = 
     {
         // Combat commands
-        "/cast", "/use", "/castsequence", "/stopcasting", "/stopmacro",
+        "/cast", "/use", "/castsequence", "/castrandom", "/stopcasting", "/stopmacro",
         
         // Target commands
         "/target", "/targetenemy", "/targetfriend", "/targetlasttarget", "/targetlastfriend",
@@ -91,22 +91,67 @@ public static class WoWMacroConstants
     };
 
     /// <summary>
-    /// Known conditional keywords (without values)
+    /// Known conditional keywords (without values) - Based on official WoW wiki
     /// </summary>
     public static readonly string[] KnownConditionals = 
     {
-        "combat", "nocombat", "harm", "help", "dead", "nodead", "stealth", "nostealth",
-        "mounted", "nomounted", "flying", "noflying", "swimming", "noswimming",
-        "indoors", "outdoors", "group", "raid", "party", "solo", "pet", "nopet",
-        "mod", "nomod", "button", "exists", "noexists", "threat", "player",
-        "target", "mouseover", "focus", "cursor", "form", "stance", "equipped", "worn"
+        // Combat and targeting
+        "combat", "nocombat", "harm", "help", "dead", "nodead", "exists", "noexists",
+        
+        // Player state
+        "stealth", "nostealth", "mounted", "nomounted", "flying", "noflying", 
+        "swimming", "noswimming", "resting", "noresting", "petbattle", "nopetbattle",
+        "pvpcombat", "nopvpcombat",
+        
+        // Environment
+        "indoors", "outdoors", "flyable", "noflyable", "advflyable", "noadvflyable",
+        
+        // Group
+        "group", "nogroup", "raid", "noraid", "party", "noparty",
+        
+        // Pet
+        "pet", "nopet",
+        
+        // UI state
+        "cursor", "nocursor", "extrabar", "noextrabar", "overridebar", "nooverridebar",
+        "possessbar", "nopossessbar", "shapeshift", "noshapeshift", "bonusbar", "nobonusbar",
+        "vehicleui", "novehicleui", "unithasvehicleui", "nounithasvehicleui",
+        "canexitvehicle", "nocanexitvehicle"
     };
 
     /// <summary>
-    /// Conditional prefixes that indicate a conditional with a value
+    /// Conditional prefixes that indicate a conditional with a value - Based on official WoW wiki
     /// </summary>
     public static readonly string[] ConditionalPrefixes = 
     {
-        "mod:", "nomod:", "button:", "form:", "stance:", "equipped:", "worn:", "threat:"
+        // Modifier keys
+        "mod:", "nomod:", "modifier:",
+        
+        // Mouse buttons
+        "button:", "btn:",
+        
+        // Forms and stances
+        "form:", "stance:",
+        
+        // Equipment
+        "equipped:", "worn:",
+        
+        // Action bars
+        "actionbar:", "bar:", "bonusbar:",
+        
+        // Specialization and talents
+        "spec:", "talent:",
+        
+        // Pet
+        "pet:",
+        
+        // Spells
+        "channeling:", "casting:", "known:", "unknown:",
+        
+        // Group
+        "group:", "raid:",
+        
+        // Targeting
+        "target:", "@"
     };
 } 

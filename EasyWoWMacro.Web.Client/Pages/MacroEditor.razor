@@ -5,19 +5,26 @@
 {
     <div class="container-fluid">
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-2">
             <BuildingBlocksToolbox />
         </div>
-        <div class="col-md-5">
+        <div class="col-md-6">
             <div class="macro-editor position-relative">
                 <h3 class="d-flex justify-content-between align-items-center">
                     Macro Editor
-                    <button class="btn btn-outline-primary copy-clipboard-btn @(_isCopying ? "loading" : "")"
-                            title="Copy to Clipboard"
-                            @onclick="CopyToClipboard"
-                            disabled="@_isCopying">
-                        📋 Copy
-                    </button>
+                    <div class="btn-group">
+                        <button class="btn btn-outline-secondary"
+                                title="Import Macro"
+                                @onclick="ShowImportModal">
+                            📥 Import
+                        </button>
+                        <button class="btn btn-outline-primary copy-clipboard-btn @(_isCopying ? "loading" : "")"
+                                title="Copy to Clipboard"
+                                @onclick="CopyToClipboard"
+                                disabled="@_isCopying">
+                            📋 Copy
+                        </button>
+                    </div>
                 </h3>
                 <div class="macro-lines">
                     @foreach (var line in _macroLines)
@@ -30,13 +37,28 @@
                 </div>
                 <div class="editor-actions">
                     <button class="btn btn-primary" @onclick="AddNewLine">Add Line</button>
-                    <button class="btn btn-success" @onclick="ParseMacro">Parse & Validate</button>
+                    <button class="btn btn-success" @onclick="ParseMacro">Validate</button>
                 </div>
             </div>
         </div>
         <div class="col-md-4">
             <div class="validation-panel">
-                <h3>Validation & Preview</h3>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h3 class="mb-0">Validation & Preview</h3>
+                    @if (_parsedMacro != null)
+                    {
+                        <div class="btn-group btn-group-sm" role="group">
+                            <button type="button" class="btn @(_showStructureView ? "btn-primary" : "btn-outline-primary")" 
+                                    @onclick="() => ToggleView(true)">
+                                <i class="bi bi-diagram-3"></i> Structure
+                            </button>
+                            <button type="button" class="btn @(!_showStructureView ? "btn-primary" : "btn-outline-primary")" 
+                                    @onclick="() => ToggleView(false)">
+                                <i class="bi bi-code"></i> Output
+                            </button>
+                        </div>
+                    }
+                </div>
 
                 @if (_validationErrors.Count > 0)
                 {
@@ -57,16 +79,72 @@
                         <h5>✓ Macro is valid!</h5>
                         <p class="mb-0">Character count: @GetFormattedMacroLength() / 255</p>
                     </div>
+                }
 
-                    <h5>Formatted Output:</h5>
-                    <div class="formatted-macro">
-                        <pre class="bg-light p-3 rounded"><code>@_parsedMacro.GetFormattedMacro()</code></pre>
-                    </div>
+                @if (_parsedMacro != null)
+                {
+                    @if (_showStructureView)
+                    {
+                        <div class="structure-view-container">
+                            <MacroStructureViewer MacroLines="_parsedMacro.Lines" />
+                        </div>
+                    }
+                    else
+                    {
+                        <h5>Formatted Output:</h5>
+                        <div class="formatted-macro">
+                            <pre class="bg-light p-3 rounded"><code>@_parsedMacro.GetFormattedMacro()</code></pre>
+                        </div>
+                    }
                 }
             </div>
         </div>
     </div>
 </div>
+
+    <!-- Import Modal -->
+    @if (_showImportModal)
+    {
+        <div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Import Macro</h5>
+                        <button type="button" class="btn-close" @onclick="HideImportModal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="macroTextImport" class="form-label">Paste your macro text below:</label>
+                            <textarea id="macroTextImport" 
+                                      class="form-control" 
+                                      rows="8" 
+                                      placeholder="Paste your macro here..."
+                                      @bind="_importText"
+                                      @bind:event="oninput"></textarea>
+                        </div>
+                        @if (_importErrors.Count > 0)
+                        {
+                            <div class="alert alert-warning">
+                                <h6>Import Warnings:</h6>
+                                <ul class="mb-0">
+                                    @foreach (var error in _importErrors)
+                                    {
+                                        <li>@error</li>
+                                    }
+                                </ul>
+                            </div>
+                        }
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" @onclick="HideImportModal">Cancel</button>
+                        <button type="button" class="btn btn-primary" @onclick="ImportMacro" disabled="@(string.IsNullOrWhiteSpace(_importText))">
+                            Import Macro
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
 
     @if (_showCopyToast)
     {

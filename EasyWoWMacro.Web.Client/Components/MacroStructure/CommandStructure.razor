@@ -1,0 +1,39 @@
+@rendermode InteractiveWebAssembly
+
+<div class="command-structure">
+    <div class="structure-item command-item">
+        <div class="item-icon">
+            <i class="bi bi-terminal text-success"></i>
+        </div>
+        <div class="item-content">
+            <div class="item-main">
+                <span class="command-name">@Command.Command</span>
+                <div class="item-meta">
+                    <small class="text-muted">Line @Command.LineNumber</small>
+                </div>
+            </div>
+
+            @if (HasClauses)
+            {
+                <div class="command-clauses">
+                    @foreach (var clause in Command.Clauses)
+                    {
+                        <div class="command-clause">
+                            @if (clause.Conditions != null)
+                            {
+                                <ConditionalStructure Conditionals="clause.Conditions" />
+                            }
+                            @if (!string.IsNullOrWhiteSpace(clause.Argument))
+                            {
+                                <div class="clause-argument">
+                                    <span class="argument-arrow">→</span>
+                                    <span class="argument-value">@clause.Argument</span>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</div>

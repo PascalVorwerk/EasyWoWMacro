@@ -1,8 +1,8 @@
-using Microsoft.AspNetCore.Components;
 using EasyWoWMacro.Core.Models;
 using EasyWoWMacro.Web.Client.Models;
+using Microsoft.AspNetCore.Components;
 
-namespace EasyWoWMacro.Web.Client.Components.BuildingBlocks;
+namespace EasyWoWMacro.Web.Client.Components.Modals;
 
 public partial class CommandConfigurationModal : ComponentBase
 {

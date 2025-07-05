@@ -1,5 +1,4 @@
 using EasyWoWMacro.Core.Models;
-using EasyWoWMacro.Core.Validation;
 using EasyWoWMacro.Web.Client.Models;
 
 namespace EasyWoWMacro.Web.Client.Services;

@@ -1,0 +1,49 @@
+@rendermode InteractiveWebAssembly
+
+@if (RendererInfo.IsInteractive && Conditional != null)
+{
+    <div class="conditional-structure">
+        @if (Conditional.ConditionSets?.Any() == true)
+        {
+            @for (int i = 0; i < Conditional.ConditionSets.Count; i++)
+            {
+                var conditionSet = Conditional.ConditionSets[i];
+                
+                <div class="conditional-clause">
+                    @if (conditionSet.Conditions?.Any() == true)
+                    {
+                        <div class="conditions-group">
+                            @for (int j = 0; j < conditionSet.Conditions.Count; j++)
+                            {
+                                var condition = conditionSet.Conditions[j];
+                                
+                                <div class="condition-item">
+                                    <span class="condition-text">@condition.ToString()</span>
+                                    
+                                    @if (j < conditionSet.Conditions.Count - 1)
+                                    {
+                                        <span class="logic-operator and-operator">AND</span>
+                                    }
+                                </div>
+                            }
+                        </div>
+                                        }
+                </div>
+                
+                @if (i < Conditional.ConditionSets.Count - 1)
+                {
+                    <div class="clause-separator">
+                        <span class="logic-operator or-operator">OR</span>
+                    </div>
+                }
+            }
+        }
+        else
+        {
+            <div class="no-conditions">
+                <i class="fas fa-info-circle me-2"></i>
+                No conditions defined
+            </div>
+        }
+    </div>
+}

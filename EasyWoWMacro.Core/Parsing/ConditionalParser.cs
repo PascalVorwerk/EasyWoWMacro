@@ -88,10 +88,10 @@ public static class ConditionalParser
     /// </summary>
     /// <param name="text">The text to parse</param>
     /// <returns>Tuple of conditionals and arguments</returns>
-    public static (Conditional? conditionals, List<CommandArgument> arguments) ParseConditionalsAndArguments(string text)
+    public static (Conditional? conditionals, List<string> arguments) ParseConditionalsAndArguments(string text)
     {
         var conditionals = new Conditional();
-        var arguments = new List<CommandArgument>();
+        var arguments = new List<string>();
         var currentPosition = 0;
 
         // Parse conditionals first (anything in brackets)
@@ -123,7 +123,7 @@ public static class ConditionalParser
                         // Add the remaining text as an argument
                         if (!string.IsNullOrWhiteSpace(remainingAfterSpace))
                         {
-                            arguments.Add(new CommandArgument { Value = remainingAfterSpace });
+                            arguments.Add(remainingAfterSpace);
                         }
                     }
                     else
@@ -132,7 +132,7 @@ public static class ConditionalParser
                         var invalidBracketText = text.Substring(currentPosition).Trim();
                         if (!string.IsNullOrWhiteSpace(invalidBracketText))
                         {
-                            arguments.Add(new CommandArgument { Value = invalidBracketText });
+                            arguments.Add(invalidBracketText);
                         }
                     }
                 }
@@ -142,7 +142,7 @@ public static class ConditionalParser
                     var invalidBracketText = text.Substring(currentPosition).Trim();
                     if (!string.IsNullOrWhiteSpace(invalidBracketText))
                     {
-                        arguments.Add(new CommandArgument { Value = invalidBracketText });
+                        arguments.Add(invalidBracketText);
                     }
                 }
                 break;
@@ -159,7 +159,7 @@ public static class ConditionalParser
         var remainingText = text.Substring(currentPosition).Trim();
         if (!string.IsNullOrWhiteSpace(remainingText))
         {
-            arguments.Add(new CommandArgument { Value = remainingText });
+            arguments.Add(remainingText);
         }
 
         // Always return conditionals if we found brackets, even if they were empty

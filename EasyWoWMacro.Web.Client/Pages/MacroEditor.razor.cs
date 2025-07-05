@@ -23,6 +23,12 @@ public partial class MacroEditor : ComponentBase
     private bool _showCopyToast;
     private string _toastMessage = "";
     private bool _isCopying;
+    private bool _showStructureView = true;
+
+    // Import functionality properties
+    private bool _showImportModal;
+    private string _importText = "";
+    private List<string> _importErrors = [];
 
     private void AddNewLine()
     {
@@ -45,6 +51,179 @@ public partial class MacroEditor : ComponentBase
         // The configuration is now handled by the specific modals in MacroLine
         StateHasChanged();
     }
+
+    #region Import Functionality
+
+    private void ShowImportModal()
+    {
+        _showImportModal = true;
+        _importText = "";
+        _importErrors.Clear();
+        StateHasChanged();
+    }
+
+    private void HideImportModal()
+    {
+        _showImportModal = false;
+        _importText = "";
+        _importErrors.Clear();
+        StateHasChanged();
+    }
+
+    private async Task ImportMacro()
+    {
+        try
+        {
+            _importErrors.Clear();
+
+            if (string.IsNullOrWhiteSpace(_importText))
+            {
+                _importErrors.Add("Please enter macro text to import.");
+                StateHasChanged();
+                return;
+            }
+
+            // Parse the macro text
+            var parsedMacro = _parser.Parse(_importText);
+            var validationErrors = _parser.ValidateMacroText(_importText);
+
+            if (validationErrors.Count > 0)
+            {
+                _importErrors.AddRange(validationErrors);
+                StateHasChanged();
+                return;
+            }
+
+            // Convert parsed macro to building blocks
+            _macroLines.Clear();
+            
+            foreach (var macroLine in parsedMacro.Lines)
+            {
+                var blocks = ConvertMacroLineToBlocks(macroLine);
+                if (blocks.Count > 0)
+                {
+                    _macroLines.Add(blocks);
+                }
+            }
+
+            // Ensure we have at least one empty line if no content
+            if (_macroLines.Count == 0)
+            {
+                _macroLines.Add([]);
+            }
+
+            // Close the modal and refresh the UI
+            HideImportModal();
+            ParseMacro(); // Immediately parse and validate the imported macro
+            
+            await ShowSuccessToast("✓ Macro imported successfully!");
+        }
+        catch (Exception ex)
+        {
+            _importErrors.Add($"Import failed: {ex.Message}");
+            StateHasChanged();
+        }
+    }
+
+    private List<MacroBlockModel> ConvertMacroLineToBlocks(MacroLine macroLine)
+    {
+        var blocks = new List<MacroBlockModel>();
+
+        switch (macroLine)
+        {
+            case DirectiveLine directive:
+                blocks.Add(new MacroBlockModel
+                {
+                    Type = "Directive",
+                    DisplayText = directive.Directive + (string.IsNullOrEmpty(directive.Argument) ? "" : $" {directive.Argument}"),
+                    Configuration = new Dictionary<string, string>
+                    {
+                        { "directive", directive.Directive },
+                        { "value", directive.Argument ?? "" }
+                    }
+                });
+                break;
+
+            case CommandLine command:
+                // Add command block
+                blocks.Add(new MacroBlockModel
+                {
+                    Type = "Command",
+                    DisplayText = command.Command,
+                    Configuration = new Dictionary<string, string>
+                    {
+                        { "command", command.Command }
+                    }
+                });
+
+                // Add clauses as conditional and argument blocks
+                foreach (var clause in command.Clauses)
+                {
+                    // Add conditionals if present
+                    if (clause.Conditions != null && clause.Conditions.ConditionSets.Any())
+                    {
+                        var conditionalsText = ConvertConditionsToText(clause.Conditions);
+                        blocks.Add(new MacroBlockModel
+                        {
+                            Type = "Conditional",
+                            DisplayText = conditionalsText,
+                            Configuration = new Dictionary<string, string>
+                            {
+                                { "conditionals", conditionalsText }
+                            }
+                        });
+                    }
+
+                    // Add argument if present
+                    if (!string.IsNullOrEmpty(clause.Argument))
+                    {
+                        blocks.Add(new MacroBlockModel
+                        {
+                            Type = "Argument",
+                            DisplayText = clause.Argument,
+                            Configuration = new Dictionary<string, string>
+                            {
+                                { "value", clause.Argument }
+                            }
+                        });
+                    }
+                }
+                break;
+
+            case CommentLine comment:
+                // Comments aren't typically part of the visual editor, but we could add them as a special block type
+                // For now, we'll skip them since the UI doesn't have comment blocks
+                break;
+        }
+
+        return blocks;
+    }
+
+    private string ConvertConditionsToText(Conditional conditional)
+    {
+        var conditionSets = new List<string>();
+
+        foreach (var conditionSet in conditional.ConditionSets)
+        {
+            var conditions = new List<string>();
+            foreach (var condition in conditionSet.Conditions)
+            {
+                if (string.IsNullOrEmpty(condition.Value))
+                {
+                    conditions.Add(condition.Key);
+                }
+                else
+                {
+                    conditions.Add($"{condition.Key}:{condition.Value}");
+                }
+            }
+            conditionSets.Add($"[{string.Join(",", conditions)}]");
+        }
+
+        return string.Join("", conditionSets);
+    }
+
+    #endregion
 
     private void ParseMacro()
     {
@@ -175,49 +354,7 @@ public partial class MacroEditor : ComponentBase
         {
             if (line.Count == 0) continue;
 
-            var lineText = "";
-            foreach (var block in line)
-            {
-                switch (block.Type)
-                {
-                    case "Command":
-                        if (block.Configuration.TryGetValue("command", out var cmd))
-                        {
-                            lineText += $"{cmd} ";
-                        }
-                        break;
-                    case "Conditional":
-                        if (block.Configuration.TryGetValue("conditionals", out var conditions))
-                        {
-                            lineText += $"{conditions} ";
-                        }
-                        break;
-                    case "Directive":
-                        if (block.Configuration.TryGetValue("directive", out var dir))
-                        {
-                            if (block.Configuration.TryGetValue("value", out var value) && !string.IsNullOrEmpty(value))
-                            {
-                                lineText += $"{dir} {value} ";
-                            }
-                            else
-                            {
-                                lineText += $"{dir} ";
-                            }
-                        }
-                        break;
-                    case "Argument":
-                        if (block.Configuration.TryGetValue("value", out var argValue))
-                        {
-                            lineText += $"{argValue} ";
-                        }
-                        else
-                        {
-                            lineText += $"{block.DisplayText} ";
-                        }
-                        break;
-                }
-            }
-
+            var lineText = ConvertLineBlocksToText(line);
             if (!string.IsNullOrWhiteSpace(lineText))
             {
                 lines.Add(lineText.Trim());
@@ -225,5 +362,117 @@ public partial class MacroEditor : ComponentBase
         }
 
         return string.Join("\n", lines);
+    }
+
+    private string ConvertLineBlocksToText(List<MacroBlockModel> line)
+    {
+        if (line.Count == 0) return "";
+
+        // Handle directive lines
+        var firstBlock = line[0];
+        if (firstBlock.Type == "Directive")
+        {
+            if (firstBlock.Configuration.TryGetValue("directive", out var dir))
+            {
+                if (firstBlock.Configuration.TryGetValue("value", out var value) && !string.IsNullOrEmpty(value))
+                {
+                    return $"{dir} {value}";
+                }
+                return dir;
+            }
+            return "";
+        }
+
+        // Handle command lines
+        string command = "";
+        var blocks = new List<MacroBlockModel>();
+
+        // Extract command and remaining blocks
+        for (int i = 0; i < line.Count; i++)
+        {
+            var block = line[i];
+            if (block.Type == "Command" && string.IsNullOrEmpty(command))
+            {
+                if (block.Configuration.TryGetValue("command", out var cmd))
+                {
+                    command = cmd;
+                }
+            }
+            else
+            {
+                blocks.Add(block);
+            }
+        }
+
+        if (string.IsNullOrEmpty(command)) return "";
+
+        // Convert blocks to clauses
+        var clauses = ConvertBlocksToClauses(blocks);
+        
+        if (clauses.Count == 0)
+        {
+            return command;
+        }
+
+        return $"{command} {string.Join("; ", clauses)}";
+    }
+
+    private List<string> ConvertBlocksToClauses(List<MacroBlockModel> blocks)
+    {
+        var clauses = new List<string>();
+        var currentConditionals = new List<string>();
+        
+        for (int i = 0; i < blocks.Count; i++)
+        {
+            var block = blocks[i];
+
+            if (block.Type == "Conditional")
+            {
+                if (block.Configuration.TryGetValue("conditionals", out var conditions))
+                {
+                    currentConditionals.Add(conditions);
+                }
+            }
+            else if (block.Type == "Argument")
+            {
+                string argument = "";
+                if (block.Configuration.TryGetValue("value", out var argValue))
+                {
+                    argument = argValue;
+                }
+                else
+                {
+                    argument = block.DisplayText;
+                }
+
+                // Create clause with accumulated conditionals and this argument
+                if (currentConditionals.Count > 0)
+                {
+                    var conditionalsText = string.Join("", currentConditionals);
+                    clauses.Add($"{conditionalsText} {argument}");
+                    currentConditionals.Clear();
+                }
+                else
+                {
+                    // Fallback clause without conditionals
+                    clauses.Add(argument);
+                }
+            }
+        }
+
+        // Handle trailing conditionals without arguments (rare case)
+        if (currentConditionals.Count > 0)
+        {
+            var conditionalsText = string.Join("", currentConditionals);
+            clauses.Add(conditionalsText);
+        }
+
+        return clauses;
+    }
+
+    private void ToggleView(bool showStructure)
+    {
+        _showStructureView = showStructure;
+        StateHasChanged();
     }
 }

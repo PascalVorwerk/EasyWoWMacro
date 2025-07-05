@@ -16,7 +16,7 @@
                             <div class="mb-2">
                                 <div class="input-group input-group-sm">
                                     <input type="text" class="form-control" placeholder="Search conditions..."
-                                           @bind-value="_basicConditionSearch" @bind-value:event="Input" />
+                                           @bind="@_basicConditionSearch"/>
                                 </div>
                             </div>
                             <div class="basic-conditions-list" style="max-height: 300px; overflow-y: auto;">
@@ -39,7 +39,7 @@
                             <small class="text-muted mb-2 d-block">These conditionals require additional configuration</small>
                             <div class="mb-2">
                                 <input type="text" class="form-control form-control-sm" placeholder="Search advanced conditions..."
-                                       @bind-value="_advancedConditionSearch" @bind-value:event="Input" />
+                                       @bind="@_advancedConditionSearch"/>
                             </div>
                             <div class="advanced-conditions-list" style="max-height: 300px; overflow-y: auto;">
                                 @foreach (var condition in AdvancedConditions)
@@ -51,58 +51,6 @@
                                            @onchange="@(e => HandleConditionChange(condition, e))" />
                                     <label class="form-check-label" for="@condition">
                                         @condition
-                                        @if (condition == "stance:")
-                                        {
-                                            <small class="text-muted d-block">Check current stance/form (Warrior, Druid, etc.)</small>
-                                        }
-                                        else if (condition == "equipped:")
-                                        {
-                                            <small class="text-muted d-block">Check if specific item/slot is equipped</small>
-                                        }
-                                        else if (condition == "form:")
-                                        {
-                                            <small class="text-muted d-block">Check current druid form</small>
-                                        }
-                                        else if (condition == "button:")
-                                        {
-                                            <small class="text-muted d-block">Check which mouse button was pressed</small>
-                                        }
-                                        else if (condition == "threat:")
-                                        {
-                                            <small class="text-muted d-block">Check threat level on target</small>
-                                        }
-                                        else if (condition == "spec:")
-                                        {
-                                            <small class="text-muted d-block">Check current specialization</small>
-                                        }
-                                        else if (condition == "talent:")
-                                        {
-                                            <small class="text-muted d-block">Check if specific talent is learned</small>
-                                        }
-                                        else if (condition == "glyph:")
-                                        {
-                                            <small class="text-muted d-block">Check if specific glyph is active</small>
-                                        }
-                                        else if (condition == "spell:")
-                                        {
-                                            <small class="text-muted d-block">Check if specific spell is known</small>
-                                        }
-                                        else if (condition == "item:")
-                                        {
-                                            <small class="text-muted d-block">Check if specific item is in bags</small>
-                                        }
-                                        else if (condition == "aura:")
-                                        {
-                                            <small class="text-muted d-block">Check if specific aura is active</small>
-                                        }
-                                        else if (condition == "buff:" || condition == "debuff:")
-                                        {
-                                            <small class="text-muted d-block">Check if specific buff/debuff is active</small>
-                                        }
-                                        else if (condition.StartsWith("@"))
-                                        {
-                                            <small class="text-muted d-block">Target modifier (e.g., @@target, @@mouseover)</small>
-                                        }
                                     </label>
                                 </div>
                             }

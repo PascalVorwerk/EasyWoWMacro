@@ -47,12 +47,12 @@ public class CommandValidatorTests
     public void ValidateCommandLine_ValidCommand_ShouldReturnNoErrors()
     {
         // Arrange
-        var command = new CommandLine 
-        { 
+        var command = new CommandLine
+        {
             Command = "/cast",
-            Arguments = new List<CommandArgument>
+            Clauses = new List<CommandClause>
             {
-                new() { Value = "Fireball" }
+                new() { Argument = "Fireball" }
             }
         };
 
@@ -67,12 +67,12 @@ public class CommandValidatorTests
     public void ValidateCommandLine_InvalidCommand_ShouldReturnErrors()
     {
         // Arrange
-        var command = new CommandLine 
-        { 
+        var command = new CommandLine
+        {
             Command = "/invalidcommand",
-            Arguments = new List<CommandArgument>
+            Clauses = new List<CommandClause>
             {
-                new() { Value = "Fireball" }
+                new() { Argument = "Fireball" }
             }
         };
 
@@ -154,17 +154,17 @@ public class CommandValidatorTests
     }
 
     [Fact]
-    public void ValidateCommandLine_CommandWithMultipleArguments_ShouldReturnNoErrors()
+    public void ValidateCommandLine_CommandWithMultipleClauses_ShouldReturnNoErrors()
     {
         // Arrange
-        var command = new CommandLine 
-        { 
+        var command = new CommandLine
+        {
             Command = "/castsequence",
-            Arguments = new List<CommandArgument>
+            Clauses = new List<CommandClause>
             {
-                new() { Value = "Fireball" },
-                new() { Value = "Frostbolt" },
-                new() { Value = "Arcane Missiles" }
+                new() { Argument = "Fireball" },
+                new() { Argument = "Frostbolt" },
+                new() { Argument = "Arcane Missiles" }
             }
         };
 
@@ -176,13 +176,13 @@ public class CommandValidatorTests
     }
 
     [Fact]
-    public void ValidateCommandLine_CommandWithNoArguments_ShouldReturnNoErrors()
+    public void ValidateCommandLine_CommandWithNoClauses_ShouldReturnNoErrors()
     {
         // Arrange
-        var command = new CommandLine 
-        { 
+        var command = new CommandLine
+        {
             Command = "/cleartarget",
-            Arguments = new List<CommandArgument>()
+            Clauses = new List<CommandClause>()
         };
 
         // Act
@@ -191,4 +191,4 @@ public class CommandValidatorTests
         // Assert
         Assert.Empty(errors);
     }
-} 
+}
