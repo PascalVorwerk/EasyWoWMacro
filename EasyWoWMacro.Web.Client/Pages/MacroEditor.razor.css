@@ -1,10 +1,13 @@
 .macro-editor {
-    background: #fff;
-    border: 1px solid #dee2e6;
-    border-radius: 8px;
-    padding: 1rem;
+    background: linear-gradient(135deg, #4a4a4a 0%, #2c2c2c 100%);
+    border: 3px solid #d4a017;
+    border-radius: 12px;
+    padding: 1.5rem;
     margin-bottom: 1rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3), inset 0 1px 2px rgba(255, 215, 0, 0.1);
+    color: #f4f1e8;
+    position: relative;
+    overflow: hidden;
 }
 
 .macro-lines {
@@ -16,6 +19,7 @@
     display: flex;
     gap: 0.5rem;
     align-items: center;
+    margin-top: 1rem;
 }
 
 .editor-actions .btn {
@@ -51,19 +55,48 @@
 }
 
 .validation-panel {
-    background: #fff;
-    border: 1px solid #dee2e6;
-    border-radius: 8px;
-    padding: 1rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    background: linear-gradient(135deg, #4a4a4a 0%, #2c2c2c 100%);
+    border: 3px solid #d4a017;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3), inset 0 1px 2px rgba(255, 215, 0, 0.1);
     height: fit-content;
+    color: #f4f1e8;
+    position: relative;
+    overflow: hidden;
 }
 
 .structure-view-container {
     margin-top: 1rem;
-    /* Ensure natural height without overflow issues */
     height: auto;
     overflow: visible;
+}
+
+.formatted-output-header {
+    color: #ffd700 !important;
+    font-family: 'Cinzel', serif;
+    margin-bottom: 0.5rem;
+}
+
+.validation-success {
+    background: linear-gradient(135deg, rgba(40, 167, 69, 0.15) 0%, rgba(40, 167, 69, 0.05) 100%) !important;
+    border: 1px solid rgba(40, 167, 69, 0.3) !important;
+    color: #f4f1e8 !important;
+}
+
+.validation-title {
+    color: #90ee90 !important;
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    letter-spacing: 1px;
+}
+
+.validation-details {
+    color: #d4a017 !important;
+    font-family: 'Courier New', monospace;
+    font-weight: 600;
 }
 
 .formatted-macro {
@@ -71,14 +104,12 @@
 }
 
 .formatted-macro pre {
-    border: 1px solid #dee2e6;
-    border-radius: 6px;
-    background: #f8f9fa !important;
     font-family: 'Courier New', monospace;
     font-size: 0.9rem;
     line-height: 1.5;
     max-height: 400px;
     overflow-y: auto;
+    margin: 0;
 }
 
 .copy-toast {
@@ -116,17 +147,6 @@
     content: "✓";
     font-weight: bold;
     font-size: 1.1rem;
-}
-
-/* Loading skeleton styles */
-.loading-skeleton {
-    padding: 1rem;
-    animation: pulse 1.5s ease-in-out infinite alternate;
-}
-
-@keyframes pulse {
-    0% { opacity: 0.6; }
-    100% { opacity: 0.8; }
 }
 
 .skeleton-header {
@@ -200,27 +220,106 @@
     border-radius: 6px;
 }
 
-/* Responsive adjustments */
+/* Component-specific styles for MacroEditor */
+
+/* Header layout fixes */
+.macro-editor .wow-toolbox-header,
+.validation-panel .wow-toolbox-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    flex-wrap: nowrap !important;
+}
+
+.macro-editor .wow-toolbox-title,
+.validation-panel .wow-toolbox-title {
+    margin: 0 !important;
+    flex: 1;
+}
+
+.macro-editor .btn-group,
+.validation-panel .btn-group {
+    flex-shrink: 0;
+    margin-left: 1rem;
+}
+
+/* Button styling improvements */
+.macro-editor .btn,
+.validation-panel .btn {
+    font-weight: 600 !important;
+    transition: all 0.3s ease !important;
+    border-radius: 6px;
+}
+
+.macro-editor .btn:hover,
+.validation-panel .btn:hover {
+    transform: translateY(-1px) !important;
+}
+
+.macro-editor .btn-outline-secondary,
+.validation-panel .btn-outline-secondary {
+    background: rgba(108, 117, 125, 0.1) !important;
+    border: 1px solid #6c757d !important;
+    color: #f4f1e8 !important;
+}
+
+.macro-editor .btn-outline-secondary:hover,
+.validation-panel .btn-outline-secondary:hover {
+    background: #6c757d !important;
+    color: white !important;
+}
+
+.macro-editor .btn-outline-primary,
+.validation-panel .btn-outline-primary {
+    background: rgba(0, 123, 255, 0.1) !important;
+    border: 1px solid #007bff !important;
+    color: #007bff !important;
+}
+
+.macro-editor .btn-outline-primary:hover,
+.validation-panel .btn-outline-primary:hover {
+    background: #007bff !important;
+    color: white !important;
+}
+
+.macro-editor .btn-primary,
+.validation-panel .btn-primary {
+    background: #007bff !important;
+    border: 1px solid #007bff !important;
+    color: white !important;
+}
+
+.macro-editor .btn-primary:hover,
+.validation-panel .btn-primary:hover {
+    background: #0056b3 !important;
+    border-color: #0056b3 !important;
+}
+
+/* Responsive Design */
 @media (max-width: 768px) {
-    .skeleton-content {
-        flex-direction: column;
+    .macro-editor .wow-toolbox-header,
+    .validation-panel .wow-toolbox-header {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 0.5rem !important;
     }
-    
-    .skeleton-toolbox,
-    .skeleton-panel {
-        flex: none;
+
+    .macro-editor .btn-group,
+    .validation-panel .btn-group {
+        margin-left: 0 !important;
+        align-self: stretch !important;
     }
-    
+
     .editor-actions {
         flex-direction: column;
-        align-items: stretch;
+        gap: 0.75rem;
     }
-    
+
     .editor-actions .btn {
-        margin-bottom: 0.5rem;
+        width: 100%;
     }
-    
+
     .structure-view-container {
         margin-top: 0.5rem;
     }
-} 
+}

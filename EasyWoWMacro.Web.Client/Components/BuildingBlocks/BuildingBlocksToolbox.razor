@@ -2,52 +2,72 @@
 
 @if (RendererInfo.IsInteractive)
 {
-    <div class="building-blocks-toolbox">
-    <h3>Building Blocks</h3>
-    <div class="blocks-container">
-        <BuildingBlock BlockType="Directive">
-            <div class="block-content">
-                <i class="fas fa-cog"></i>
-                <span>Directive</span>
-                <small>Show, ShowTooltip, etc.</small>
-            </div>
-        </BuildingBlock>
+    <div class="wow-building-blocks-toolbox">
+        <div class="wow-toolbox-header">
+            <h3 class="wow-toolbox-title">
+                <span class="wow-toolbox-icon">🔧</span>
+                Spell Components
+            </h3>
+            <p class="wow-toolbox-subtitle">Drag components to forge your macro</p>
+        </div>
+        <div class="wow-blocks-container">
+            <BuildingBlock BlockType="Directive">
+                <div class="wow-block-content">
+                    <span class="wow-block-icon">📜</span>
+                    <div class="wow-block-text">
+                        <span class="wow-block-name">Directive</span>
+                        <small class="wow-block-desc">Show, ShowTooltip</small>
+                    </div>
+                </div>
+            </BuildingBlock>
 
-        <BuildingBlock BlockType="Command">
-            <div class="block-content">
-                <i class="fas fa-terminal"></i>
-                <span>Command</span>
-                <small>Cast, Use, Target, etc.</small>
-            </div>
-        </BuildingBlock>
+            <BuildingBlock BlockType="Command">
+                <div class="wow-block-content">
+                    <span class="wow-block-icon">⚔️</span>
+                    <div class="wow-block-text">
+                        <span class="wow-block-name">Command</span>
+                        <small class="wow-block-desc">Cast, Use, Target</small>
+                    </div>
+                </div>
+            </BuildingBlock>
 
-        <BuildingBlock BlockType="Conditional">
-            <div class="block-content">
-                <i class="fas fa-question-circle"></i>
-                <span>Conditional Group</span>
-                <small>Combat, Exists, Help, etc.</small>
-            </div>
-        </BuildingBlock>
+            <BuildingBlock BlockType="Conditional">
+                <div class="wow-block-content">
+                    <span class="wow-block-icon">🔮</span>
+                    <div class="wow-block-text">
+                        <span class="wow-block-name">Conditions</span>
+                        <small class="wow-block-desc">Combat, Exists, Help</small>
+                    </div>
+                </div>
+            </BuildingBlock>
 
-        <BuildingBlock BlockType="Argument">
-            <div class="block-content">
-                <i class="fas fa-tag"></i>
-                <span>Argument</span>
-                <small>Spell names, targets, etc.</small>
-            </div>
-        </BuildingBlock>
+            <BuildingBlock BlockType="Argument">
+                <div class="wow-block-content">
+                    <span class="wow-block-icon">💎</span>
+                    <div class="wow-block-text">
+                        <span class="wow-block-name">Argument</span>
+                        <small class="wow-block-desc">Spells, Items, Targets</small>
+                    </div>
+                </div>
+            </BuildingBlock>
+        </div>
     </div>
-</div>
 }
 else
 {
-    <div class="building-blocks-toolbox">
-        <h3>Building Blocks</h3>
-        <div class="blocks-container">
-            <div class="skeleton-block"></div>
-            <div class="skeleton-block"></div>
-            <div class="skeleton-block"></div>
-            <div class="skeleton-block"></div>
+    <div class="wow-building-blocks-toolbox">
+        <div class="wow-toolbox-header">
+            <h3 class="wow-toolbox-title">
+                <span class="wow-toolbox-icon">🔧</span>
+                Spell Components
+            </h3>
+            <p class="wow-toolbox-subtitle">Loading magical components...</p>
+        </div>
+        <div class="wow-blocks-container">
+            <div class="wow-skeleton-block"></div>
+            <div class="wow-skeleton-block"></div>
+            <div class="wow-skeleton-block"></div>
+            <div class="wow-skeleton-block"></div>
         </div>
     </div>
 }
