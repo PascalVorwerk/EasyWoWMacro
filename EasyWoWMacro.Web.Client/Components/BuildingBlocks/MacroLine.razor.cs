@@ -20,6 +20,9 @@ public partial class MacroLine : ComponentBase
     [Parameter]
     public EventCallback OnDeleteLine { get; set; }
 
+    [Inject]
+    private IConditionalService? ConditionalService { get; set; }
+
     private void HandleDragOver(DragEventArgs args)
     {
         IsOver = true;
@@ -35,7 +38,7 @@ public partial class MacroLine : ComponentBase
         IsOver = false;
         var blockType = DragDropService.DraggedBlockType;
         Console.WriteLine($"Drop event triggered. Block type: {blockType}");
-        
+
         if (!string.IsNullOrEmpty(blockType))
         {
             var newBlock = new MacroBlockModel
@@ -44,11 +47,11 @@ public partial class MacroLine : ComponentBase
                 DisplayText = blockType // This will be updated when configured
             };
             Blocks.Add(newBlock);
-            
+
             // Show the appropriate modal based on block type
             _selectedBlock = newBlock;
             _activeModalType = blockType;
-            
+
             DragDropService.DraggedBlockType = null;
             Console.WriteLine($"Block added: {blockType}");
         }
@@ -75,7 +78,7 @@ public partial class MacroLine : ComponentBase
     {
         _activeModalType = null;
         _selectedBlock = null;
-        
+
         await OnConfigureBlock.InvokeAsync(block);
         StateHasChanged();
     }
@@ -86,4 +89,4 @@ public partial class MacroLine : ComponentBase
         _selectedBlock = null;
         StateHasChanged();
     }
-} 
+}
