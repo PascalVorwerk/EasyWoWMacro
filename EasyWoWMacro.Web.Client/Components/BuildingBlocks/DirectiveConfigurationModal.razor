@@ -1,0 +1,51 @@
+@rendermode InteractiveWebAssembly
+
+<div class="modal @(IsVisible ? "show" : "")" tabindex="-1" style="display: @(IsVisible ? "block" : "none")">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Configure Directive</h5>
+                <button type="button" class="btn-close" @onclick="OnClose"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Directive Type</label>
+                    <select class="form-select" @bind="_selectedDirective">
+                        <option value="">Select a directive...</option>
+                        @foreach (var directive in WoWMacroConstants.ValidDirectives)
+                        {
+                            <option value="@directive">@directive</option>
+                        }
+                    </select>
+                </div>
+
+                @if (_selectedDirective == "#show" || _selectedDirective == "#icon")
+                {
+                    <div class="mb-3">
+                        <label class="form-label">Value</label>
+                        <input type="text" class="form-control" @bind="_directiveValue" placeholder="Spell name or icon path" />
+                        <div class="form-text">Enter a spell name or icon path</div>
+                    </div>
+                }
+
+                @if (_selectedDirective == "#showtooltip")
+                {
+                    <div class="mb-3">
+                        <label class="form-label">Tooltip Spell</label>
+                        <input type="text" class="form-control" @bind="_directiveValue" placeholder="Spell name for tooltip" />
+                        <div class="form-text">Enter the spell name to show in tooltip</div>
+                    </div>
+                }
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" @onclick="OnClose">Cancel</button>
+                <button type="button" class="btn btn-primary" @onclick="HandleSave">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (IsVisible)
+{
+    <div class="modal-backdrop show"></div>
+}

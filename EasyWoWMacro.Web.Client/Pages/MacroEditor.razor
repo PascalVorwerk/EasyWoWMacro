@@ -1,0 +1,105 @@
+@page "/macro-editor"
+@rendermode InteractiveWebAssembly
+
+@if (RendererInfo.IsInteractive)
+{
+    <div class="container-fluid">
+    <div class="row">
+        <div class="col-md-3">
+            <BuildingBlocksToolbox />
+        </div>
+        <div class="col-md-5">
+            <div class="macro-editor position-relative">
+                <h3 class="d-flex justify-content-between align-items-center">
+                    Macro Editor
+                    <button class="btn btn-outline-primary copy-clipboard-btn @(_isCopying ? "loading" : "")"
+                            title="Copy to Clipboard"
+                            @onclick="CopyToClipboard"
+                            disabled="@_isCopying">
+                        📋 Copy
+                    </button>
+                </h3>
+                <div class="macro-lines">
+                    @foreach (var line in _macroLines)
+                    {
+                        <MacroLine
+                            Blocks="@line"
+                            OnConfigureBlock="HandleConfigureBlock"
+                            OnDeleteLine="() => DeleteLine(line)" />
+                    }
+                </div>
+                <div class="editor-actions">
+                    <button class="btn btn-primary" @onclick="AddNewLine">Add Line</button>
+                    <button class="btn btn-success" @onclick="ParseMacro">Parse & Validate</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="validation-panel">
+                <h3>Validation & Preview</h3>
+
+                @if (_validationErrors.Count > 0)
+                {
+                    <div class="alert alert-danger">
+                        <h5>Validation Errors:</h5>
+                        <ul class="mb-0">
+                            @foreach (var error in _validationErrors)
+                            {
+                                <li>@error</li>
+                            }
+                        </ul>
+                    </div>
+                }
+
+                @if (_parsedMacro != null && _validationErrors.Count == 0)
+                {
+                    <div class="alert alert-success">
+                        <h5>✓ Macro is valid!</h5>
+                        <p class="mb-0">Character count: @GetFormattedMacroLength() / 255</p>
+                    </div>
+
+                    <h5>Formatted Output:</h5>
+                    <div class="formatted-macro">
+                        <pre class="bg-light p-3 rounded"><code>@_parsedMacro.GetFormattedMacro()</code></pre>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+    @if (_showCopyToast)
+    {
+        <div class="copy-toast">
+            <div class="copy-toast-content">
+                <span>@_toastMessage</span>
+            </div>
+        </div>
+    }
+}
+else
+{
+    <div class="loading-skeleton">
+        <div class="skeleton-header">
+            <div class="skeleton-title"></div>
+            <div class="skeleton-button"></div>
+        </div>
+        <div class="skeleton-content">
+            <div class="skeleton-toolbox">
+                <div class="skeleton-block"></div>
+                <div class="skeleton-block"></div>
+                <div class="skeleton-block"></div>
+                <div class="skeleton-block"></div>
+            </div>
+            <div class="skeleton-editor">
+                <div class="skeleton-line"></div>
+                <div class="skeleton-line"></div>
+                <div class="skeleton-line"></div>
+            </div>
+            <div class="skeleton-panel">
+                <div class="skeleton-panel-header"></div>
+                <div class="skeleton-panel-content"></div>
+            </div>
+        </div>
+    </div>
+}

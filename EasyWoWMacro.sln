@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyWoWMacro.Tests", "EasyW
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyWoWMacro.Web", "EasyWoWMacro.Web\EasyWoWMacro.Web.csproj", "{18B03A6B-2672-4DC2-A11E-40F4516450FF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyWoWMacro.Web.Client", "EasyWoWMacro.Web.Client\EasyWoWMacro.Web.Client.csproj", "{8C8FC7E4-DD4F-4404-A058-C62229F1E9E1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Web", "Web", "{2AFA9086-B967-4139-8BE5-CFA21BD2F5A5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,8 +73,24 @@ Global
 		{18B03A6B-2672-4DC2-A11E-40F4516450FF}.Release|x64.Build.0 = Release|Any CPU
 		{18B03A6B-2672-4DC2-A11E-40F4516450FF}.Release|x86.ActiveCfg = Release|Any CPU
 		{18B03A6B-2672-4DC2-A11E-40F4516450FF}.Release|x86.Build.0 = Release|Any CPU
+		{8C8FC7E4-DD4F-4404-A058-C62229F1E9E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C8FC7E4-DD4F-4404-A058-C62229F1E9E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C8FC7E4-DD4F-4404-A058-C62229F1E9E1}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{8C8FC7E4-DD4F-4404-A058-C62229F1E9E1}.Debug|x64.Build.0 = Debug|Any CPU
+		{8C8FC7E4-DD4F-4404-A058-C62229F1E9E1}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8C8FC7E4-DD4F-4404-A058-C62229F1E9E1}.Debug|x86.Build.0 = Debug|Any CPU
+		{8C8FC7E4-DD4F-4404-A058-C62229F1E9E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C8FC7E4-DD4F-4404-A058-C62229F1E9E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C8FC7E4-DD4F-4404-A058-C62229F1E9E1}.Release|x64.ActiveCfg = Release|Any CPU
+		{8C8FC7E4-DD4F-4404-A058-C62229F1E9E1}.Release|x64.Build.0 = Release|Any CPU
+		{8C8FC7E4-DD4F-4404-A058-C62229F1E9E1}.Release|x86.ActiveCfg = Release|Any CPU
+		{8C8FC7E4-DD4F-4404-A058-C62229F1E9E1}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8C8FC7E4-DD4F-4404-A058-C62229F1E9E1} = {2AFA9086-B967-4139-8BE5-CFA21BD2F5A5}
+		{18B03A6B-2672-4DC2-A11E-40F4516450FF} = {2AFA9086-B967-4139-8BE5-CFA21BD2F5A5}
 	EndGlobalSection
 EndGlobal

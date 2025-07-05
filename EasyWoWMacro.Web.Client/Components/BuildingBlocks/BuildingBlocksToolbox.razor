@@ -1,0 +1,53 @@
+@rendermode InteractiveWebAssembly
+
+@if (RendererInfo.IsInteractive)
+{
+    <div class="building-blocks-toolbox">
+    <h3>Building Blocks</h3>
+    <div class="blocks-container">
+        <BuildingBlock BlockType="Directive">
+            <div class="block-content">
+                <i class="fas fa-cog"></i>
+                <span>Directive</span>
+                <small>Show, ShowTooltip, etc.</small>
+            </div>
+        </BuildingBlock>
+
+        <BuildingBlock BlockType="Command">
+            <div class="block-content">
+                <i class="fas fa-terminal"></i>
+                <span>Command</span>
+                <small>Cast, Use, Target, etc.</small>
+            </div>
+        </BuildingBlock>
+
+        <BuildingBlock BlockType="Conditional">
+            <div class="block-content">
+                <i class="fas fa-question-circle"></i>
+                <span>Conditional Group</span>
+                <small>Combat, Exists, Help, etc.</small>
+            </div>
+        </BuildingBlock>
+
+        <BuildingBlock BlockType="Argument">
+            <div class="block-content">
+                <i class="fas fa-tag"></i>
+                <span>Argument</span>
+                <small>Spell names, targets, etc.</small>
+            </div>
+        </BuildingBlock>
+    </div>
+</div>
+}
+else
+{
+    <div class="building-blocks-toolbox">
+        <h3>Building Blocks</h3>
+        <div class="blocks-container">
+            <div class="skeleton-block"></div>
+            <div class="skeleton-block"></div>
+            <div class="skeleton-block"></div>
+            <div class="skeleton-block"></div>
+        </div>
+    </div>
+}

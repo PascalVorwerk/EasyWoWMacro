@@ -1,12 +1,12 @@
-# This workflow will build and deploy the Blazor Server app to Azure App Service
+# This workflow will build and deploy the Blazor Web App with WebAssembly interactivity to Azure App Service
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
 
-name: Deploy Blazor Server to Azure
+name: Deploy Blazor Web App to Azure
 
 on:
   push:
     branches: [ "master" ]
-    paths: [ "EasyWoWMacro.Web/**", "EasyWoWMacro.Core/**" ]
+    paths: [ "EasyWoWMacro.Web/**", "EasyWoWMacro.Core/**", "EasyWoWMacro.Web.Client/**" ]
   workflow_dispatch:
   workflow_run:
     workflows: ["Deploy Infrastructure"]
@@ -21,44 +21,45 @@ jobs:
   build-and-deploy:
     if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'push' || (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success') }}
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup .NET 9.0
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 9.0.x
-          
+
       - name: Restore dependencies
         run: dotnet restore
-        
+
       - name: Build
         run: dotnet build --no-restore --configuration Release
-        
+
       - name: Test
         run: dotnet test --no-build --verbosity normal --configuration Release
-        
+
       - name: Publish
         run: dotnet publish EasyWoWMacro.Web/EasyWoWMacro.Web.csproj -c Release -o ./publish
-        
+
       - name: Login to Azure
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
-        
+
       - name: Create deployment package
         run: |
           cd ./publish
           zip -r ../publish.zip .
         shell: bash
-        
+
       - name: Azure CLI - Deploy to Azure Web App
         uses: azure/cli@v2
         with:
           azcliversion: 2.75.0
           inlineScript: |
-            az webapp deployment source config-zip \
+            az webapp deploy \
               --resource-group ${{ env.RESOURCE_GROUP_NAME }} \
               --name ${{ env.AZURE_WEBAPP_NAME }} \
-              --src ./publish.zip 
+              --src-path ./publish.zip \
+              --type zip
