@@ -60,11 +60,6 @@ public class ConditionalService : IConditionalService
         return ConditionalValidator.GetValidConditionalKeys();
     }
 
-    public IEnumerable<string> GetValidValuesForKey(string key)
-    {
-        return ConditionalValidator.GetValidValuesForKey(key);
-    }
-
     public bool IsValidCondition(string key, string? value = null)
     {
         var condition = new Condition { Key = key, Value = value };
@@ -82,48 +77,6 @@ public class ConditionalService : IConditionalService
         return $"{key}:{value}";
     }
 
-    public List<string> ValidateConditionalString(string conditionalString)
-    {
-        var errors = new List<string>();
-
-        if (string.IsNullOrWhiteSpace(conditionalString))
-            return errors;
-
-        var conditions = conditionalString.Split(',', StringSplitOptions.RemoveEmptyEntries)
-            .Select(c => c.Trim())
-            .Where(c => !string.IsNullOrEmpty(c));
-
-        foreach (var condition in conditions)
-        {
-            var colonIndex = condition.IndexOf(':');
-            if (colonIndex > 0)
-            {
-                var key = condition.Substring(0, colonIndex).Trim();
-                var value = condition.Substring(colonIndex + 1).Trim();
-
-                if (!IsValidCondition(key, value))
-                {
-                    errors.Add($"Invalid conditional: {condition}");
-                }
-            }
-            else
-            {
-                if (!IsValidCondition(condition))
-                {
-                    errors.Add($"Invalid conditional: {condition}");
-                }
-            }
-        }
-
-        return errors;
-    }
-
-    public IEnumerable<string> GetBasicConditions()
-    {
-        // Return common basic conditionals that don't require values
-        return CommonBasicConditionals.OrderBy(k => k);
-    }
-
     public IEnumerable<string> GetAdvancedConditions()
     {
         // Return advanced conditional prefixes that require configuration
@@ -138,17 +91,6 @@ public class ConditionalService : IConditionalService
         return GetValidConditionalKeys()
             .Where(key => !AdvancedConditionalPrefixes.Contains(key) && !key.EndsWith(":"))
             .OrderBy(k => k);
-    }
-
-    public string FormatConditionalsWithConfiguration(IEnumerable<string> conditions, Dictionary<string, string> configuration)
-    {
-        var conditionalArray = conditions as string[] ?? conditions.ToArray();
-        if (!conditionalArray.Any())
-            return "[No conditions selected]";
-
-        var formattedConditions = conditionalArray.Select(condition => FormatSingleConditionalWithConfiguration(condition, configuration)).Where(formattedCondition => !string.IsNullOrEmpty(formattedCondition)).ToList();
-
-        return $"[{string.Join(", ", formattedConditions)}]";
     }
 
     public string? GetConfigurationKeyForConditional(string conditional)
@@ -436,43 +378,5 @@ public class ConditionalService : IConditionalService
                 Description = "Check if casting specific spell"
             }
         };
-    }
-
-    private string FormatSingleConditionalWithConfiguration(string condition, Dictionary<string, string> configuration)
-    {
-        // Normalize: ensure trailing colon for advanced conditionals
-        string normalized = condition.EndsWith(":") ? condition : condition + ":";
-
-        // Handle special cases first
-        if (normalized == "equipped:" && configuration.TryGetValue("equippedType", out var eqType))
-        {
-            if (eqType == "slot" && configuration.TryGetValue("equippedSlot", out var eqSlot) && !string.IsNullOrEmpty(eqSlot))
-            {
-                return FormatConditional("equipped", eqSlot);
-            }
-
-            if (eqType == "item" && configuration.TryGetValue("equippedItem", out var eqItem) && !string.IsNullOrEmpty(eqItem))
-            {
-                return FormatConditional("equipped", eqItem);
-            }
-
-            return "equipped:";
-        }
-
-        var configKey = GetConfigurationKeyForConditional(normalized);
-        if (configKey != null && configuration.TryGetValue(configKey, out var value) && !string.IsNullOrEmpty(value))
-        {
-            var key = normalized.TrimEnd(':');
-            return FormatConditional(key, value);
-        }
-
-        return condition;
-    }
-
-    public IEnumerable<string> GetAllConfigurationKeys()
-    {
-        return GetConditionalConfigurationInfo()
-            .Select(info => info.ConfigurationKey)
-            .Distinct();
     }
 }
