@@ -5,59 +5,70 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
-            <div class="jumbotron text-center py-5">
-                <h1 class="display-4">EasyWoWMacro</h1>
-                <p class="lead">Create and validate World of Warcraft macros with real-time syntax checking</p>
-                <hr class="my-4">
-                <p>Build macros with conditionals, validate syntax, and get instant feedback. Designed for WoW players who want reliable, error-free macros.</p>
-                <a class="btn btn-primary btn-lg" href="macro-editor" role="button">Open Editor</a>
+            <div class="wow-hero-section">
+                <div class="wow-hero-content">
+                    <p class="wow-hero-subtitle">Forge Perfect Macros for Your Adventures</p>
+                    <div class="wow-hero-divider"></div>
+                    <p class="wow-hero-description">Create and validate World of Warcraft macros with real-time syntax checking. Build macros with conditionals, validate syntax, and get instant feedback. Designed for WoW players who demand reliable, error-free macros.</p>
+                    <div class="wow-hero-actions">
+                        <a class="btn btn-primary btn-lg wow-cta-button" href="macro-editor" role="button">
+                            <span class="wow-cta-icon">⚔️</span>
+                            Begin Your Quest
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <div class="row mt-4">
         <div class="col-md-4">
-            <div class="card h-100">
-                <div class="card-body text-center">
-                    <i class="bi bi-check-circle text-success" style="font-size: 2.5rem;"></i>
-                    <h5 class="card-title mt-3">Syntax Validation</h5>
-                    <p class="card-text">Real-time validation of macro syntax, commands, and conditionals. Catch errors before using macros in-game.</p>
+            <div class="wow-feature-card">
+                <div class="wow-feature-icon">
+                    <span class="wow-icon-spell">✨</span>
                 </div>
+                <h5 class="wow-feature-title">Syntax Validation</h5>
+                <p class="wow-feature-description">Real-time validation of macro syntax, commands, and conditionals. Catch errors before casting your spells in-game.</p>
             </div>
         </div>
         <div class="col-md-4">
-            <div class="card h-100">
-                <div class="card-body text-center">
-                    <i class="bi bi-eye text-info" style="font-size: 2.5rem;"></i>
-                    <h5 class="card-title mt-3">Structure Analysis</h5>
-                    <p class="card-text">Visual breakdown of macro components - directives, commands, conditionals, and arguments for better understanding.</p>
+            <div class="wow-feature-card">
+                <div class="wow-feature-icon">
+                    <span class="wow-icon-spell">🔍</span>
                 </div>
+                <h5 class="wow-feature-title">Structure Analysis</h5>
+                <p class="wow-feature-description">Visual breakdown of macro components - directives, commands, conditionals, and arguments for magical understanding.</p>
             </div>
         </div>
         <div class="col-md-4">
-            <div class="card h-100">
-                <div class="card-body text-center">
-                    <i class="bi bi-clipboard text-warning" style="font-size: 2.5rem;"></i>
-                    <h5 class="card-title mt-3">Easy Export</h5>
-                    <p class="card-text">Copy validated macros directly to clipboard. Character limit validation ensures compatibility with WoW's macro system.</p>
+            <div class="wow-feature-card">
+                <div class="wow-feature-icon">
+                    <span class="wow-icon-spell">📋</span>
                 </div>
+                <h5 class="wow-feature-title">Easy Export</h5>
+                <p class="wow-feature-description">Copy validated macros directly to your spellbook. Character limit validation ensures compatibility with WoW's macro system.</p>
             </div>
         </div>
     </div>
 
     <div class="row mt-4">
         <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h4>Example Macro</h4>
+            <div class="wow-example-section">
+                <div class="wow-example-header">
+                    <h4 class="wow-example-title">
+                        <span class="wow-example-icon">📜</span>
+                        Example Macro Spell
+                    </h4>
                 </div>
-                <div class="card-body">
-                    <p>Here's an example of a macro that the editor can parse and validate:</p>
-                    <pre class="bg-light p-3 rounded"><code>#showtooltip
+                <div class="wow-example-content">
+                    <p class="wow-example-intro">Behold an example of a powerful macro that our enchanted editor can parse and validate:</p>
+                    <div class="wow-code-scroll">
+                        <pre class="wow-code-block"><code>#showtooltip
 /cast [@@target,harm,nodead] Smite; [@@target,help,nodead] Flash Heal
 /use [combat] Healthstone
 /say [combat] Using Healthstone!</code></pre>
-                    <p class="mt-3">This macro demonstrates conditionals for different target types, combat-based item usage, and chat commands. The validator checks each component for proper syntax.</p>
+                    </div>
+                    <p class="wow-example-explanation">This macro demonstrates conditionals for different target types, combat-based item usage, and chat commands. Our magical validator checks each component for proper syntax and ensures your spells work perfectly.</p>
                 </div>
             </div>
         </div>
@@ -65,20 +76,48 @@
 
     <div class="row mt-4">
         <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h4>About WoW Macros</h4>
+            <div class="wow-about-section">
+                <div class="wow-about-header">
+                    <h4 class="wow-about-title">
+                        <span class="wow-about-icon">🏰</span>
+                        The Art of Macro Crafting
+                    </h4>
                 </div>
-                <div class="card-body">
-                    <p>World of Warcraft macros allow players to automate actions and create custom spell rotations. With EasyWoWMacro, you can:</p>
-                    <ul>
-                        <li><strong>Create conditional macros</strong> that adapt to different situations (combat, target type, modifiers)</li>
-                        <li><strong>Validate syntax</strong> before using macros in-game</li>
-                        <li><strong>Understand macro structure</strong> through visual breakdown</li>
-                        <li><strong>Stay within character limits</strong> with real-time counting</li>
-                        <li><strong>Use advanced conditionals</strong> like @@target, @@mouseover, mod:shift, and more</li>
-                    </ul>
-                    <p>Whether you're creating mouseover macros for healing, optimizing DPS rotations, or setting up defensive cooldowns, EasyWoWMacro helps you build reliable macros efficiently.</p>
+                <div class="wow-about-content">
+                    <p class="wow-about-intro">World of Warcraft macros allow adventurers to automate actions and create custom spell rotations. With EasyWoWMacro, you can master the arcane arts of:</p>
+                    <div class="wow-features-grid">
+                        <div class="wow-feature-item">
+                            <span class="wow-feature-bullet">⚡</span>
+                            <div class="wow-feature-text">
+                                <strong>Conditional Macros</strong> that adapt to different situations (combat, target type, modifiers)
+                            </div>
+                        </div>
+                        <div class="wow-feature-item">
+                            <span class="wow-feature-bullet">🛡️</span>
+                            <div class="wow-feature-text">
+                                <strong>Syntax Validation</strong> before using macros in your adventures
+                            </div>
+                        </div>
+                        <div class="wow-feature-item">
+                            <span class="wow-feature-bullet">🔮</span>
+                            <div class="wow-feature-text">
+                                <strong>Macro Structure</strong> understanding through visual breakdown
+                            </div>
+                        </div>
+                        <div class="wow-feature-item">
+                            <span class="wow-feature-bullet">📏</span>
+                            <div class="wow-feature-text">
+                                <strong>Character Limits</strong> with real-time counting and validation
+                            </div>
+                        </div>
+                        <div class="wow-feature-item">
+                            <span class="wow-feature-bullet">🎯</span>
+                            <div class="wow-feature-text">
+                                <strong>Advanced Conditionals</strong> like @@target, @@mouseover, mod:shift, and more
+                            </div>
+                        </div>
+                    </div>
+                    <p class="wow-about-conclusion">Whether you're creating mouseover macros for healing, optimizing DPS rotations, or setting up defensive cooldowns, EasyWoWMacro helps you build reliable macros efficiently. Begin your journey to macro mastery!</p>
                 </div>
             </div>
         </div>

@@ -2,20 +2,20 @@
 
 @if (RendererInfo.IsInteractive)
 {
-    <div class="macro-structure-viewer">
-        <div class="structure-header">
-            <h4>
-                <i class="fas fa-project-diagram me-2"></i>
+    <div class="wow-building-blocks-toolbox">
+        <div class="wow-toolbox-header">
+            <h3 class="wow-toolbox-title">
+                <span class="wow-toolbox-icon">🔍</span>
                 Macro Structure
-                <button class="btn btn-sm btn-outline-secondary ms-2" @onclick="ToggleExpanded">
-                    <i class="fas @(IsExpanded ? "fa-chevron-up" : "fa-chevron-down")"></i>
-                </button>
-            </h4>
+            </h3>
+            <button class="btn btn-sm btn-outline-secondary ms-2" @onclick="ToggleExpanded">
+                <i class="fas @(IsExpanded ? "fa-chevron-up" : "fa-chevron-down")"></i>
+            </button>
         </div>
         
         @if (IsExpanded)
         {
-            <div class="structure-content">
+            <div class="wow-blocks-container">
                 @if (MacroLines?.Any() == true)
                 {
                     <div class="structure-tree">
@@ -26,6 +26,7 @@
                                 {
                                     <div class="structure-item directive-item">
                                         <div class="item-content">
+                                            <span class="item-icon">📜</span>
                                             <span class="item-type">DIRECTIVE</span>
                                             <span class="item-text">@directive.Directive</span>
                                             @if (!string.IsNullOrEmpty(directive.Argument))
@@ -39,6 +40,7 @@
                                 {
                                     <div class="structure-item command-item">
                                         <div class="item-content">
+                                            <span class="item-icon">⚔️</span>
                                             <span class="item-type">COMMAND</span>
                                             <span class="item-text">@command.Command</span>
                                         </div>
@@ -93,6 +95,7 @@
                                 {
                                     <div class="structure-item comment-item">
                                         <div class="item-content">
+                                            <span class="item-icon">💬</span>
                                             <span class="item-type">COMMENT</span>
                                             <span class="item-text">@comment.Comment</span>
                                         </div>
@@ -104,7 +107,7 @@
                 }
                 else
                 {
-                    <div class="empty-structure">
+                    <div class="wow-example-intro">
                         <i class="fas fa-info-circle me-2"></i>
                         No macro structure to display
                     </div>
@@ -115,8 +118,18 @@
 }
 else
 {
-    <div class="structure-loading">
-        <i class="fas fa-spinner fa-spin me-2"></i>
-        Loading structure view...
+    <div class="wow-building-blocks-toolbox">
+        <div class="wow-toolbox-header">
+            <h3 class="wow-toolbox-title">
+                <span class="wow-toolbox-icon">🔍</span>
+                Macro Structure
+            </h3>
+            <p class="wow-toolbox-subtitle">Loading structure view...</p>
+        </div>
+        <div class="wow-blocks-container">
+            <div class="wow-skeleton-block"></div>
+            <div class="wow-skeleton-block"></div>
+            <div class="wow-skeleton-block"></div>
+        </div>
     </div>
 } 
