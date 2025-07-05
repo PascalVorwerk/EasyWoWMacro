@@ -88,7 +88,7 @@ public class Macro
                         if (hasConditionals)
                         {
                             var conditionalStrings = new List<string>();
-                            foreach (var conditionSet in c.Conditionals.ConditionSets)
+                            foreach (var conditionSet in c.Conditionals!.ConditionSets)
                             {
                                 var conditions = conditionSet.Conditions.Select(cond => cond.ToString());
                                 conditionalStrings.Add($"[{string.Join(",", conditions)}]");

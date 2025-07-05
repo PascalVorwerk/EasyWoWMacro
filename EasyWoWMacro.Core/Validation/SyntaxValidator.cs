@@ -148,7 +148,7 @@ public static class SyntaxValidator
                     (tokens[i+1].StartsWith("@") || StringUtilities.StartsWithKnownConditional(tokens[i+1])))
                 {
                     // If the next token contains a comma, it's likely a conditional list
-                    if (tokens[i+1].Contains(","))
+                    if (tokens[i+1].Contains(','))
                     {
                         errors.Add($"Malformed clause: '{tokens[i+1]}' - conditionals must be enclosed in brackets []");
                     }
@@ -219,7 +219,7 @@ public static class SyntaxValidator
             {
                 // If the first word contains a comma, it's likely a conditional list
                 var firstWord = trimmed.Split(' ', 2)[0];
-                if (firstWord.Contains(","))
+                if (firstWord.Contains(','))
                 {
                     errors.Add($"Malformed clause: '{trimmed}' - conditionals must be enclosed in brackets []");
                 }

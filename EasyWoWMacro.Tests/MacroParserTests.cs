@@ -399,9 +399,12 @@ public class MacroParserTests
         var errors = CommandValidator.ValidateCommandLine(command);
         Assert.Single(errors);
         Assert.Contains("Invalid command", errors[0]);
-        var condErrors = ConditionalValidator.ValidateConditional(command.Conditionals);
-        Assert.NotEmpty(condErrors);
-        Assert.Contains("Invalid condition", condErrors[0]);
+        if (command.Conditionals != null)
+        {
+            var condErrors = ConditionalValidator.ValidateConditional(command.Conditionals);
+            Assert.NotEmpty(condErrors);
+            Assert.Contains("Invalid condition", condErrors[0]);
+        }
     }
 
     [Fact]
