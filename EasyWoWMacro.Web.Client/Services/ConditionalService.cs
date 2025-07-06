@@ -21,8 +21,8 @@ public class ConditionalService : IConditionalService
     // Conditionals that always require values and should never appear as basic conditions
     private static readonly HashSet<string> AlwaysRequireValues =
     [
-        "form", "noform", "stance", "nostance", "equipped", "worn", "actionbar", "bar", 
-        "button", "btn", "threat", "spec", "talent", "glyph", "spell", "item", "aura", 
+        "form", "noform", "stance", "nostance", "equipped", "worn", "actionbar", "bar",
+        "button", "btn", "threat", "spec", "talent", "glyph", "spell", "item", "aura",
         "buff", "debuff", "known", "noknown", "pet"
     ];
 
@@ -43,8 +43,8 @@ public class ConditionalService : IConditionalService
     public IEnumerable<string> GetAllBasicConditions()
     {
         return GetValidConditionalKeys()
-            .Where(key => !AdvancedConditionalPrefixes.Contains(key) && 
-                         !key.EndsWith(":") && 
+            .Where(key => !AdvancedConditionalPrefixes.Contains(key) &&
+                         !key.EndsWith(":") &&
                          !AlwaysRequireValues.Contains(key))
             .OrderBy(k => k);
     }
@@ -141,7 +141,7 @@ public class ConditionalService : IConditionalService
                 Conditional = "equipped:",
                 ConfigurationKey = "equippedType",
                 Label = "Equipment Slot/Item",
-                Type = ConfigurationType.EquipmentSlot,
+                Type = ConfigurationType.Text,
                 Description = "Check if specific item/slot is equipped"
             },
             new()
@@ -149,7 +149,7 @@ public class ConditionalService : IConditionalService
                 Conditional = "worn:",
                 ConfigurationKey = "equippedType",
                 Label = "Equipment Slot/Item",
-                Type = ConfigurationType.EquipmentSlot,
+                Type = ConfigurationType.Text,
                 Description = "Check if specific item/slot is equipped"
             },
             new()

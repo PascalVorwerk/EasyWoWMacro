@@ -16,7 +16,7 @@
                             <div class="mb-2">
                                 <div class="input-group input-group-sm">
                                     <input type="text" class="form-control" placeholder="Search conditions..."
-                                           @bind="@_basicConditionSearch"/>
+                                           @bind="@_basicConditionSearch" @bind:event="oninput"/>
                                 </div>
                             </div>
                             <div class="basic-conditions-list" style="max-height: 300px; overflow-y: auto;">
@@ -39,7 +39,7 @@
                             <small class="text-muted mb-2 d-block">These conditionals require additional configuration</small>
                             <div class="mb-2">
                                 <input type="text" class="form-control form-control-sm" placeholder="Search advanced conditions..."
-                                       @bind="@_advancedConditionSearch"/>
+                                       @bind="@_advancedConditionSearch" @bind:event="oninput"/>
                             </div>
                             <div class="advanced-conditions-list" style="max-height: 300px; overflow-y: auto;">
                                 @foreach (var condition in AdvancedConditions)
@@ -65,12 +65,7 @@
                         ConfigurationInfo="configInfo"
                         Value="@_advancedValues.GetValueOrDefault(configInfo.Conditional, string.Empty)"
                         ValueChanged="@(v => _advancedValues[configInfo.Conditional] = v.Value.ToString())"
-                        EquipmentType="@_equippedType"
-                        EquipmentTypeChanged="@(value => _equippedType = value.Value.ToString())"
-                        SlotValue="@_equippedSlot"
-                        SlotValueChanged="@(value => _equippedSlot = value.Value.ToString())"
-                        ItemValue="@_equippedItem"
-                        ItemValueChanged="@(value => _equippedItem = value)" />
+                        />
                 }
 
                 @if (_validationErrors.Count > 0)

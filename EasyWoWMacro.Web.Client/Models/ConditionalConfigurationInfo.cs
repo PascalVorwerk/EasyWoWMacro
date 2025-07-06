@@ -21,8 +21,6 @@ public enum ConfigurationType
 {
     Text,
     Select,
-    EquipmentSlot,
-    EquipmentItem
 }
 
 /// <summary>
@@ -33,4 +31,4 @@ public class SelectOption
     public string Value { get; set; } = string.Empty;
     public string Label { get; set; } = string.Empty;
     public string? Group { get; set; }
-} 
+}

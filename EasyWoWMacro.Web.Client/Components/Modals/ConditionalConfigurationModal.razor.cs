@@ -23,9 +23,6 @@ public partial class ConditionalConfigurationModal : ComponentBase
     private IConditionalService? ConditionalService { get; set; }
 
     private string _selectedConditionsString = "";
-    private string _equippedType = "slot";
-    private string _equippedSlot = "";
-    private string _equippedItem = "";
     private readonly List<string> _validationErrors = [];
 
     // Search functionality
