@@ -261,32 +261,27 @@ public static class SyntaxValidator
         if (string.IsNullOrWhiteSpace(condition))
             return false;
             
-        // Check for key:value format
+        // Parse the condition into key and value
         var colonIndex = condition.IndexOf(':');
+        string key;
+        string? value = null;
+        
         if (colonIndex > 0)
         {
-            var key = condition.Substring(0, colonIndex).Trim();
-            var value = condition.Substring(colonIndex + 1).Trim();
+            key = condition.Substring(0, colonIndex).Trim();
+            value = condition.Substring(colonIndex + 1).Trim();
             
             // Both key and value should not be empty
             if (string.IsNullOrWhiteSpace(key) || string.IsNullOrWhiteSpace(value))
                 return false;
         }
+        else
+        {
+            key = condition.Trim();
+        }
         
-        // Check if it's a known conditional
-        var simpleCondition = condition.ToLowerInvariant();
-        if (WoWMacroConstants.KnownConditionals.Contains(simpleCondition))
-            return true;
-            
-        // Check for target conditions (@target, @focus, etc.)
-        if (simpleCondition.StartsWith("@"))
-            return true;
-            
-        // Check for conditional prefixes
-        if (WoWMacroConstants.ConditionalPrefixes.Any(prefix => 
-            simpleCondition.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)))
-            return true;
-            
-        return false;
+        // Use ConditionalValidator as the single source of truth
+        var conditionObj = new Condition { Key = key, Value = value };
+        return ConditionalValidator.IsValidCondition(conditionObj);
     }
 } 

@@ -1,0 +1,43 @@
+/* Modal z-index hierarchy */
+.modal {
+    z-index: 1055 !important; /* Ensure modal is above all other content */
+}
+
+.modal-dialog {
+    z-index: 1056 !important; /* Dialog above modal background */
+}
+
+.modal-content {
+    z-index: 1057 !important; /* Content above dialog */
+}
+
+/* Backdrop styling */
+.modal-backdrop {
+    z-index: 1040 !important; /* Backdrop behind modal but above page content */
+}
+
+.modal-backdrop.show {
+    z-index: 1040 !important; /* Backdrop behind modal but above page content */
+}
+
+/* Ensure all modal content elements have proper z-index */
+.modal-header {
+    z-index: 1058 !important;
+}
+
+.modal-body {
+    z-index: 1058 !important;
+}
+
+.modal-footer {
+    z-index: 1058 !important;
+}
+
+/* Form elements within modal */
+.modal-body .form-control,
+.modal-body .form-select,
+.modal-body .btn,
+.modal-body .form-check-input,
+.modal-body .form-check-label {
+    z-index: 1059 !important;
+} 
