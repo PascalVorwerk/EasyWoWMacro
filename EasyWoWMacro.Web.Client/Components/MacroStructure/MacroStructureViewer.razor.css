@@ -9,6 +9,7 @@
     color: #f4f1e8;
     position: relative;
     overflow: hidden;
+    z-index: 0;
 }
 
 .macro-structure-viewer::before {

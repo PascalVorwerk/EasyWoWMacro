@@ -114,7 +114,7 @@ public static class StringUtilities
     /// <returns>True if the text starts with a known conditional</returns>
     public static bool StartsWithKnownConditional(string text)
     {
-        var knownConditionals = Models.WoWMacroConstants.KnownConditionals;
+        var knownConditionals = Models.ConditionalValidator.GetValidConditionalKeys();
         
         foreach (var cond in knownConditionals)
         {

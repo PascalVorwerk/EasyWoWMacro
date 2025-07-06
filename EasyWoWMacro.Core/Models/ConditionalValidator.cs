@@ -13,6 +13,7 @@ public static class ConditionalValidator
         // Modifier conditions
         ["mod"] = ["alt", "ctrl", "shift"],
         ["nomod"] = ["alt", "ctrl", "shift"],
+        ["modifier"] = ["alt", "ctrl", "shift"], // Alias for mod
         
         // Target conditions (with @ prefix)
         ["@target"] = [],
@@ -20,6 +21,7 @@ public static class ConditionalValidator
         ["@focus"] = [],
         ["@player"] = [],
         ["@cursor"] = [],
+        ["@none"] = [], // Interrupts auto self-cast and requires a targeting cursor
         ["@arena1"] = [],
         ["@arena2"] = [],
         ["@arena3"] = [],
@@ -86,34 +88,61 @@ public static class ConditionalValidator
         ["indoors"] = [],
         ["outdoors"] = [],
         ["group"] = [],
+        ["group:party"] = [],
+        ["group:raid"] = [],
         ["raid"] = [],
         ["party"] = [],
         ["solo"] = [],
         ["pet"] = [],
         ["nopet"] = [],
         ["channeling"] = [],
+        ["channeling:spellID"] = [], // Accepts spell IDs or names
         ["casting"] = [],
         ["nocasting"] = [],
         ["exists"] = [],
         ["noexists"] = [],
+        ["resting"] = [], // In a rested zone
+        ["noresting"] = [],
+        ["petbattle"] = [], // In a pet battle
+        ["nopetbattle"] = [],
+        ["pvpcombat"] = [], // PvP talents are usable
+        ["nopvpcombat"] = [],
         
-        // Form and stance conditions
-        ["form"] = ["bear", "cat", "travel", "aquatic", "flight", "moonkin", "tree", "battle", "defensive", "berserker"],
-        ["stance"] = ["1", "2", "3", "4", "5", "6"],
+        // Advanced flyable conditions
+        ["advflyable"] = [], // Can fly in current area (more reliable)
+        ["flyable"] = [], // Can fly in current area
+        ["noflyable"] = [],
         
-        // Equipment conditions
-        ["equipped"] = ["weapon", "offhand", "shield", "2h", "1h", "ranged", "ammo", "chest", "head", "legs", "feet", "hands", "waist", "back", "neck", "finger1", "finger2", "trinket1", "trinket2"],
-        ["worn"] = ["weapon", "offhand", "shield", "2h", "1h", "ranged", "ammo", "chest", "head", "legs", "feet", "hands", "waist", "back", "neck", "finger1", "finger2", "trinket1", "trinket2"],
+        // Known spells/abilities (always require values)
+        ["known"] = [], // Accepts spell names or IDs
+        ["noknown"] = [],
+        
+        // Pet conditions with values
+        ["pet"] = [], // Pet by name or family
+        
+        // Form and stance conditions (always require values)
+        ["form"] = ["0", "1", "2", "3", "4", "5", "6"], // Form numbers (0 = humanoid form)
+        ["stance"] = ["1", "2", "3", "4", "5", "6"], // Stance numbers 
+        ["noform"] = ["0", "1", "2", "3", "4", "5", "6"],
+        ["nostance"] = ["1", "2", "3", "4", "5", "6"],
+        
+        // Equipment conditions (always require values)
+        ["equipped"] = [], // Equipment slots/items (accepts various values)
+        ["worn"] = [], // Equipment slots/items (accepts various values)
         
         // Action bar conditions
         ["actionbar"] = ["1", "2", "3", "4", "5", "6"],
         ["bar"] = ["1", "2", "3", "4", "5", "6"],
         ["extrabar"] = [],
         ["noextrabar"] = [],
+        ["bonusbar"] = [], // Can be standalone or with value
+        ["nobonusbar"] = [],
         ["possessbar"] = [],
         ["nopossessbar"] = [],
         ["overridebar"] = [],
         ["nooverridebar"] = [],
+        ["shapeshift"] = [], // Temporary shapeshift action bar is active
+        ["noshapeshift"] = [],
         
         // Vehicle conditions
         ["vehicleui"] = [],
@@ -125,17 +154,24 @@ public static class ConditionalValidator
         ["invehicle"] = [],
         ["notinvehicle"] = [],
         
-        // Mouse button conditions
+        // Mouse button conditions (always require values)
         ["button"] = ["1", "2", "3", "4", "5"],
         ["btn"] = ["1", "2", "3", "4", "5"],
         
-        // Threat conditions
+        // UI conditions
+        ["cursor"] = [], // Dragging an action button
+        
+        // Threat conditions (always require values)
         ["threat"] = ["1", "2", "3"],
         
-        // Special conditions
-        ["advflyable"] = [],
-        ["flyable"] = [],
-        ["spec"] = ["1", "2", "3", "4"], // Specialization numbers
+        // Specialization conditions (always require values)
+        ["spec"] = ["1", "2", "3", "4"],
+        
+        // Spell/ability conditions
+        ["channeling"] = [], // Check if channeling anything
+        ["casting"] = [], // Check if casting anything
+        
+        // Legacy/Additional conditions that can accept free text values
         ["talent"] = [], // Talent names (free text)
         ["glyph"] = [], // Glyph names (free text)
         ["spell"] = [], // Spell names (free text)
@@ -143,60 +179,6 @@ public static class ConditionalValidator
         ["aura"] = [], // Aura names (free text)
         ["buff"] = [], // Buff names (free text)
         ["debuff"] = [], // Debuff names (free text)
-        
-        // Additional target conditions (without @ prefix for backward compatibility)
-        ["player"] = [],
-        ["target"] = [],
-        ["mouseover"] = [],
-        ["focus"] = [],
-        ["cursor"] = [],
-        ["arena1"] = [],
-        ["arena2"] = [],
-        ["arena3"] = [],
-        ["party1"] = [],
-        ["party2"] = [],
-        ["party3"] = [],
-        ["party4"] = [],
-        ["raid1"] = [],
-        ["raid2"] = [],
-        ["raid3"] = [],
-        ["raid4"] = [],
-        ["raid5"] = [],
-        ["raid6"] = [],
-        ["raid7"] = [],
-        ["raid8"] = [],
-        ["raid9"] = [],
-        ["raid10"] = [],
-        ["raid11"] = [],
-        ["raid12"] = [],
-        ["raid13"] = [],
-        ["raid14"] = [],
-        ["raid15"] = [],
-        ["raid16"] = [],
-        ["raid17"] = [],
-        ["raid18"] = [],
-        ["raid19"] = [],
-        ["raid20"] = [],
-        ["raid21"] = [],
-        ["raid22"] = [],
-        ["raid23"] = [],
-        ["raid24"] = [],
-        ["raid25"] = [],
-        ["raid26"] = [],
-        ["raid27"] = [],
-        ["raid28"] = [],
-        ["raid29"] = [],
-        ["raid30"] = [],
-        ["raid31"] = [],
-        ["raid32"] = [],
-        ["raid33"] = [],
-        ["raid34"] = [],
-        ["raid35"] = [],
-        ["raid36"] = [],
-        ["raid37"] = [],
-        ["raid38"] = [],
-        ["raid39"] = [],
-        ["raid40"] = [],
     };
 
     /// <summary>

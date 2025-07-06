@@ -1,3 +1,52 @@
+.conditional-modal {
+    z-index: 1055 !important; /* Ensure modal is above all other content */
+}
+
+.conditional-modal .modal-dialog {
+    z-index: 1056 !important; /* Dialog above modal background */
+}
+
+.conditional-modal .modal-content {
+    z-index: 1057 !important; /* Content above dialog */
+    position: relative;
+}
+
+/* Target the separately created backdrop */
+.modal-backdrop {
+    z-index: 1040 !important; /* Backdrop behind modal but above page content */
+}
+
+.conditional-modal .modal-backdrop {
+    z-index: 1040 !important; /* Backdrop behind modal but above page content */
+}
+
+/* Ensure all modal content elements have proper z-index */
+.conditional-modal .alert {
+    z-index: 1058 !important;
+    position: relative;
+}
+
+.conditional-modal .preview-box {
+    z-index: 1058 !important;
+    position: relative;
+}
+
+/* Ensure modal header, body, and footer are properly layered */
+.conditional-modal .modal-header,
+.conditional-modal .modal-body,
+.conditional-modal .modal-footer {
+    z-index: 1058 !important;
+    position: relative;
+}
+
+/* Ensure form elements within modal are properly layered */
+.conditional-modal .form-control,
+.conditional-modal .form-select,
+.conditional-modal .form-check-input {
+    z-index: 1059 !important;
+    position: relative;
+}
+
 .conditional-modal .form-check {
     margin-bottom: 0.5rem;
 }

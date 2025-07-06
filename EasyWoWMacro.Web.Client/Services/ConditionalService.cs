@@ -8,72 +8,27 @@ namespace EasyWoWMacro.Web.Client.Services;
 /// </summary>
 public class ConditionalService : IConditionalService
 {
-    // Mapping of conditional prefixes to their configuration keys
-    private static readonly Dictionary<string, string> ConditionalToConfigKey = new()
-    {
-        ["mod:"] = "modifier",
-        ["nomod:"] = "modifier",
-        ["stance:"] = "stance",
-        ["equipped:"] = "equippedType", // Special handling needed
-        ["worn:"] = "equippedType", // Same as equipped
-        ["form:"] = "form",
-        ["button:"] = "button",
-        ["btn:"] = "button", // Alias for button
-        ["threat:"] = "threat",
-        ["spec:"] = "spec",
-        ["talent:"] = "talent",
-        ["glyph:"] = "glyph",
-        ["spell:"] = "spell",
-        ["item:"] = "item",
-        ["aura:"] = "aura",
-        ["buff:"] = "buff",
-        ["debuff:"] = "buff", // Uses same config key as buff
-        ["actionbar:"] = "actionbar",
-        ["bar:"] = "actionbar", // Alias for actionbar
-        ["vehicle:"] = "vehicle",
-        ["canexitvehicle:"] = "canexitvehicle",
-        ["channeling:"] = "channeling",
-        ["casting:"] = "casting"
-    };
-
-    // Common basic conditionals that users frequently use
-    private static readonly HashSet<string> CommonBasicConditionals =
-    [
-        "combat", "nocombat", "harm", "help", "dead", "nodead",
-        "stealth", "nostealth", "mounted", "nomounted", "flying", "noflying",
-        "indoors", "outdoors", "group", "raid", "party", "solo", "pet", "nopet",
-        "channeling", "casting", "nocasting", "exists", "noexists",
-        "@target", "@mouseover", "@focus", "@player", "@cursor"
-    ];
 
     // Advanced conditional prefixes that require configuration
     private static readonly HashSet<string> AdvancedConditionalPrefixes =
     [
-        "mod:", "nomod:", "stance:", "equipped:", "worn:", "form:", "button:", "btn:",
+        "mod:", "nomod:", "modifier:", "stance:", "nostance:", "equipped:", "worn:", "form:", "noform:", "button:", "btn:",
         "threat:", "spec:", "talent:", "glyph:", "spell:", "item:", "aura:", "buff:", "debuff:",
-        "actionbar:", "bar:", "vehicle:", "canexitvehicle:", "channeling:", "casting:"
+        "actionbar:", "bar:", "vehicle:", "canexitvehicle:", "channeling:", "casting:",
+        "known:", "noknown:", "pet:", "bonusbar:"
+    ];
+
+    // Conditionals that always require values and should never appear as basic conditions
+    private static readonly HashSet<string> AlwaysRequireValues =
+    [
+        "form", "noform", "stance", "nostance", "equipped", "worn", "actionbar", "bar", 
+        "button", "btn", "threat", "spec", "talent", "glyph", "spell", "item", "aura", 
+        "buff", "debuff", "known", "noknown", "pet"
     ];
 
     public IEnumerable<string> GetValidConditionalKeys()
     {
         return ConditionalValidator.GetValidConditionalKeys();
-    }
-
-    public bool IsValidCondition(string key, string? value = null)
-    {
-        var condition = new Condition { Key = key, Value = value };
-        return ConditionalValidator.IsValidCondition(condition);
-    }
-
-    public string FormatConditional(string key, string? value = null)
-    {
-        if (string.IsNullOrWhiteSpace(key))
-            return string.Empty;
-
-        if (string.IsNullOrWhiteSpace(value))
-            return key;
-
-        return $"{key}:{value}";
     }
 
     public IEnumerable<string> GetAdvancedConditions()
@@ -88,13 +43,10 @@ public class ConditionalService : IConditionalService
     public IEnumerable<string> GetAllBasicConditions()
     {
         return GetValidConditionalKeys()
-            .Where(key => !AdvancedConditionalPrefixes.Contains(key) && !key.EndsWith(":"))
+            .Where(key => !AdvancedConditionalPrefixes.Contains(key) && 
+                         !key.EndsWith(":") && 
+                         !AlwaysRequireValues.Contains(key))
             .OrderBy(k => k);
-    }
-
-    public string? GetConfigurationKeyForConditional(string conditional)
-    {
-        return ConditionalToConfigKey.GetValueOrDefault(conditional);
     }
 
     public IEnumerable<ConditionalConfigurationInfo> GetConditionalConfigurationInfo()
@@ -137,22 +89,51 @@ public class ConditionalService : IConditionalService
             },
             new()
             {
+                Conditional = "modifier:",
+                ConfigurationKey = "modifier",
+                Label = "Modifier Key",
+                Type = ConfigurationType.Select,
+                Options =
+                [
+                    new SelectOption { Value = "alt", Label = "Alt" },
+                    new SelectOption { Value = "ctrl", Label = "Ctrl" },
+                    new SelectOption { Value = "shift", Label = "Shift" },
+                    new SelectOption { Value = "alt,ctrl", Label = "Alt+Ctrl" },
+                    new SelectOption { Value = "alt,shift", Label = "Alt+Shift" },
+                    new SelectOption { Value = "ctrl,shift", Label = "Ctrl+Shift" },
+                    new SelectOption { Value = "alt,ctrl,shift", Label = "Alt+Ctrl+Shift" }
+                ]
+            },
+            new()
+            {
                 Conditional = "stance:",
                 ConfigurationKey = "stance",
                 Label = "Stance/Form",
                 Type = ConfigurationType.Select,
                 Options =
                 [
-                    new SelectOption { Value = "1", Label = "1 - Battle Stance", Group = "Warrior Stances" },
-                    new SelectOption { Value = "2", Label = "2 - Defensive Stance", Group = "Warrior Stances" },
-                    new SelectOption { Value = "3", Label = "3 - Berserker Stance", Group = "Warrior Stances" },
-                    new SelectOption { Value = "bear", Label = "Bear Form", Group = "Druid Forms" },
-                    new SelectOption { Value = "aquatic", Label = "Aquatic Form", Group = "Druid Forms" },
-                    new SelectOption { Value = "cat", Label = "Cat Form", Group = "Druid Forms" },
-                    new SelectOption { Value = "travel", Label = "Travel Form", Group = "Druid Forms" },
-                    new SelectOption { Value = "moonkin", Label = "Moonkin Form", Group = "Druid Forms" },
-                    new SelectOption { Value = "stealth", Label = "Stealth (Rogue)", Group = "Other" },
-                    new SelectOption { Value = "shadowform", Label = "Shadowform (Priest)", Group = "Other" }
+                    new SelectOption { Value = "1", Label = "1 - Form/Stance 1" },
+                    new SelectOption { Value = "2", Label = "2 - Form/Stance 2" },
+                    new SelectOption { Value = "3", Label = "3 - Form/Stance 3" },
+                    new SelectOption { Value = "4", Label = "4 - Form/Stance 4" },
+                    new SelectOption { Value = "5", Label = "5 - Form/Stance 5" },
+                    new SelectOption { Value = "6", Label = "6 - Form/Stance 6" }
+                ]
+            },
+            new()
+            {
+                Conditional = "nostance:",
+                ConfigurationKey = "stance",
+                Label = "Not In Stance/Form",
+                Type = ConfigurationType.Select,
+                Options =
+                [
+                    new SelectOption { Value = "1", Label = "1 - Not Form/Stance 1" },
+                    new SelectOption { Value = "2", Label = "2 - Not Form/Stance 2" },
+                    new SelectOption { Value = "3", Label = "3 - Not Form/Stance 3" },
+                    new SelectOption { Value = "4", Label = "4 - Not Form/Stance 4" },
+                    new SelectOption { Value = "5", Label = "5 - Not Form/Stance 5" },
+                    new SelectOption { Value = "6", Label = "6 - Not Form/Stance 6" }
                 ]
             },
             new()
@@ -175,18 +156,37 @@ public class ConditionalService : IConditionalService
             {
                 Conditional = "form:",
                 ConfigurationKey = "form",
-                Label = "Form Type",
+                Label = "Form Number",
                 Type = ConfigurationType.Select,
                 Options =
                 [
-                    new SelectOption { Value = "bear", Label = "Bear Form" },
-                    new SelectOption { Value = "cat", Label = "Cat Form" },
-                    new SelectOption { Value = "travel", Label = "Travel Form" },
-                    new SelectOption { Value = "aquatic", Label = "Aquatic Form" },
-                    new SelectOption { Value = "moonkin", Label = "Moonkin Form" },
-                    new SelectOption { Value = "tree", Label = "Tree of Life Form" }
+                    new SelectOption { Value = "0", Label = "0 - Humanoid Form" },
+                    new SelectOption { Value = "1", Label = "1 - Form 1" },
+                    new SelectOption { Value = "2", Label = "2 - Form 2" },
+                    new SelectOption { Value = "3", Label = "3 - Form 3" },
+                    new SelectOption { Value = "4", Label = "4 - Form 4" },
+                    new SelectOption { Value = "5", Label = "5 - Form 5" },
+                    new SelectOption { Value = "6", Label = "6 - Form 6" }
                 ],
-                Description = "Check current druid form"
+                Description = "Check current form by number (0=humanoid, class-specific forms 1-6)"
+            },
+            new()
+            {
+                Conditional = "noform:",
+                ConfigurationKey = "form",
+                Label = "Not In Form Number",
+                Type = ConfigurationType.Select,
+                Options =
+                [
+                    new SelectOption { Value = "0", Label = "0 - Not Humanoid Form" },
+                    new SelectOption { Value = "1", Label = "1 - Not Form 1" },
+                    new SelectOption { Value = "2", Label = "2 - Not Form 2" },
+                    new SelectOption { Value = "3", Label = "3 - Not Form 3" },
+                    new SelectOption { Value = "4", Label = "4 - Not Form 4" },
+                    new SelectOption { Value = "5", Label = "5 - Not Form 5" },
+                    new SelectOption { Value = "6", Label = "6 - Not Form 6" }
+                ],
+                Description = "Check player is not in specific form by number (0=not humanoid, etc.)"
             },
             new()
             {
@@ -375,6 +375,49 @@ public class ConditionalService : IConditionalService
                 Placeholder = "Spell name",
                 Type = ConfigurationType.Text,
                 Description = "Check if casting specific spell"
+            },
+            new()
+            {
+                Conditional = "known:",
+                ConfigurationKey = "known",
+                Label = "Known Spell/Ability",
+                Placeholder = "Spell name or ID",
+                Type = ConfigurationType.Text,
+                Description = "Check if player knows specific spell or ability"
+            },
+            new()
+            {
+                Conditional = "noknown:",
+                ConfigurationKey = "known",
+                Label = "Unknown Spell/Ability",
+                Placeholder = "Spell name or ID",
+                Type = ConfigurationType.Text,
+                Description = "Check if player doesn't know specific spell or ability"
+            },
+            new()
+            {
+                Conditional = "pet:",
+                ConfigurationKey = "pet",
+                Label = "Pet Name/Family",
+                Placeholder = "Pet name or family (e.g., 'Wolf', 'Fluffy')",
+                Type = ConfigurationType.Text,
+                Description = "Check pet by name or family type"
+            },
+            new()
+            {
+                Conditional = "bonusbar:",
+                ConfigurationKey = "bonusbar",
+                Label = "Bonus Bar Number",
+                Type = ConfigurationType.Select,
+                Options =
+                [
+                    new SelectOption { Value = "1", Label = "1 - Bonus Bar 1" },
+                    new SelectOption { Value = "2", Label = "2 - Bonus Bar 2" },
+                    new SelectOption { Value = "3", Label = "3 - Bonus Bar 3" },
+                    new SelectOption { Value = "4", Label = "4 - Bonus Bar 4" },
+                    new SelectOption { Value = "5", Label = "5 - Bonus Bar 5" }
+                ],
+                Description = "Check specific bonus action bar number"
             }
         };
     }

@@ -64,6 +64,7 @@
     color: #f4f1e8;
     position: relative;
     overflow: hidden;
+    z-index: 0;
 }
 
 .structure-view-container {
@@ -116,7 +117,7 @@
     position: fixed;
     top: 20px;
     right: 20px;
-    z-index: 9999;
+    z-index: 1080;
     animation: slideIn 0.3s ease-out;
 }
 
