@@ -34,7 +34,7 @@ public class ConditionalValidatorTests
     public void IsValidCondition_ValidConditionWithValue_ShouldReturnTrue()
     {
         // Arrange
-        var condition = new Condition { Key = "form", Value = "bear" };
+        var condition = new Condition { Key = "form", Value = "1" };
 
         // Act
         var isValid = ConditionalValidator.IsValidCondition(condition);
@@ -182,8 +182,8 @@ public class ConditionalValidatorTests
     [InlineData("mod", "alt")]
     [InlineData("mod", "ctrl")]
     [InlineData("mod", "shift")]
-    [InlineData("form", "bear")]
-    [InlineData("form", "cat")]
+    [InlineData("form", "1")]
+    [InlineData("form", "2")]
     [InlineData("stance", "1")]
     [InlineData("stance", "6")]
     [InlineData("equipped", "weapon")]
@@ -204,7 +204,7 @@ public class ConditionalValidatorTests
     [InlineData("mod", "invalid")]
     [InlineData("form", "invalidform")]
     [InlineData("stance", "7")]
-    [InlineData("equipped", "invalid")]
+    [InlineData("form", "7")]
     public void IsValidCondition_VariousInvalidConditions_ShouldReturnFalse(string key, string value)
     {
         // Arrange
