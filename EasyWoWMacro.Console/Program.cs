@@ -1,5 +1,6 @@
-﻿using EasyWoWMacro.Core.Models;
+using EasyWoWMacro.Core.Models;
 using EasyWoWMacro.Core.Parsing;
+using EasyWoWMacro.Core.Services;
 
 namespace EasyWoWMacro.Console;
 
@@ -7,90 +8,47 @@ sealed class Program
 {
     static void Main(string[] args)
     {
-        /*System.Console.WriteLine("=== EasyWoW Macro Testing Console ===");
-        System.Console.WriteLine();
-
-        // Test: Parse macro text with conditionals
-        var parser = new MacroParser();
-        var macroText = @"#showtooltip Fireball
-/cast [mod:shift,@focus] Polymorph
-/use [combat] Mana Potion; [nocombat] Water
-; This is a comment";
-
-        System.Console.WriteLine("Input macro text:");
-        System.Console.WriteLine(macroText);
-        System.Console.WriteLine();
-
-        var macro = parser.Parse(macroText);
-        System.Console.WriteLine("Parsed macro lines:");
-        foreach (var line in macro.Lines)
+        if (args.Length > 0 && args[0] == "--count")
         {
-            System.Console.Write($"Line {line.LineNumber}: ");
-            switch (line)
+            if (args.Length > 1)
             {
-                case DirectiveLine d:
-                    System.Console.WriteLine($"Directive: {d.Directive} Argument: {d.Argument}");
-                    break;
-                case CommandLine c:
-                    System.Console.Write($"Command: {c.Command}");
-                    if (c.Clauses.Count > 0)
-                    {
-                        System.Console.Write(" Clauses:");
-                        foreach (var clause in c.Clauses)
-                        {
-                            System.Console.Write($" [{clause}]");
-                        }
-                    }
-                    System.Console.WriteLine();
-                    break;
-                case CommentLine cm:
-                    System.Console.WriteLine($"Comment: {cm.Comment}");
-                    break;
-                default:
-                    System.Console.WriteLine($"Unknown line type: {line.RawText}");
-                    break;
+                System.Console.WriteLine(args[1].Length);
+                return;
             }
         }
 
-        System.Console.WriteLine();
-        System.Console.WriteLine("Validation:");
-        var errors = parser.ValidateMacro(macro);
-        if (errors.Count == 0)
+        if (args.Length > 0 && args[0] == "--debug")
         {
-            System.Console.WriteLine("✓ Macro is valid");
-        }
-        else
-        {
-            foreach (var error in errors)
+            var enhancer = new ValidationEnhancementService();
+            var parser = new MacroParser();
+
+            System.Console.WriteLine("=== Testing Character Limit ===");
+            var macroText1 = "/cast [mod:shift,combat,harm,nodead,exists] Fireball; [mod:ctrl,combat,harm,nodead,exists] Frostbolt; [mod:alt,combat,harm,nodead,exists] Polymorph; [combat,harm,nodead,exists] Fireball; [@target,harm,nodead] Fireball";
+            System.Console.WriteLine($"Macro length: {macroText1.Length}");
+            var basicErrors1 = parser.ValidateMacroText(macroText1);
+            System.Console.WriteLine($"Basic errors count: {basicErrors1.Count}");
+            var enhancedErrors1 = enhancer.EnhanceValidationErrors(basicErrors1, macroText1);
+            System.Console.WriteLine($"Enhanced errors count: {enhancedErrors1.Count}");
+            foreach (var error in enhancedErrors1)
             {
-                System.Console.WriteLine($"✗ {error}");
+                System.Console.WriteLine($"- {error.Message} (Type: {error.Type})");
             }
+
+            System.Console.WriteLine("\n=== Testing Directive Placement ===");
+            var macroText2 = @"/cast Fireball
+#showtooltip Fireball";
+            System.Console.WriteLine($"Macro text: '{macroText2}'");
+            var basicErrors2 = parser.ValidateMacroText(macroText2);
+            System.Console.WriteLine($"Basic errors count: {basicErrors2.Count}");
+            var enhancedErrors2 = enhancer.EnhanceValidationErrors(basicErrors2, macroText2);
+            System.Console.WriteLine($"Enhanced errors count: {enhancedErrors2.Count}");
+            foreach (var error in enhancedErrors2)
+            {
+                System.Console.WriteLine($"- {error.Message} (Type: {error.Type})");
+            }
+            return;
         }
 
-        System.Console.WriteLine();
-        System.Console.WriteLine(new string('=', 50));
-        System.Console.WriteLine();
-
-        // Test: Invalid macro with bad conditionals
-        System.Console.WriteLine("Test: Invalid macro with bad conditionals");
-        var invalidMacroText = @"#showtooltip
-/cast [invalidcondition] Fireball
-/use [mod:invalid] Mana Potion";
-
-        System.Console.WriteLine("Input macro text:");
-        System.Console.WriteLine(invalidMacroText);
-        System.Console.WriteLine();
-
-        var invalidMacro = parser.Parse(invalidMacroText);
-        var invalidErrors = parser.ValidateMacro(invalidMacro);
-        System.Console.WriteLine("Validation errors:");
-        foreach (var error in invalidErrors)
-        {
-            System.Console.WriteLine($"✗ {error}");
-        }
-
-        System.Console.WriteLine();
-        System.Console.WriteLine("Press any key to exit...");
-        System.Console.ReadKey();*/
+        System.Console.WriteLine("Use --debug to run validation debug tests");
     }
 }

@@ -1,4 +1,4 @@
-namespace EasyWoWMacro.Web.Client.Models;
+namespace EasyWoWMacro.Core.Models;
 
 public class ValidationError
 {

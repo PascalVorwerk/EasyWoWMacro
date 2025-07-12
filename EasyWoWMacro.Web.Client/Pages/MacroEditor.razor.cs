@@ -1,6 +1,7 @@
 using System.Globalization;
 using EasyWoWMacro.Core.Models;
 using EasyWoWMacro.Core.Parsing;
+using EasyWoWMacro.Core.Services;
 using EasyWoWMacro.Web.Client.Models;
 using EasyWoWMacro.Web.Client.Services;
 using Microsoft.AspNetCore.Components;

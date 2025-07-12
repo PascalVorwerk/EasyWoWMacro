@@ -1,3 +1,7 @@
+using System.Globalization;
+using EasyWoWMacro.Core.Models;
+using Microsoft.AspNetCore.Components;
+
 namespace EasyWoWMacro.Web.Client.Components;
 
 public partial class ValidationPanel : ComponentBase
