@@ -1,0 +1,368 @@
+@page "/macro-guide"
+@rendermode InteractiveWebAssembly
+
+<PageTitle>Macro Guide - EasyWoWMacro</PageTitle>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="wow-hero-section">
+                <div class="wow-hero-content">
+                    <h1 class="wow-hero-title">⚔️ Macro Mastery Guide</h1>
+                    <p class="wow-hero-subtitle">Master the Art of WoW Macro Creation</p>
+                    <div class="wow-hero-divider"></div>
+                    <p class="wow-hero-description">Learn how to create powerful World of Warcraft macros step-by-step. From basic commands to complex conditionals, this guide will transform you into a macro crafting expert.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Table of Contents -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="wow-feature-card">
+                <h3 class="wow-feature-title">📚 Quick Navigation</h3>
+                <div class="row">
+                    <div class="col-md-6">
+                        <ul class="wow-toc-list">
+                            <li><a href="javascript:void(0)" @onclick="@(() => ScrollToSectionAsync("basics"))" @onclick:preventDefault="true">🎯 Macro Basics</a></li>
+                            <li><a href="javascript:void(0)" @onclick="@(() => ScrollToSectionAsync("structure"))" @onclick:preventDefault="true">🏗️ Macro Structure</a></li>
+                            <li><a href="javascript:void(0)" @onclick="@(() => ScrollToSectionAsync("commands"))" @onclick:preventDefault="true">⚡ Common Commands</a></li>
+                            <li><a href="javascript:void(0)" @onclick="@(() => ScrollToSectionAsync("conditionals"))" @onclick:preventDefault="true">🔮 Conditional Logic</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <ul class="wow-toc-list">
+                            <li><a href="javascript:void(0)" @onclick="@(() => ScrollToSectionAsync("examples"))" @onclick:preventDefault="true">📜 Example Macros</a></li>
+                            <li><a href="javascript:void(0)" @onclick="@(() => ScrollToSectionAsync("advanced"))" @onclick:preventDefault="true">🧙 Advanced Patterns</a></li>
+                            <li><a href="javascript:void(0)" @onclick="@(() => ScrollToSectionAsync("tips"))" @onclick:preventDefault="true">💡 Pro Tips</a></li>
+                            <li><a href="javascript:void(0)" @onclick="@(() => ScrollToSectionAsync("reference"))" @onclick:preventDefault="true">📖 Quick Reference</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Macro Basics Section -->
+    <div class="row mt-4" id="basics">
+        <div class="col-12">
+            <div class="wow-feature-card">
+                <h3 class="wow-feature-title">🎯 Macro Basics</h3>
+                <div class="wow-guide-content">
+                    <p class="wow-guide-text">Macros are sequences of commands that execute when you press a button. They help you:</p>
+                    <ul class="wow-guide-list">
+                        <li>Cast different spells based on your target</li>
+                        <li>Combine multiple actions into one button</li>
+                        <li>Automate repetitive tasks</li>
+                        <li>Create smart abilities that adapt to situations</li>
+                    </ul>
+                    
+                    <div class="wow-info-box">
+                        <h5>⚠️ Important Constraints</h5>
+                        <ul>
+                            <li><strong>255 character limit</strong> - Keep your macros concise</li>
+                            <li><strong>All commands execute instantly</strong> - No delays or pauses</li>
+                            <li><strong>Global Cooldown applies</strong> - Only one ability can trigger per press</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Macro Structure Section -->
+    <div class="row mt-4" id="structure">
+        <div class="col-12">
+            <div class="wow-feature-card">
+                <h3 class="wow-feature-title">🏗️ Macro Structure</h3>
+                <div class="wow-guide-content">
+                    <p class="wow-guide-text">Every macro follows this basic pattern:</p>
+                    
+                    <div class="wow-code-block">
+                        <pre><code>/command [conditions] arguments; [fallback] arguments</code></pre>
+                    </div>
+                    
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <h5>🔧 Components Explained</h5>
+                            <ul class="wow-guide-list">
+                                <li><strong>/command</strong> - The action to perform</li>
+                                <li><strong>[conditions]</strong> - When to perform it</li>
+                                <li><strong>arguments</strong> - What to target/use</li>
+                                <li><strong>;</strong> - Separates different options</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>📝 Example Breakdown</h5>
+                            <div class="wow-code-block">
+                                <pre><code>/cast [help] Heal; [harm] Fireball</code></pre>
+                            </div>
+                            <p class="wow-guide-text small">Cast Heal on friendly targets, Fireball on enemies</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Common Commands Section -->
+    <div class="row mt-4" id="commands">
+        <div class="col-12">
+            <div class="wow-feature-card">
+                <h3 class="wow-feature-title">⚡ Common Commands</h3>
+                <div class="wow-guide-content">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>🎭 Essential Commands</h5>
+                            <div class="wow-command-list">
+                                <div class="wow-command-item">
+                                    <strong>/cast</strong> - Cast a spell or ability
+                                    <div class="wow-code-block"><code>/cast Fireball</code></div>
+                                </div>
+                                <div class="wow-command-item">
+                                    <strong>/use</strong> - Use an item
+                                    <div class="wow-code-block"><code>/use Healing Potion</code></div>
+                                </div>
+                                <div class="wow-command-item">
+                                    <strong>/target</strong> - Change your target
+                                    <div class="wow-code-block"><code>/target [@@mouseover]</code></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>🎨 Display Commands</h5>
+                            <div class="wow-command-list">
+                                <div class="wow-command-item">
+                                    <strong>#showtooltip</strong> - Show spell tooltip
+                                    <div class="wow-code-block"><code>#showtooltip Fireball</code></div>
+                                </div>
+                                <div class="wow-command-item">
+                                    <strong>#show</strong> - Show spell icon
+                                    <div class="wow-code-block"><code>#show Healing Potion</code></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Conditional Logic Section -->
+    <div class="row mt-4" id="conditionals">
+        <div class="col-12">
+            <div class="wow-feature-card">
+                <h3 class="wow-feature-title">🔮 Conditional Logic</h3>
+                <div class="wow-guide-content">
+                    <p class="wow-guide-text">Conditionals make your macros smart by checking the game state before executing commands.</p>
+                    
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <h5>🎯 Target Conditionals</h5>
+                            <div class="wow-conditional-list">
+                                <div class="wow-conditional-item">
+                                    <strong>[help]</strong> - Target can be helped (friendly)
+                                </div>
+                                <div class="wow-conditional-item">
+                                    <strong>[harm]</strong> - Target can be harmed (enemy)
+                                </div>
+                                <div class="wow-conditional-item">
+                                    <strong>[exists]</strong> - Target exists
+                                </div>
+                                <div class="wow-conditional-item">
+                                    <strong>[@@mouseover]</strong> - Target under mouse cursor
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>⚔️ Combat Conditionals</h5>
+                            <div class="wow-conditional-list">
+                                <div class="wow-conditional-item">
+                                    <strong>[combat]</strong> - You are in combat
+                                </div>
+                                <div class="wow-conditional-item">
+                                    <strong>[mounted]</strong> - You are mounted
+                                </div>
+                                <div class="wow-conditional-item">
+                                    <strong>[mod:shift]</strong> - Shift key is pressed
+                                </div>
+                                <div class="wow-conditional-item">
+                                    <strong>[spec:1]</strong> - You are in spec 1
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="wow-info-box mt-3">
+                        <h5>🔗 Combining Conditionals</h5>
+                        <ul>
+                            <li><strong>Comma (,)</strong> = AND logic: <code>[combat,harm]</code> - In combat AND target is enemy</li>
+                            <li><strong>Multiple brackets</strong> = OR logic: <code>[combat][harm]</code> - In combat OR target is enemy</li>
+                            <li><strong>no prefix</strong> = NOT logic: <code>[nocombat]</code> - NOT in combat</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Example Macros Section -->
+    <div class="row mt-4" id="examples">
+        <div class="col-12">
+            <div class="wow-feature-card">
+                <h3 class="wow-feature-title">📜 Example Macros</h3>
+                <div class="wow-guide-content">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>🩹 Healing Macro</h5>
+                            <div class="wow-code-block">
+                                <pre><code>#showtooltip
+/cast [help] Heal; [harm] Smite; [@@player] Heal</code></pre>
+                            </div>
+                            <p class="wow-guide-text small">Heals friendly targets, attacks enemies, or heals yourself if no target</p>
+                            
+                            <h5 class="mt-4">🎯 Mouseover Macro</h5>
+                            <div class="wow-code-block">
+                                <pre><code>#showtooltip
+/cast [@@mouseover,help] Heal; [@@target,help] Heal</code></pre>
+                            </div>
+                            <p class="wow-guide-text small">Heals unit under mouse, then your target if friendly</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>🔥 Combat Macro</h5>
+                            <div class="wow-code-block">
+                                <pre><code>#showtooltip
+/cast [mod:shift] Pyroblast; [combat] Fireball; Frost Bolt</code></pre>
+                            </div>
+                            <p class="wow-guide-text small">Pyroblast with Shift, Fireball in combat, Frost Bolt otherwise</p>
+                            
+                            <h5 class="mt-4">🛡️ Defensive Macro</h5>
+                            <div class="wow-code-block">
+                                <pre><code>/cast [combat,mod:ctrl] Shield Wall; [harm] Charge; Defensive Stance</code></pre>
+                            </div>
+                            <p class="wow-guide-text small">Shield Wall in combat with Ctrl, Charge enemies, or enter Defensive Stance</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Advanced Patterns Section -->
+    <div class="row mt-4" id="advanced">
+        <div class="col-12">
+            <div class="wow-feature-card">
+                <h3 class="wow-feature-title">🧙 Advanced Patterns</h3>
+                <div class="wow-guide-content">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>🎭 Multi-Target Macro</h5>
+                            <div class="wow-code-block">
+                                <pre><code>/cast [@@mouseover,harm] Fireball; [@@target,harm] Fireball; [@@targettarget,harm] Fireball</code></pre>
+                            </div>
+                            <p class="wow-guide-text small">Tries mouseover, then target, then target's target</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>🔄 Modifier Switching</h5>
+                            <div class="wow-code-block">
+                                <pre><code>/cast [mod:alt] Spell1; [mod:ctrl] Spell2; [mod:shift] Spell3; Default Spell</code></pre>
+                            </div>
+                            <p class="wow-guide-text small">Different spells for different modifier keys</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pro Tips Section -->
+    <div class="row mt-4" id="tips">
+        <div class="col-12">
+            <div class="wow-feature-card">
+                <h3 class="wow-feature-title">💡 Pro Tips</h3>
+                <div class="wow-guide-content">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>✅ Best Practices</h5>
+                            <ul class="wow-guide-list">
+                                <li>Use <code>#showtooltip</code> to show spell information</li>
+                                <li>Test macros thoroughly before using in combat</li>
+                                <li>Keep macros simple and focused on one purpose</li>
+                                <li>Use descriptive names for your macro buttons</li>
+                                <li>Shift-click spells in spellbook for exact names</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>❌ Common Mistakes</h5>
+                            <ul class="wow-guide-list">
+                                <li>Don't exceed 255 characters</li>
+                                <li>Don't use multiple GCD abilities in one macro</li>
+                                <li>Don't forget to test with different targets</li>
+                                <li>Don't use complex conditionals without understanding them</li>
+                                <li>Don't rely on macros for precise timing</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Reference Section -->
+    <div class="row mt-4" id="reference">
+        <div class="col-12">
+            <div class="wow-feature-card">
+                <h3 class="wow-feature-title">📖 Quick Reference</h3>
+                <div class="wow-guide-content">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h5>Commands</h5>
+                            <div class="wow-reference-list">
+                                <code>/cast</code> - Cast spell<br>
+                                <code>/use</code> - Use item<br>
+                                <code>/target</code> - Change target<br>
+                                <code>/focus</code> - Set focus<br>
+                                <code>/assist</code> - Assist target
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <h5>Target Units</h5>
+                            <div class="wow-reference-list">
+                                <code>[@@target]</code> - Current target<br>
+                                <code>[@@mouseover]</code> - Mouse cursor<br>
+                                <code>[@@focus]</code> - Focus target<br>
+                                <code>[@@player]</code> - Yourself<br>
+                                <code>[@@pet]</code> - Your pet
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <h5>Modifiers</h5>
+                            <div class="wow-reference-list">
+                                <code>[mod:shift]</code> - Shift key<br>
+                                <code>[mod:ctrl]</code> - Ctrl key<br>
+                                <code>[mod:alt]</code> - Alt key<br>
+                                <code>[button:1]</code> - Left click<br>
+                                <code>[button:2]</code> - Right click
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Call to Action -->
+    <div class="row mt-4 mb-4">
+        <div class="col-12">
+            <div class="wow-feature-card text-center">
+                <h3 class="wow-feature-title">🎯 Ready to Create Your Own Macros?</h3>
+                <p class="wow-guide-text">Put your new knowledge to the test with our interactive macro editor!</p>
+                <a class="btn btn-primary btn-lg wow-cta-button" href="macro-editor" role="button">
+                    <span class="wow-cta-icon">⚔️</span>
+                    Open Macro Editor
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

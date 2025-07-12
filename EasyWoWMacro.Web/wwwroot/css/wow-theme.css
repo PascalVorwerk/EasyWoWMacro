@@ -858,6 +858,15 @@ code {
     border-color: var(--wow-gold);
 }
 
+.wow-feature-card h5 {
+    font-family: 'Cinzel', serif;
+    color: var(--wow-gold);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    margin-bottom: 1rem;
+    font-weight: 600;
+    font-size: 1.2rem;
+}
+
 .wow-feature-icon {
     margin-bottom: 1.5rem;
 }
@@ -1194,4 +1203,194 @@ code {
 .wow-hover:hover {
     transform: translateY(-2px);
     box-shadow: var(--wow-shadow), var(--wow-glow);
+}
+
+/* WoW-style Macro Guide Components */
+.wow-guide-content {
+    position: relative;
+    z-index: 1;
+}
+
+.wow-guide-text {
+    font-family: 'Libre Baskerville', serif;
+    color: var(--wow-parchment);
+    font-size: 1rem;
+    line-height: 1.6;
+    margin: 0 0 1rem 0;
+}
+
+.wow-guide-text.small {
+    font-size: 0.9rem;
+    font-style: italic;
+    opacity: 0.9;
+}
+
+.wow-guide-list {
+    font-family: 'Libre Baskerville', serif;
+    color: var(--wow-parchment);
+    font-size: 1rem;
+    line-height: 1.6;
+    margin: 0 0 1rem 0;
+    padding-left: 1.5rem;
+}
+
+.wow-guide-list li {
+    margin-bottom: 0.5rem;
+}
+
+.wow-toc-list {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+}
+
+.wow-toc-list li {
+    margin-bottom: 0.75rem;
+}
+
+.wow-toc-list a {
+    color: var(--wow-parchment);
+    text-decoration: none;
+    font-family: 'Libre Baskerville', serif;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    display: block;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    border: 1px solid transparent;
+}
+
+.wow-toc-list a:hover {
+    color: var(--wow-gold);
+    background: rgba(255, 215, 0, 0.1);
+    border-color: var(--wow-gold);
+    transform: translateX(5px);
+}
+
+.wow-info-box {
+    background: rgba(0, 102, 204, 0.1);
+    border: 2px solid var(--wow-blue);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.wow-info-box::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--wow-blue) 0%, var(--wow-blue-light) 50%, var(--wow-blue) 100%);
+}
+
+.wow-info-box h5 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.2rem;
+    color: var(--wow-blue-light);
+    margin: 0 0 1rem 0;
+    font-weight: 600;
+}
+
+.wow-info-box ul {
+    font-family: 'Libre Baskerville', serif;
+    color: var(--wow-parchment);
+    font-size: 1rem;
+    line-height: 1.6;
+    margin: 0;
+    padding-left: 1.5rem;
+}
+
+.wow-info-box li {
+    margin-bottom: 0.5rem;
+}
+
+.wow-command-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.wow-command-item {
+    background: rgba(244, 241, 232, 0.05);
+    border: 1px solid var(--wow-stone);
+    border-left: 3px solid var(--wow-gold);
+    border-radius: 0 6px 6px 0;
+    padding: 1rem;
+    transition: all 0.3s ease;
+    font-family: 'Libre Baskerville', serif;
+    color: var(--wow-parchment);
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+.wow-command-item:hover {
+    background: rgba(244, 241, 232, 0.1);
+    transform: translateX(5px);
+}
+
+.wow-command-item strong {
+    font-family: 'Cinzel', serif;
+    color: var(--wow-gold-light);
+    font-size: 1.1rem;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.wow-command-item .wow-code-block {
+    margin-top: 0.5rem;
+    background: var(--wow-metal-dark);
+    border: 1px solid var(--wow-stone);
+    border-radius: 4px;
+    padding: 0.5rem;
+}
+
+.wow-conditional-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.wow-conditional-item {
+    background: rgba(244, 241, 232, 0.05);
+    border: 1px solid var(--wow-stone);
+    border-left: 3px solid var(--wow-purple);
+    border-radius: 0 6px 6px 0;
+    padding: 0.75rem 1rem;
+    transition: all 0.3s ease;
+    font-family: 'Libre Baskerville', serif;
+    color: var(--wow-parchment);
+    font-size: 0.95rem;
+}
+
+.wow-conditional-item:hover {
+    background: rgba(244, 241, 232, 0.1);
+    transform: translateX(5px);
+}
+
+.wow-conditional-item strong {
+    font-family: 'Courier New', monospace;
+    color: var(--wow-gold-light);
+    font-weight: 600;
+}
+
+.wow-reference-list {
+    font-family: 'Courier New', monospace;
+    color: var(--wow-parchment);
+    font-size: 0.9rem;
+    line-height: 1.8;
+}
+
+.wow-reference-list code {
+    background: var(--wow-metal-dark) !important;
+    color: var(--wow-gold-light) !important;
+    border: 1px solid var(--wow-stone) !important;
+    border-radius: 4px;
+    padding: 0.2rem 0.4rem;
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
 }
