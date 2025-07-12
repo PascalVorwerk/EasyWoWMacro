@@ -19,11 +19,13 @@ public partial class MacroEditor : ComponentBase
     private readonly List<List<MacroBlockModel>> _macroLines = [new()];
     private Macro? _parsedMacro;
     private List<string> _validationErrors = [];
+    private List<ValidationError> _enhancedValidationErrors = [];
     private readonly MacroParser _parser = new();
+    private readonly ValidationEnhancementService _validationEnhancer = new();
     private bool _showCopyToast;
     private string _toastMessage = "";
     private bool _isCopying;
-    private bool _showStructureView = true;
+    private bool _showStructureView;
 
     // Import functionality properties
     private bool _showImportModal;
@@ -248,16 +250,21 @@ public partial class MacroEditor : ComponentBase
             {
                 _parsedMacro = null;
             }
+
+            // Enhance validation errors with contextual help
+            _enhancedValidationErrors = _validationEnhancer.EnhanceValidationErrors(_validationErrors, macroText);
         }
         catch (Exception ex)
         {
             _validationErrors.Clear();
             _validationErrors.Add($"Parsing error: {ex.Message}");
+            _enhancedValidationErrors = _validationEnhancer.EnhanceValidationErrors(_validationErrors, "");
             _parsedMacro = null;
         }
 
         StateHasChanged();
     }
+
 
     private async Task CopyToClipboard()
     {
@@ -339,12 +346,6 @@ public partial class MacroEditor : ComponentBase
         StateHasChanged();
     }
 
-    private string GetFormattedMacroLength()
-    {
-        if (_parsedMacro == null) return "0";
-        var formatted = _parsedMacro.GetFormattedMacro().Length;
-        return formatted.ToString(CultureInfo.InvariantCulture);
-    }
 
     private string ConvertBlocksToMacroText()
     {

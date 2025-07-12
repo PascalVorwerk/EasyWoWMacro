@@ -48,67 +48,11 @@
             </div>
         </div>
         <div class="col-md-4">
-            <div class="wow-building-blocks-toolbox validation-panel">
-                <div class="wow-toolbox-header">
-                    <h3 class="wow-toolbox-title">
-                        <span class="wow-toolbox-icon">🔍</span>
-                        Validation & Preview
-                    </h3>
-                    @if (_parsedMacro != null)
-                    {
-                        <div class="btn-group btn-group-sm" role="group">
-                            <button type="button" class="btn @(_showStructureView ? "btn-primary" : "btn-outline-primary")"
-                                    @onclick="() => ToggleView(true)">
-                                <i class="bi bi-diagram-3"></i> Structure
-                            </button>
-                            <button type="button" class="btn @(!_showStructureView ? "btn-primary" : "btn-outline-primary")"
-                                    @onclick="() => ToggleView(false)">
-                                <i class="bi bi-code"></i> Output
-                            </button>
-                        </div>
-                    }
-                </div>
-
-                <div class="wow-blocks-container">
-                    @if (_validationErrors.Count > 0)
-                    {
-                        <div class="alert alert-danger">
-                            <h5>Validation Errors:</h5>
-                            <ul class="mb-0">
-                                @foreach (var error in _validationErrors)
-                                {
-                                    <li>@error</li>
-                                }
-                            </ul>
-                        </div>
-                    }
-
-                    @if (_parsedMacro != null && _validationErrors.Count == 0)
-                    {
-                        <div class="alert alert-success validation-success">
-                            <h5 class="validation-title">✓ MACRO IS VALID!</h5>
-                            <p class="validation-details mb-0">Character count: @GetFormattedMacroLength() / 255</p>
-                        </div>
-                    }
-
-                    @if (_parsedMacro != null)
-                    {
-                        @if (_showStructureView)
-                        {
-                            <div class="structure-view-container">
-                                <MacroStructureViewer MacroLines="_parsedMacro.Lines" />
-                            </div>
-                        }
-                        else
-                        {
-                            <h5 class="formatted-output-header">Formatted Output:</h5>
-                            <div class="wow-code-block formatted-macro">
-                                <pre><code>@_parsedMacro.GetFormattedMacro()</code></pre>
-                            </div>
-                        }
-                    }
-                </div>
-            </div>
+            <ValidationPanel 
+                ValidationErrors="_enhancedValidationErrors" 
+                ParsedMacro="_parsedMacro" 
+                ShowStructureView="_showStructureView"
+                OnToggleView="ToggleView" />
         </div>
     </div>
 </div>
