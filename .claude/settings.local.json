@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:wowpedia.fandom.com)",
+      "Bash(dotnet run:*)",
+      "Bash(dotnet build:*)"
+    ],
+    "deny": []
+  }
+}

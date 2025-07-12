@@ -1,0 +1,145 @@
+/* Enhanced Validation Error Styling */
+.validation-errors-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.wow-validation-error {
+    background: linear-gradient(135deg, var(--wow-parchment-light) 0%, var(--wow-parchment) 100%);
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: var(--wow-shadow);
+    position: relative;
+    overflow: hidden;
+}
+
+.wow-validation-error::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+}
+
+.validation-error-syntax::before {
+    background: linear-gradient(90deg, var(--wow-orange) 0%, #ff8c42 100%);
+}
+
+.validation-error-structure::before {
+    background: linear-gradient(90deg, var(--wow-blue) 0%, var(--wow-blue-light) 100%);
+}
+
+.validation-error-command::before {
+    background: linear-gradient(90deg, var(--wow-purple) 0%, #b347d9 100%);
+}
+
+.validation-error-conditional::before {
+    background: linear-gradient(90deg, var(--wow-green) 0%, #32cd32 100%);
+}
+
+.validation-error-limit::before {
+    background: linear-gradient(90deg, var(--wow-red) 0%, #ff4757 100%);
+}
+
+.validation-error-general::before {
+    background: linear-gradient(90deg, var(--wow-stone) 0%, var(--wow-stone-light) 100%);
+}
+
+.validation-error-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.validation-error-icon {
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.validation-error-message {
+    font-family: 'Cinzel', serif;
+    font-weight: 600;
+    color: var(--wow-metal);
+    font-size: 1rem;
+}
+
+.validation-error-explanation {
+    font-family: 'Libre Baskerville', serif;
+    color: var(--wow-metal);
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin-bottom: 0.75rem;
+    padding: 0.5rem;
+    background: rgba(107, 76, 58, 0.05);
+    border-radius: 4px;
+    border-left: 3px solid var(--wow-stone);
+}
+
+.validation-error-fix {
+    font-family: 'Libre Baskerville', serif;
+    color: var(--wow-metal);
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin-bottom: 0.75rem;
+    padding: 0.5rem;
+    background: rgba(34, 139, 34, 0.1);
+    border-radius: 4px;
+    border-left: 3px solid var(--wow-green);
+}
+
+.validation-error-example {
+    margin-bottom: 0.75rem;
+}
+
+.validation-error-example strong {
+    font-family: 'Cinzel', serif;
+    color: var(--wow-metal);
+    font-size: 0.9rem;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.validation-error-example .wow-code-block {
+    background: var(--wow-metal-dark);
+    border: 1px solid var(--wow-stone);
+    border-radius: 4px;
+    padding: 0.5rem;
+    margin: 0;
+}
+
+.validation-error-example .wow-code-block code {
+    background: transparent !important;
+    color: var(--wow-gold-light) !important;
+    border: none !important;
+    padding: 0;
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+}
+
+.validation-error-guide {
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--wow-stone-light);
+}
+
+.guide-link {
+    color: var(--wow-blue);
+    text-decoration: none;
+    font-family: 'Libre Baskerville', serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.guide-link:hover {
+    color: var(--wow-blue-light);
+    text-decoration: underline;
+    transform: translateX(3px);
+}

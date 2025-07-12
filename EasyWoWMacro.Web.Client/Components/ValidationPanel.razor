@@ -1,0 +1,103 @@
+@using EasyWoWMacro.Core.Models
+
+<div class="wow-building-blocks-toolbox validation-panel">
+    <div class="wow-toolbox-header">
+        <h3 class="wow-toolbox-title">
+            <span class="wow-toolbox-icon">🔍</span>
+            Validation & Preview
+        </h3>
+        @if (ParsedMacro != null)
+        {
+            <div class="btn-group btn-group-sm" role="group">
+                <button type="button" class="btn @(!ShowStructureView ? "btn-primary" : "btn-outline-primary")"
+                        @onclick="() => OnToggleView.InvokeAsync(false)">
+                    <i class="bi bi-code"></i> Output
+                </button>
+                <button type="button" class="btn @(ShowStructureView ? "btn-primary" : "btn-outline-primary")"
+                        @onclick="() => OnToggleView.InvokeAsync(true)">
+                    <i class="bi bi-diagram-3"></i> Structure
+                </button>
+            </div>
+        }
+    </div>
+
+    <div class="wow-blocks-container">
+        <!-- Enhanced Validation Errors -->
+        @if (ValidationErrors.Count > 0)
+        {
+            <div class="validation-errors-container">
+                @foreach (var error in ValidationErrors)
+                {
+                    <div class="wow-validation-error @GetErrorCssClass(error.Type)">
+                        <div class="validation-error-header">
+                            <span class="validation-error-icon">@GetErrorIcon(error.Type)</span>
+                            <span class="validation-error-message">@error.Message</span>
+                        </div>
+                        
+                        @if (!string.IsNullOrEmpty(error.Explanation))
+                        {
+                            <div class="validation-error-explanation">
+                                @error.Explanation
+                            </div>
+                        }
+                        
+                        @if (!string.IsNullOrEmpty(error.QuickFix))
+                        {
+                            <div class="validation-error-fix">
+                                <strong>💡 Quick Fix:</strong> @error.QuickFix
+                            </div>
+                        }
+                        
+                        @if (!string.IsNullOrEmpty(error.Example))
+                        {
+                            <div class="validation-error-example">
+                                <strong>📝 Example:</strong>
+                                <div class="wow-code-block">
+                                    <code>@error.Example</code>
+                                </div>
+                            </div>
+                        }
+                        
+                        @if (!string.IsNullOrEmpty(error.GuideSection))
+                        {
+                            <div class="validation-error-guide">
+                                <a href="/macro-guide#@error.GuideSection" target="_blank" class="guide-link">
+                                    📚 Learn more in Macro Guide
+                                </a>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        }
+
+        <!-- Success Message & Output -->
+        @if (ParsedMacro != null && ValidationErrors.Count == 0)
+        {
+            <div class="alert alert-success validation-success">
+                <h5 class="validation-title">✓ MACRO IS VALID!</h5>
+                <p class="validation-details mb-0">Character count: @GetFormattedMacroLength() / 255</p>
+            </div>
+        }
+
+        <!-- Main Content Area -->
+        @if (ParsedMacro != null)
+        {
+            @if (!ShowStructureView)
+            {
+                <!-- Formatted Output -->
+                <h5 class="formatted-output-header">Formatted Output:</h5>
+                <div class="wow-code-block formatted-macro">
+                    <pre><code>@ParsedMacro.GetFormattedMacro()</code></pre>
+                </div>
+            }
+            else
+            {
+                <!-- Structure View -->
+                <div class="structure-view-container">
+                    <MacroStructureViewer MacroLines="ParsedMacro.Lines" />
+                </div>
+            }
+        }
+    </div>
+</div>
