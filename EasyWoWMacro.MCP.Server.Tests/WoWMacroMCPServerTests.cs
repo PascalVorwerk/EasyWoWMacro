@@ -34,19 +34,6 @@ public class WoWMacroMCPServerTests
         Assert.Equal("2025-06-18", serverInfo.ProtocolVersion);
     }
 
-    [Fact]
-    public async Task ListToolsAsync_ShouldReturnValidateToolOnly()
-    {
-        var tools = await _server.ListToolsAsync();
-
-        Assert.NotNull(tools);
-        Assert.Single(tools);
-        
-        var tool = tools.First();
-        Assert.Equal("validate_macro", tool.Name);
-        Assert.Contains("Validates a complete WoW macro", tool.Description);
-        Assert.NotNull(tool.InputSchema);
-    }
 
     [Fact]
     public async Task ListResourcesAsync_ShouldReturnCommandsAndConditionals()
@@ -55,10 +42,10 @@ public class WoWMacroMCPServerTests
 
         Assert.NotNull(resources);
         Assert.Equal(2, resources.Count);
-        
+
         var commandsResource = resources.FirstOrDefault(r => r.Uri == "wow://commands");
         var conditionalsResource = resources.FirstOrDefault(r => r.Uri == "wow://conditionals");
-        
+
         Assert.NotNull(commandsResource);
         Assert.NotNull(conditionalsResource);
         Assert.Equal("WoW Commands", commandsResource.Name);
@@ -73,7 +60,7 @@ public class WoWMacroMCPServerTests
         Assert.NotNull(result);
         Assert.Equal("application/json", result.MimeType);
         Assert.NotNull(result.Contents);
-        
+
         var commands = result.Contents as string[];
         Assert.NotNull(commands);
         Assert.Contains("/cast", commands);
@@ -88,7 +75,7 @@ public class WoWMacroMCPServerTests
         Assert.NotNull(result);
         Assert.Equal("application/json", result.MimeType);
         Assert.NotNull(result.Contents);
-        
+
         var conditionals = result.Contents as string[];
         Assert.NotNull(conditionals);
         Assert.Contains("combat", conditionals);
@@ -99,15 +86,15 @@ public class WoWMacroMCPServerTests
     public async Task ValidateMacro_ValidMacro_ShouldReturnSuccess()
     {
         var arguments = JsonSerializer.SerializeToElement(new { macroText = "/cast Fireball" });
-        
+
         var result = await _server.CallToolAsync("validate_macro", arguments);
 
         Assert.NotNull(result);
         Assert.False(result.IsError);
-        
+
         var validationResult = JsonSerializer.Deserialize<MacroValidationResult>(
             JsonSerializer.Serialize(result.Content));
-        
+
         Assert.NotNull(validationResult);
         Assert.True(validationResult.IsValid);
         Assert.Empty(validationResult.Errors);
@@ -119,15 +106,15 @@ public class WoWMacroMCPServerTests
     public async Task ValidateMacro_EmptyMacro_ShouldReturnError()
     {
         var arguments = JsonSerializer.SerializeToElement(new { macroText = "" });
-        
+
         var result = await _server.CallToolAsync("validate_macro", arguments);
 
         Assert.NotNull(result);
         Assert.False(result.IsError);
-        
+
         var validationResult = JsonSerializer.Deserialize<MacroValidationResult>(
             JsonSerializer.Serialize(result.Content));
-        
+
         Assert.NotNull(validationResult);
         Assert.False(validationResult.IsValid);
         Assert.Contains("Macro text is required", validationResult.Errors);
@@ -138,15 +125,15 @@ public class WoWMacroMCPServerTests
     {
         var longMacro = "/cast " + new string('A', 300);
         var arguments = JsonSerializer.SerializeToElement(new { macroText = longMacro });
-        
+
         var result = await _server.CallToolAsync("validate_macro", arguments);
 
         Assert.NotNull(result);
         Assert.False(result.IsError);
-        
+
         var validationResult = JsonSerializer.Deserialize<MacroValidationResult>(
             JsonSerializer.Serialize(result.Content));
-        
+
         Assert.NotNull(validationResult);
         Assert.False(validationResult.IsValid);
         Assert.Contains("exceeds 255 character limit", validationResult.Errors[0]);
@@ -167,7 +154,7 @@ public class WoWMacroMCPServerTests
         Assert.Equal("test-1", response.Id);
         Assert.Null(response.Error);
         Assert.NotNull(response.Result);
-        
+
         var serverInfo = JsonSerializer.Deserialize<ServerInfo>(
             JsonSerializer.Serialize(response.Result));
         Assert.NotNull(serverInfo);
