@@ -363,3 +363,5 @@ MigrationBackup/
 FodyWeavers.xsd
 
 .idea/**/*
+/docs
+/EasyWoWMacro.Web/appsettings.Development.json

@@ -3,7 +3,11 @@
     "allow": [
       "WebFetch(domain:wowpedia.fandom.com)",
       "Bash(dotnet run:*)",
-      "Bash(dotnet build:*)"
+      "Bash(dotnet build:*)",
+      "Bash(dotnet new:*)",
+      "Bash(dotnet sln add:*)",
+      "Bash(dotnet test:*)",
+      "Bash(rm:*)"
     ],
     "deny": []
   }

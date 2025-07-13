@@ -33,6 +33,9 @@ public partial class MacroEditor : ComponentBase
     private string _importText = "";
     private List<string> _importErrors = [];
 
+    // AI modal properties
+    private bool _showAIModal;
+
     private void AddNewLine()
     {
         _macroLines.Add([]);
@@ -224,6 +227,71 @@ public partial class MacroEditor : ComponentBase
         }
 
         return string.Join("", conditionSets);
+    }
+
+    #endregion
+
+    #region Natural Language Integration
+
+    private async Task HandleGeneratedMacro(string macroText)
+    {
+        try
+        {
+            // Clear current macro lines
+            _macroLines.Clear();
+            _importErrors.Clear();
+
+            // Parse the generated macro text
+            var parsedMacro = _parser.Parse(macroText);
+            var validationErrors = _parser.ValidateMacroText(macroText);
+
+            if (validationErrors.Count > 0)
+            {
+                // Show validation errors but still import
+                await ShowErrorToast($"Generated macro has validation issues: {string.Join(", ", validationErrors)}");
+            }
+
+            // Convert parsed macro to building blocks
+            foreach (var macroLine in parsedMacro.Lines)
+            {
+                var blocks = ConvertMacroLineToBlocks(macroLine);
+                if (blocks.Count > 0)
+                {
+                    _macroLines.Add(blocks);
+                }
+            }
+
+            // Ensure we have at least one empty line if no content
+            if (_macroLines.Count == 0)
+            {
+                _macroLines.Add([]);
+            }
+
+            // Immediately parse and validate the generated macro
+            ParseMacro();
+            
+            await ShowSuccessToast("🤖 AI-generated macro loaded successfully!");
+        }
+        catch (Exception ex)
+        {
+            await ShowErrorToast($"Failed to import generated macro: {ex.Message}");
+        }
+    }
+
+    #endregion
+
+    #region AI Modal
+
+    private void ShowAIModal()
+    {
+        _showAIModal = true;
+        StateHasChanged();
+    }
+
+    private void HideAIModal()
+    {
+        _showAIModal = false;
+        StateHasChanged();
     }
 
     #endregion
