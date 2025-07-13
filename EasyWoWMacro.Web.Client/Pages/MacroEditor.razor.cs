@@ -33,6 +33,9 @@ public partial class MacroEditor : ComponentBase
     private string _importText = "";
     private List<string> _importErrors = [];
 
+    // AI modal properties
+    private bool _showAIModal;
+
     private void AddNewLine()
     {
         _macroLines.Add([]);
@@ -273,6 +276,22 @@ public partial class MacroEditor : ComponentBase
         {
             await ShowErrorToast($"Failed to import generated macro: {ex.Message}");
         }
+    }
+
+    #endregion
+
+    #region AI Modal
+
+    private void ShowAIModal()
+    {
+        _showAIModal = true;
+        StateHasChanged();
+    }
+
+    private void HideAIModal()
+    {
+        _showAIModal = false;
+        StateHasChanged();
     }
 
     #endregion

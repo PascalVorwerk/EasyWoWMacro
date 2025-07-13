@@ -94,6 +94,92 @@ public class WoWMacroMCPServer : IMCPServer
                     },
                     required = new[] { "macroText" }
                 }
+            },
+            new()
+            {
+                Name = "analyze_macro_issues",
+                Description = "Comprehensive analysis of macro issues with detailed fix suggestions",
+                InputSchema = new
+                {
+                    type = "object",
+                    properties = new
+                    {
+                        macroText = new
+                        {
+                            type = "string",
+                            description = "The macro text to analyze"
+                        },
+                        analysisDepth = new
+                        {
+                            type = "string",
+                            @enum = new[] { "basic", "detailed", "comprehensive" },
+                            description = "Depth of analysis to perform",
+                            @default = "detailed"
+                        }
+                    },
+                    required = new[] { "macroText" }
+                }
+            },
+            new()
+            {
+                Name = "suggest_macro_fixes",
+                Description = "Generate specific fix recommendations for identified macro issues",
+                InputSchema = new
+                {
+                    type = "object",
+                    properties = new
+                    {
+                        macroText = new
+                        {
+                            type = "string",
+                            description = "The macro text to fix"
+                        },
+                        issues = new
+                        {
+                            type = "array",
+                            items = new { type = "string" },
+                            description = "List of identified issues to address"
+                        },
+                        preserveIntent = new
+                        {
+                            type = "boolean",
+                            @default = true,
+                            description = "Whether to preserve original macro intent"
+                        }
+                    },
+                    required = new[] { "macroText" }
+                }
+            },
+            new()
+            {
+                Name = "optimize_macro",
+                Description = "Optimize macro for character count and performance while preserving functionality",
+                InputSchema = new
+                {
+                    type = "object",
+                    properties = new
+                    {
+                        macroText = new
+                        {
+                            type = "string",
+                            description = "The macro text to optimize"
+                        },
+                        targetLength = new
+                        {
+                            type = "number",
+                            @default = 255,
+                            description = "Target character count limit"
+                        },
+                        optimizationLevel = new
+                        {
+                            type = "string",
+                            @enum = new[] { "conservative", "moderate", "aggressive" },
+                            @default = "moderate",
+                            description = "Level of optimization to apply"
+                        }
+                    },
+                    required = new[] { "macroText" }
+                }
             }
         };
 
@@ -132,6 +218,9 @@ public class WoWMacroMCPServer : IMCPServer
             var result = toolName switch
             {
                 "validate_macro" => await ValidateMacroAsync(arguments),
+                "analyze_macro_issues" => await AnalyzeMacroIssuesAsync(arguments),
+                "suggest_macro_fixes" => await SuggestMacroFixesAsync(arguments),
+                "optimize_macro" => await OptimizeMacroAsync(arguments),
                 _ => throw new InvalidOperationException($"Unknown tool: {toolName}")
             };
 
@@ -279,5 +368,467 @@ public class WoWMacroMCPServer : IMCPServer
                 IsError = true
             });
         }
+    }
+
+    private Task<ToolResult> AnalyzeMacroIssuesAsync(object? arguments)
+    {
+        try
+        {
+            string macroText = string.Empty;
+            string analysisDepth = "detailed";
+
+            if (arguments is JsonElement jsonArgs)
+            {
+                macroText = jsonArgs.GetProperty("macroText").GetString() ?? string.Empty;
+                if (jsonArgs.TryGetProperty("analysisDepth", out var depthProp))
+                {
+                    analysisDepth = depthProp.GetString() ?? "detailed";
+                }
+            }
+
+            if (string.IsNullOrWhiteSpace(macroText))
+            {
+                return Task.FromResult(new ToolResult
+                {
+                    Content = new MacroAnalysisResult
+                    {
+                        Issues = new List<MacroIssue> { new() { Type = "validation", Message = "Macro text is required", Severity = "error" } }
+                    },
+                    IsError = false
+                });
+            }
+
+            var issues = new List<MacroIssue>();
+            
+            // Comprehensive analysis
+            issues.AddRange(AnalyzeSyntaxIssues(macroText));
+            issues.AddRange(AnalyzeCommandIssues(macroText));
+            issues.AddRange(AnalyzeConditionalIssues(macroText));
+            issues.AddRange(AnalyzeCharacterLimitIssues(macroText));
+            
+            if (analysisDepth == "comprehensive")
+            {
+                issues.AddRange(AnalyzeLogicFlowIssues(macroText));
+                issues.AddRange(AnalyzeOptimizationOpportunities(macroText));
+            }
+
+            var analysisResult = new MacroAnalysisResult
+            {
+                Issues = issues,
+                Severity = CalculateOverallSeverity(issues),
+                FixSuggestions = GenerateFixSuggestions(issues),
+                OptimizationOpportunities = analysisDepth == "comprehensive" ? FindOptimizations(macroText) : new List<string>()
+            };
+
+            _logger.LogDebug("Analyzed macro: {IssueCount} issues found, severity: {Severity}", 
+                issues.Count, analysisResult.Severity);
+
+            return Task.FromResult(new ToolResult
+            {
+                Content = analysisResult,
+                IsError = false
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error analyzing macro");
+            
+            return Task.FromResult(new ToolResult
+            {
+                Content = new MacroAnalysisResult
+                {
+                    Issues = new List<MacroIssue> { new() { Type = "analysis", Message = $"Analysis error: {ex.Message}", Severity = "error" } }
+                },
+                IsError = true
+            });
+        }
+    }
+
+    private Task<ToolResult> SuggestMacroFixesAsync(object? arguments)
+    {
+        try
+        {
+            string macroText = string.Empty;
+            var issues = new List<string>();
+            bool preserveIntent = true;
+
+            if (arguments is JsonElement jsonArgs)
+            {
+                macroText = jsonArgs.GetProperty("macroText").GetString() ?? string.Empty;
+                if (jsonArgs.TryGetProperty("issues", out var issuesProp) && issuesProp.ValueKind == JsonValueKind.Array)
+                {
+                    foreach (var issue in issuesProp.EnumerateArray())
+                    {
+                        var issueText = issue.GetString();
+                        if (!string.IsNullOrEmpty(issueText))
+                        {
+                            issues.Add(issueText);
+                        }
+                    }
+                }
+                if (jsonArgs.TryGetProperty("preserveIntent", out var preserveProp))
+                {
+                    preserveIntent = preserveProp.GetBoolean();
+                }
+            }
+
+            if (string.IsNullOrWhiteSpace(macroText))
+            {
+                return Task.FromResult(new ToolResult
+                {
+                    Content = new MacroFixSuggestionResult
+                    {
+                        Fixes = new List<MacroFix> { new() { Type = "validation", Issue = "Macro text is required", Fix = "Please provide macro text to analyze" } }
+                    },
+                    IsError = false
+                });
+            }
+
+            var fixes = new List<MacroFix>();
+            
+            // Generate specific fixes based on issues
+            foreach (var issue in issues)
+            {
+                fixes.AddRange(GenerateSpecificFixes(macroText, issue, preserveIntent));
+            }
+            
+            // If no specific issues provided, analyze and suggest fixes
+            if (issues.Count == 0)
+            {
+                fixes.AddRange(GenerateGeneralFixes(macroText, preserveIntent));
+            }
+
+            var fixResult = new MacroFixSuggestionResult
+            {
+                Fixes = fixes,
+                PreserveIntent = preserveIntent,
+                OriginalLength = macroText.Length
+            };
+
+            _logger.LogDebug("Generated {FixCount} fix suggestions for macro", fixes.Count);
+
+            return Task.FromResult(new ToolResult
+            {
+                Content = fixResult,
+                IsError = false
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error suggesting macro fixes");
+            
+            return Task.FromResult(new ToolResult
+            {
+                Content = new MacroFixSuggestionResult
+                {
+                    Fixes = new List<MacroFix> { new() { Type = "error", Issue = "Fix generation failed", Fix = ex.Message } }
+                },
+                IsError = true
+            });
+        }
+    }
+
+    private Task<ToolResult> OptimizeMacroAsync(object? arguments)
+    {
+        try
+        {
+            string macroText = string.Empty;
+            int targetLength = 255;
+            string optimizationLevel = "moderate";
+
+            if (arguments is JsonElement jsonArgs)
+            {
+                macroText = jsonArgs.GetProperty("macroText").GetString() ?? string.Empty;
+                if (jsonArgs.TryGetProperty("targetLength", out var targetProp))
+                {
+                    targetLength = targetProp.GetInt32();
+                }
+                if (jsonArgs.TryGetProperty("optimizationLevel", out var levelProp))
+                {
+                    optimizationLevel = levelProp.GetString() ?? "moderate";
+                }
+            }
+
+            if (string.IsNullOrWhiteSpace(macroText))
+            {
+                return Task.FromResult(new ToolResult
+                {
+                    Content = new MacroOptimizationResult
+                    {
+                        OptimizedMacro = string.Empty,
+                        OriginalLength = 0,
+                        OptimizedLength = 0,
+                        Optimizations = new List<string> { "Macro text is required" }
+                    },
+                    IsError = false
+                });
+            }
+
+            var optimizations = new List<string>();
+            var optimizedMacro = macroText;
+
+            // Apply optimizations based on level
+            switch (optimizationLevel)
+            {
+                case "conservative":
+                    optimizedMacro = ApplyConservativeOptimizations(optimizedMacro, optimizations);
+                    break;
+                case "moderate":
+                    optimizedMacro = ApplyConservativeOptimizations(optimizedMacro, optimizations);
+                    optimizedMacro = ApplyModerateOptimizations(optimizedMacro, optimizations);
+                    break;
+                case "aggressive":
+                    optimizedMacro = ApplyConservativeOptimizations(optimizedMacro, optimizations);
+                    optimizedMacro = ApplyModerateOptimizations(optimizedMacro, optimizations);
+                    optimizedMacro = ApplyAggressiveOptimizations(optimizedMacro, optimizations);
+                    break;
+            }
+
+            var optimizationResult = new MacroOptimizationResult
+            {
+                OptimizedMacro = optimizedMacro,
+                OriginalLength = macroText.Length,
+                OptimizedLength = optimizedMacro.Length,
+                CharactersSaved = macroText.Length - optimizedMacro.Length,
+                Optimizations = optimizations,
+                OptimizationLevel = optimizationLevel
+            };
+
+            _logger.LogDebug("Optimized macro: {OriginalLength} -> {OptimizedLength} characters ({CharactersSaved} saved)", 
+                macroText.Length, optimizedMacro.Length, optimizationResult.CharactersSaved);
+
+            return Task.FromResult(new ToolResult
+            {
+                Content = optimizationResult,
+                IsError = false
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error optimizing macro");
+            
+            return Task.FromResult(new ToolResult
+            {
+                Content = new MacroOptimizationResult
+                {
+                    OptimizedMacro = string.Empty,
+                    OriginalLength = 0,
+                    OptimizedLength = 0,
+                    Optimizations = new List<string> { $"Optimization error: {ex.Message}" }
+                },
+                IsError = true
+            });
+        }
+    }
+
+    // Helper methods for analysis and optimization
+    private List<MacroIssue> AnalyzeSyntaxIssues(string macroText)
+    {
+        var issues = new List<MacroIssue>();
+        
+        var bracketErrors = _macroParser.ValidateBrackets(macroText);
+        foreach (var error in bracketErrors)
+        {
+            issues.Add(new MacroIssue { Type = "syntax", Message = error, Severity = "error" });
+        }
+        
+        return issues;
+    }
+
+    private List<MacroIssue> AnalyzeCommandIssues(string macroText)
+    {
+        var issues = new List<MacroIssue>();
+        
+        try
+        {
+            var macro = _macroParser.Parse(macroText);
+            foreach (var line in macro.Lines)
+            {
+                if (line is CommandLine commandLine)
+                {
+                    if (!WoWMacroConstants.ValidSlashCommands.Contains(commandLine.Command))
+                    {
+                        issues.Add(new MacroIssue 
+                        { 
+                            Type = "command", 
+                            Message = $"Invalid command: {commandLine.Command}", 
+                            Severity = "error" 
+                        });
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            issues.Add(new MacroIssue { Type = "parsing", Message = $"Parse error: {ex.Message}", Severity = "error" });
+        }
+        
+        return issues;
+    }
+
+    private List<MacroIssue> AnalyzeConditionalIssues(string macroText)
+    {
+        var issues = new List<MacroIssue>();
+        // Implementation would analyze conditionals for validity
+        return issues;
+    }
+
+    private List<MacroIssue> AnalyzeCharacterLimitIssues(string macroText)
+    {
+        var issues = new List<MacroIssue>();
+        
+        if (macroText.Length > 255)
+        {
+            issues.Add(new MacroIssue 
+            { 
+                Type = "length", 
+                Message = $"Macro exceeds 255 character limit ({macroText.Length} characters)", 
+                Severity = "error" 
+            });
+        }
+        else if (macroText.Length > 230)
+        {
+            issues.Add(new MacroIssue 
+            { 
+                Type = "length", 
+                Message = $"Macro is {macroText.Length} characters, close to 255 limit", 
+                Severity = "warning" 
+            });
+        }
+        
+        return issues;
+    }
+
+    private List<MacroIssue> AnalyzeLogicFlowIssues(string macroText)
+    {
+        var issues = new List<MacroIssue>();
+        // Implementation would analyze logical flow and dependencies
+        return issues;
+    }
+
+    private List<MacroIssue> AnalyzeOptimizationOpportunities(string macroText)
+    {
+        var issues = new List<MacroIssue>();
+        
+        if (macroText.Contains("/cast ") && macroText.Length > 200)
+        {
+            issues.Add(new MacroIssue 
+            { 
+                Type = "optimization", 
+                Message = "Consider using shorter command abbreviations", 
+                Severity = "info" 
+            });
+        }
+        
+        return issues;
+    }
+
+    private string CalculateOverallSeverity(List<MacroIssue> issues)
+    {
+        if (issues.Any(i => i.Severity == "error")) return "error";
+        if (issues.Any(i => i.Severity == "warning")) return "warning";
+        return "info";
+    }
+
+    private List<string> GenerateFixSuggestions(List<MacroIssue> issues)
+    {
+        var suggestions = new List<string>();
+        
+        foreach (var issue in issues.Where(i => i.Severity == "error"))
+        {
+            suggestions.Add($"Fix {issue.Type}: {issue.Message}");
+        }
+        
+        return suggestions;
+    }
+
+    private List<string> FindOptimizations(string macroText)
+    {
+        var optimizations = new List<string>();
+        
+        if (macroText.Contains("/cast "))
+        {
+            optimizations.Add("Replace '/cast' with '/c' to save characters");
+        }
+        
+        return optimizations;
+    }
+
+    private List<MacroFix> GenerateSpecificFixes(string macroText, string issue, bool preserveIntent)
+    {
+        var fixes = new List<MacroFix>();
+        
+        // Generate fixes based on specific issues
+        if (issue.Contains("Invalid command"))
+        {
+            fixes.Add(new MacroFix 
+            { 
+                Type = "command", 
+                Issue = issue, 
+                Fix = "Replace with valid WoW command" 
+            });
+        }
+        
+        return fixes;
+    }
+
+    private List<MacroFix> GenerateGeneralFixes(string macroText, bool preserveIntent)
+    {
+        var fixes = new List<MacroFix>();
+        
+        // General fixes based on analysis
+        var issues = AnalyzeSyntaxIssues(macroText);
+        issues.AddRange(AnalyzeCommandIssues(macroText));
+        issues.AddRange(AnalyzeCharacterLimitIssues(macroText));
+        
+        foreach (var issue in issues)
+        {
+            fixes.Add(new MacroFix 
+            { 
+                Type = issue.Type, 
+                Issue = issue.Message, 
+                Fix = $"Fix {issue.Type} issue" 
+            });
+        }
+        
+        return fixes;
+    }
+
+    private string ApplyConservativeOptimizations(string macroText, List<string> optimizations)
+    {
+        var optimized = macroText;
+        
+        // Remove extra whitespace
+        if (optimized.Contains("  "))
+        {
+            optimized = System.Text.RegularExpressions.Regex.Replace(optimized, @"\s+", " ");
+            optimizations.Add("Removed extra whitespace");
+        }
+        
+        return optimized;
+    }
+
+    private string ApplyModerateOptimizations(string macroText, List<string> optimizations)
+    {
+        var optimized = macroText;
+        
+        // Replace common commands with abbreviations
+        if (optimized.Contains("/cast "))
+        {
+            optimized = optimized.Replace("/cast ", "/c ");
+            optimizations.Add("Replaced '/cast' with '/c'");
+        }
+        
+        return optimized;
+    }
+
+    private string ApplyAggressiveOptimizations(string macroText, List<string> optimizations)
+    {
+        var optimized = macroText;
+        
+        // More aggressive optimizations would go here
+        // This is a placeholder for future enhancements
+        
+        return optimized;
     }
 }

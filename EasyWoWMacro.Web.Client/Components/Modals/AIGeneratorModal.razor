@@ -1,0 +1,310 @@
+@rendermode InteractiveWebAssembly
+
+@if (RendererInfo.IsInteractive && IsVisible)
+{
+    <div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content ai-modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <span class="wow-toolbox-icon">🤖</span>
+                        AI Macro Assistant
+                    </h5>
+                    <button type="button" class="btn-close" @onclick="Hide"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Tab Navigation -->
+                    <ul class="nav nav-tabs ai-tabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link @(_activeTab == "generate" ? "active" : "")" 
+                                    type="button" 
+                                    @onclick='() => SetActiveTab("generate")'>
+                                ✨ Generate from Description
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link @(_activeTab == "fix" ? "active" : "")" 
+                                    type="button" 
+                                    @onclick='() => SetActiveTab("fix")'>
+                                🔧 Fix My Macro
+                            </button>
+                        </li>
+                    </ul>
+
+                    <!-- Tab Content -->
+                    <div class="tab-content ai-tab-content">
+                        <!-- Generate Tab -->
+                        <div class="tab-pane fade @(_activeTab == "generate" ? "show active" : "")" id="generate-tab">
+                            <div class="generate-section">
+                                <p class="tab-description">
+                                    Describe what you want your macro to do in plain English, and our AI will generate a complete WoW macro for you.
+                                </p>
+                                
+                                <div class="form-group mb-3">
+                                    <label for="naturalLanguageInput" class="form-label">Describe your macro:</label>
+                                    <textarea id="naturalLanguageInput"
+                                              class="form-control @(_hasGenerateError ? "is-invalid" : "")"
+                                              rows="4"
+                                              placeholder="e.g., Cast fireball at my target if hostile, otherwise heal if friendly"
+                                              @bind="_description"
+                                              @bind:event="oninput"
+                                              disabled="@_isGenerating"
+                                              maxlength="500"></textarea>
+                                    @if (_hasGenerateError)
+                                    {
+                                        <div class="invalid-feedback">
+                                            @_generateErrorMessage
+                                        </div>
+                                    }
+                                    <small class="form-text text-muted">@(_description?.Length ?? 0)/500 characters</small>
+                                </div>
+                                
+                                <div class="generation-controls mb-3">
+                                    <button class="btn btn-primary btn-lg @(_isGenerating ? "loading" : "")" 
+                                            @onclick="GenerateMacro" 
+                                            disabled="@(string.IsNullOrWhiteSpace(_description) || _isGenerating)">
+                                        @if (_isGenerating)
+                                        {
+                                            <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                                            <span>Generating...</span>
+                                        }
+                                        else
+                                        {
+                                            <span>🚀 Generate Macro</span>
+                                        }
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Fix Tab -->
+                        <div class="tab-pane fade @(_activeTab == "fix" ? "show active" : "")" id="fix-tab">
+                            <div class="fix-section">
+                                <p class="tab-description">
+                                    Paste your existing macro below and our AI will identify and fix any issues while preserving your original intent.
+                                </p>
+                                
+                                <div class="form-group mb-3">
+                                    <label for="macroToFix" class="form-label">Your Macro:</label>
+                                    <textarea id="macroToFix"
+                                              class="form-control @(_hasFixError ? "is-invalid" : "")"
+                                              rows="6"
+                                              placeholder="Paste your macro here..."
+                                              @bind="_macroToFix"
+                                              @bind:event="oninput"
+                                              disabled="@_isFixing"
+                                              maxlength="500"></textarea>
+                                    @if (_hasFixError)
+                                    {
+                                        <div class="invalid-feedback">
+                                            @_fixErrorMessage
+                                        </div>
+                                    }
+                                    <small class="form-text text-muted">@(_macroToFix?.Length ?? 0)/500 characters</small>
+                                </div>
+                                
+                                <div class="fix-controls mb-3">
+                                    <button class="btn btn-warning btn-lg @(_isFixing ? "loading" : "")" 
+                                            @onclick="FixMacro" 
+                                            disabled="@(string.IsNullOrWhiteSpace(_macroToFix) || _isFixing)">
+                                        @if (_isFixing)
+                                        {
+                                            <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                                            <span>Analyzing & Fixing...</span>
+                                        }
+                                        else
+                                        {
+                                            <span>🔧 Fix My Macro</span>
+                                        }
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Results Section (shared between tabs) -->
+                    @if (_currentResult != null)
+                    {
+                        <div class="results-section mt-4">
+                            @if (_currentResult.Success)
+                            {
+                                <div class="alert alert-success">
+                                    <div class="result-header">
+                                        <h6>
+                                            @if (_activeTab == "generate")
+                                            {
+                                                <span>✨ Generated Macro:</span>
+                                            }
+                                            else
+                                            {
+                                                <span>🔧 Fixed Macro:</span>
+                                            }
+                                        </h6>
+                                        <small class="text-muted">
+                                            @(_currentResult.CharacterCount) chars • @(_currentResult.TokensUsed) tokens • @($"{_currentResult.ProcessingTime.TotalSeconds:F1}")s
+                                        </small>
+                                    </div>
+                                    <div class="generated-macro">
+                                        <code class="wow-macro-code">@_currentResult.GeneratedMacro</code>
+                                        <button class="btn btn-sm btn-outline-secondary ms-2" 
+                                                @onclick="() => CopyToClipboard(_currentResult.GeneratedMacro!)"
+                                                title="Copy to clipboard">
+                                            📋
+                                        </button>
+                                    </div>
+                                    @if (!string.IsNullOrEmpty(_currentResult.Explanation))
+                                    {
+                                        <div class="explanation mt-2">
+                                            <small class="text-muted">
+                                                <strong>Explanation:</strong> @_currentResult.Explanation
+                                            </small>
+                                        </div>
+                                    }
+                                    @if (_currentResult.Suggestions.Any())
+                                    {
+                                        <div class="suggestions mt-2">
+                                            <small class="text-info">
+                                                <strong>Suggestions:</strong>
+                                                <ul class="mb-0">
+                                                    @foreach (var suggestion in _currentResult.Suggestions)
+                                                    {
+                                                        <li>@suggestion</li>
+                                                    }
+                                                </ul>
+                                            </small>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="alert alert-danger">
+                                    <h6>❌ @(_activeTab == "generate" ? "Generation" : "Fix") Failed:</h6>
+                                    @if (_currentResult.Errors.Any())
+                                    {
+                                        <ul class="mb-0">
+                                            @foreach (var error in _currentResult.Errors)
+                                            {
+                                                <li>@error</li>
+                                            }
+                                        </ul>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="Hide">Close</button>
+                    @if (_currentResult?.Success == true)
+                    {
+                        <button type="button" class="btn btn-success" @onclick="UseGeneratedMacro">
+                            ✅ Use This Macro
+                        </button>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (_showCopyToast)
+    {
+        <div class="copy-toast">
+            <div class="copy-toast-content">
+                <span>✓ Copied to clipboard!</span>
+            </div>
+        </div>
+    }
+}
+
+<style>
+    .ai-modal-content {
+        background: linear-gradient(135deg, rgba(0, 30, 60, 0.95), rgba(20, 40, 80, 0.95));
+        border: 2px solid #4a90e2;
+        color: #ffffff;
+    }
+
+    .ai-tabs .nav-link {
+        background: rgba(0, 20, 40, 0.7);
+        border: 1px solid #4a90e2;
+        color: #ffffff;
+        margin-right: 0.25rem;
+    }
+
+    .ai-tabs .nav-link.active {
+        background: #4a90e2;
+        border-color: #4a90e2;
+        color: #ffffff;
+    }
+
+    .ai-tabs .nav-link:hover {
+        background: rgba(74, 144, 226, 0.3);
+        color: #ffffff;
+    }
+
+    .ai-tab-content {
+        background: rgba(0, 20, 40, 0.3);
+        border-radius: 0 0 8px 8px;
+        padding: 1.5rem;
+        margin-top: -1px;
+    }
+
+    .tab-description {
+        color: #b8d4f0;
+        margin-bottom: 1.5rem;
+        font-style: italic;
+    }
+
+    .generate-section, .fix-section {
+        min-height: 200px;
+    }
+
+    .wow-macro-code {
+        background: rgba(0, 0, 0, 0.7);
+        color: #ffd700;
+        padding: 0.75rem;
+        border-radius: 6px;
+        font-family: 'Courier New', monospace;
+        font-size: 1rem;
+        word-break: break-all;
+        display: block;
+        width: 100%;
+    }
+
+    .result-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.75rem;
+    }
+
+    .generated-macro {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .copy-toast {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1100;
+        background: rgba(40, 167, 69, 0.95);
+        color: white;
+        padding: 12px 20px;
+        border-radius: 6px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    .btn-lg {
+        padding: 0.75rem 1.5rem;
+        font-size: 1.125rem;
+    }
+
+    .results-section {
+        max-height: 400px;
+        overflow-y: auto;
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+        padding-top: 1rem;
+    }
+</style>
